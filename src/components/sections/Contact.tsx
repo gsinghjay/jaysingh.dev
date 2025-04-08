@@ -42,12 +42,12 @@ const Contact: React.FC<ContactProps> = ({ data }) => {
           <SocialLinks 
             links={data.socialLinks} 
             email={data.email} 
-            archetype={data.primaryArchetype} 
+            themeColor={data.primaryThemeColor} 
           />
         </div>
 
         <div>
-          <ContactForm buttonArchetype={data.primaryArchetype} />
+          <ContactForm buttonThemeColor={data.primaryThemeColor} />
         </div>
       </div>
     </Section>

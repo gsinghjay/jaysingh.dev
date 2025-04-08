@@ -2,7 +2,7 @@ import React from 'react';
 import Section from '../layout/Section';
 import InfoCard from '../ui/InfoCard';
 import { ExpertiseData } from '../../data/portfolioData';
-import { Archetype } from '../../utils/archetypeUtils'; // Keep for narrative signal logic if needed
+import { ThemeColor } from '../../utils/colorUtils';
 
 interface ExpertiseProps {
   data: ExpertiseData;
@@ -16,9 +16,9 @@ interface ExpertiseProps {
  */
 const Expertise: React.FC<ExpertiseProps> = ({ data }) => {
 
-  // Determine narrative signal based on archetype (example)
-  const getNarrativeSignal = (archetype: Archetype): 'technical' | null => {
-    return archetype === 'sage' ? 'technical' : null;
+  // Determine narrative signal based on theme color
+  const getNarrativeSignal = (themeColor: ThemeColor): 'technical' | null => {
+    return themeColor === 'accentGreen' ? 'technical' : null;
   };
 
   return (
@@ -35,9 +35,10 @@ const Expertise: React.FC<ExpertiseProps> = ({ data }) => {
             description={area.description || ''} // Ensure description is always a string
             icon={area.icon}
             skills={area.skills}
-            archetype={area.archetype}
+            themeColor={area.themeColor}
+            intensityLevel={area.intensityLevel}
             ariaLabelledById={`expertise-area-${index}`}
-            titleNarrativeSignal={getNarrativeSignal(area.archetype)}
+            titleNarrativeSignal={getNarrativeSignal(area.themeColor)}
           />
         ))}
       </div>

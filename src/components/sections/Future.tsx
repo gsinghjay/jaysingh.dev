@@ -28,7 +28,8 @@ const Future: React.FC<FutureProps> = ({ data }) => {
             title={goal.title}
             description={goal.description}
             icon={goal.icon}
-            archetype={goal.archetype}
+            themeColor={goal.themeColor}
+            intensityLevel={goal.intensityLevel}
             ariaLabelledById={`future-goal-${index}`}
             titleNarrativeSignal="future" // Apply 'future' signal to all goals
           />

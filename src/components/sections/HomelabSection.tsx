@@ -2,7 +2,7 @@ import React from 'react';
 import Section from '../layout/Section';
 import InfoCard from '../ui/InfoCard';
 import { HomelabData } from '../../data/portfolioData';
-import { Archetype } from '../../utils/archetypeUtils'; // Keep for narrative signal logic if needed
+import { ThemeColor } from '../../utils/colorUtils';
 
 interface HomelabSectionProps {
   data: HomelabData;
@@ -16,9 +16,9 @@ interface HomelabSectionProps {
  */
 const HomelabSection: React.FC<HomelabSectionProps> = ({ data }) => {
 
-  // Determine narrative signal based on archetype (example)
-  const getNarrativeSignal = (archetype: Archetype): 'technical' | null => {
-    return archetype === 'sage' ? 'technical' : null;
+  // Determine narrative signal based on theme color
+  const getNarrativeSignal = (themeColor: ThemeColor): 'technical' | null => {
+    return themeColor === 'accentGreen' ? 'technical' : null;
   };
 
   return (
@@ -36,9 +36,10 @@ const HomelabSection: React.FC<HomelabSectionProps> = ({ data }) => {
             description={section.description}
             icon={section.icon}
             tags={section.tags}
-            archetype={section.archetype}
+            themeColor={section.themeColor}
+            intensityLevel={section.intensityLevel}
             ariaLabelledById={`homelab-section-${index}`}
-            titleNarrativeSignal={getNarrativeSignal(section.archetype)}
+            titleNarrativeSignal={getNarrativeSignal(section.themeColor)}
           />
         ))}
       </div>
