@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from './Typography';
-import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { ThemeColor, getThemeColorClass } from '../../utils/colorUtils';
 import { IntensityLevel, getOpacityByIntensity } from '../../utils/intensityUtils';
 
 interface TimelineItemProps {
@@ -12,8 +12,8 @@ interface TimelineItemProps {
   year?: string;
   /** List of key skills developed during this stage */
   keySkills?: string[];
-  /** The brand archetype for background color */
-  archetype: Archetype;
+  /** The theme color for background */
+  themeColor: ThemeColor;
   /** Intensity level for the background color */
   intensityLevel?: IntensityLevel;
   /** Unique ID for accessibility labelling */
@@ -36,21 +36,21 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   title,
   description,
   keySkills,
-  archetype,
-  intensityLevel = 3,
+  themeColor,
+  intensityLevel,
   ariaLabelledById,
   titleNarrativeSignal = null,
   disableNarrativeBorders = false,
   isCurrent = false,
 }) => {
   /**
-   * Get background color class based on archetype and intensity
+   * Get background color class based on theme color and intensity
    * @returns CSS classes for background color with appropriate intensity
    */
   const getBgColorClass = (): string => {
-    const colorName = getArchetypeColor(archetype);
-    const intensityClass = getOpacityByIntensity(intensityLevel);
-    return `bg-${colorName} ${intensityClass}`;
+    const colorClass = getThemeColorClass(themeColor);
+    const intensityClass = getOpacityByIntensity(intensityLevel || 3);
+    return `bg-${colorClass} ${intensityClass}`;
   };
 
   // Extract age range if present in the title

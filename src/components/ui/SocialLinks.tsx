@@ -1,13 +1,13 @@
 import React from 'react';
 import { SocialLink } from '../../data/portfolioData';
-import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { ThemeColor, getThemeColorClass } from '../../utils/colorUtils';
 import { Mail } from 'lucide-react';
 
 interface SocialLinksProps {
   links: SocialLink[];
   email: string;
-  /** Archetype for link color */
-  archetype: Archetype;
+  /** Theme color for links */
+  themeColor: ThemeColor;
 }
 
 /**
@@ -16,10 +16,10 @@ interface SocialLinksProps {
  * @param {SocialLinksProps} props - Component props.
  * @returns {JSX.Element} The SocialLinks component.
  */
-const SocialLinks: React.FC<SocialLinksProps> = ({ links, email, archetype }) => {
+const SocialLinks: React.FC<SocialLinksProps> = ({ links, email, themeColor }) => {
 
   const getColorClass = (): string => {
-    return `text-${getArchetypeColor(archetype)}`;
+    return `text-${getThemeColorClass(themeColor)}`;
   };
 
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from './Typography';
-import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { ThemeColor, getThemeColorClass } from '../../utils/colorUtils';
 import { IntensityLevel, getOpacityByIntensity } from '../../utils/intensityUtils';
 import { ProjectStat } from '../../data/portfolioData'; // Import ProjectStat type
 
@@ -15,8 +15,8 @@ interface ProjectCardProps {
   tags: string[];
   /** Optional list of statistics */
   stats?: ProjectStat[];
-  /** The brand archetype for background color */
-  archetype: Archetype;
+  /** The theme color for background */
+  themeColor: ThemeColor;
   /** Intensity level for the background color */
   intensityLevel?: IntensityLevel;
   /** Unique ID for accessibility labelling */
@@ -37,19 +37,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   icon,
   tags,
   stats,
-  archetype,
-  intensityLevel = 3,
+  themeColor,
+  intensityLevel,
   ariaLabelledById,
   titleNarrativeSignal = null,
 }) => {
   /**
-   * Get background color class based on archetype and intensity
+   * Get background color class based on theme color and intensity
    * @returns CSS classes for background color with appropriate intensity
    */
   const getBgColorClass = (): string => {
-    const colorName = getArchetypeColor(archetype);
-    const intensityClass = getOpacityByIntensity(intensityLevel);
-    return `bg-${colorName} ${intensityClass}`;
+    const colorClass = getThemeColorClass(themeColor);
+    const intensityClass = getOpacityByIntensity(intensityLevel || 3);
+    return `bg-${colorClass} ${intensityClass}`;
   };
 
   return (
