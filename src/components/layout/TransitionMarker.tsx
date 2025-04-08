@@ -1,15 +1,15 @@
 import React from 'react';
-import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { ThemeColor, getThemeColorClass } from '../../utils/colorUtils';
 import { IntensityLevel, getOpacityByIntensity } from '../../utils/intensityUtils';
 
 /**
  * Props for the TransitionMarker component
  */
 interface TransitionMarkerProps {
-  /** The brand archetype to transition from */
-  fromArchetype: Archetype;
-  /** The brand archetype to transition to */
-  toArchetype: Archetype;
+  /** The theme color to transition from */
+  fromThemeColor: ThemeColor;
+  /** The theme color to transition to */
+  toThemeColor: ThemeColor;
   /** Intensity level for the colors */
   intensityLevel?: IntensityLevel;
   /** Additional CSS classes */
@@ -27,22 +27,22 @@ interface TransitionMarkerProps {
  * @returns {JSX.Element} The transition marker component
  */
 const TransitionMarker: React.FC<TransitionMarkerProps> = ({
-  fromArchetype,
-  toArchetype,
+  fromThemeColor,
+  toThemeColor,
   intensityLevel = 3,
   className = '',
 }) => {
   /**
-   * Get color class based on archetype
-   * @param archetype The brand archetype to convert to color
+   * Get color class based on theme color
+   * @param themeColor The theme color to convert to color class
    * @returns The color class name
    */
-  const getColorClass = (archetype: Archetype): string => {
-    return getArchetypeColor(archetype);
+  const getColorClass = (themeColor: ThemeColor): string => {
+    return getThemeColorClass(themeColor);
   };
 
-  const fromColor = getColorClass(fromArchetype);
-  const toColor = getColorClass(toArchetype);
+  const fromColor = getColorClass(fromThemeColor);
+  const toColor = getColorClass(toThemeColor);
   const opacityClass = getOpacityByIntensity(intensityLevel);
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Typography from '../ui/Typography';
-import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { ThemeColor, getThemeColorClass } from '../../utils/colorUtils';
 import { navLinksData, NavLink } from '../../data/portfolioData'; // Import data and type
 
 /**
@@ -9,13 +9,13 @@ import { navLinksData, NavLink } from '../../data/portfolioData'; // Import data
  */
 interface NavigationProps {
   logoText?: string;
-  highlightedLinkArchetype?: Archetype; // Archetype for the special highlighted link
+  highlightedLinkThemeColor?: ThemeColor; // Theme color for the special highlighted link
   links?: Omit<NavLink, 'className'>[]; // Allow passing links, default to portfolioData
 }
 
 const Navigation: React.FC<NavigationProps> = ({ 
   logoText = 'Jay Singh',
-  highlightedLinkArchetype = 'ruler', // Default highlight color archetype
+  highlightedLinkThemeColor = 'primary', // Default highlight theme color
   links = navLinksData // Use imported data as default
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,9 +32,10 @@ const Navigation: React.FC<NavigationProps> = ({
   const getNavLinkClass = (link: Omit<NavLink, 'className'>): string => {
     let classes = 'text-gray-300 hover:text-white transition-colors duration-200';
     // Example: Highlight the 'Typography' link specifically
-    if (link.label === 'Typography' && highlightedLinkArchetype) {
-      const colorName = getArchetypeColor(highlightedLinkArchetype);
-      classes += ` text-${colorName} hover:text-${colorName}-300`; // Apply highlight color and hover
+    if (link.label === 'Typography' && highlightedLinkThemeColor) {
+      const colorClass = getThemeColorClass(highlightedLinkThemeColor);
+      // For text colors, we don't use opacity - just use the color directly
+      classes += ` text-${colorClass} hover:text-${colorClass}-300`; // Apply highlight color and hover
     }
     return classes;
   };
