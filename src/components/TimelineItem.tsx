@@ -84,7 +84,6 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
             narrativeSignal={titleNarrativeSignal}
             disableNarrativeBorders={disableNarrativeBorders}
             archetype="default"
-            intensityLevel={intensityLevel}
           >
             {titleText}
           </Typography>

@@ -42,7 +42,6 @@ const Journey: React.FC<JourneyProps> = ({ data }) => {
             year={stage.year}
             keySkills={stage.keySkills}
             archetype={stage.archetype}
-            intensityLevel={stage.intensityLevel}
             ariaLabelledById={`journey-stage-${index}`}
             titleNarrativeSignal={getNarrativeSignal(stage.archetype, stage.title)}
             disableNarrativeBorders={true}
@@ -61,7 +60,6 @@ const Journey: React.FC<JourneyProps> = ({ data }) => {
               year={stage.year}
               keySkills={stage.keySkills}
               archetype={stage.archetype}
-              intensityLevel={stage.intensityLevel}
               ariaLabelledById={`journey-mobile-stage-${index}`}
               titleNarrativeSignal={getNarrativeSignal(stage.archetype, stage.title)}
               disableNarrativeBorders={false}
@@ -72,7 +70,7 @@ const Journey: React.FC<JourneyProps> = ({ data }) => {
               <TransitionMarker
                 fromArchetype={stage.archetype}
                 toArchetype={data.stages[index + 1].archetype} 
-                intensityLevel={3} // Example intensity, adjust as needed
+                intensityLevel={3} // Keep this for TransitionMarker as it's likely still needed for backgrounds
               />
             )}
           </React.Fragment>

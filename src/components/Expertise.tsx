@@ -3,6 +3,7 @@ import Section from './Section';
 import InfoCard from './InfoCard';
 import { ExpertiseData } from '../data/portfolioData';
 import { Archetype } from '../utils/archetypeUtils'; // Keep for narrative signal logic if needed
+import Typography from './Typography';
 
 interface ExpertiseProps {
   data: ExpertiseData;
@@ -36,7 +37,6 @@ const Expertise: React.FC<ExpertiseProps> = ({ data }) => {
             icon={area.icon}
             skills={area.skills}
             archetype={area.archetype}
-            intensityLevel={area.intensityLevel}
             ariaLabelledById={`expertise-area-${index}`}
             titleNarrativeSignal={getNarrativeSignal(area.archetype)}
           />

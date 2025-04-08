@@ -74,7 +74,6 @@ const InfoCard: React.FC<InfoCardProps> = ({
             id={ariaLabelledById}
             className="font-medium"
             archetype="default"
-            intensityLevel={intensityLevel}
             narrativeSignal={titleNarrativeSignal}
           >
             {title}
