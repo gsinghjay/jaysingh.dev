@@ -37,13 +37,4 @@ export const archetypeMap: Record<Archetype, ArchetypeConfig> = {
  */
 export const getArchetypeColor = (archetype: Archetype): string => {
   return archetypeMap[archetype]?.color || 'metro-blue';
-};
-
-/**
- * Get the description associated with an archetype
- * @param archetype The brand archetype
- * @returns The description of the archetype's core traits
- */
-export const getArchetypeDescription = (archetype: Archetype): string => {
-  return archetypeMap[archetype]?.description || '';
 }; 
