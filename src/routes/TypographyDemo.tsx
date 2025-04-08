@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Typography from '../components/Typography';
+import Typography from '../components/ui/Typography';
 import { Menu, X } from 'lucide-react';
-import { Archetype, getArchetypeColor, archetypeMap } from '../utils/archetypeUtils';
+import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
 import { IntensityLevel, intensityMap, getOpacityByIntensity } from '../utils/intensityUtils';
 
 /**
