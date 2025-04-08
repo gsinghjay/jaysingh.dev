@@ -1,7 +1,7 @@
 import React from 'react';
 import Typography from '../ui/Typography';
 import { HeroData } from '../../data/portfolioData';
-import { getArchetypeColor } from '../../utils/archetypeUtils';
+import { getThemeColorClass } from '../../utils/colorUtils';
 import { getOpacityByIntensity } from '../../utils/intensityUtils';
 
 interface HeroProps {
@@ -16,14 +16,14 @@ interface HeroProps {
  */
 const Hero: React.FC<HeroProps> = ({ data }) => {
   /**
-   * Get background color class based on archetype and intensity
+   * Get background color class based on theme color and intensity
    * @returns CSS class for the background color with appropriate intensity
    */
   const getBgColorClass = (): string => {
-    const colorName = getArchetypeColor(data.primaryArchetype);
+    const colorClass = getThemeColorClass(data.primaryThemeColor);
     // Use intensity level from data, defaulting to 3 if not provided
     const intensity = data.intensityLevel || 3;
-    return `bg-${colorName} ${getOpacityByIntensity(intensity)}`;
+    return `bg-${colorClass} ${getOpacityByIntensity(intensity)}`;
   };
 
   return (

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Section from '../layout/Section';
 import ProjectCard from '../ui/ProjectCard';
 import { ProjectsData, Project } from '../../data/portfolioData';
-import { getArchetypeColor } from '../../utils/archetypeUtils'; // Needed for tab styling
+import { getThemeColorClass } from '../../utils/colorUtils'; // For tab styling
+import { getOpacityByIntensity } from '../../utils/intensityUtils'; // For intensity level
 
 interface ProjectsProps {
   data: ProjectsData;
@@ -32,8 +33,13 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
    * @returns CSS classes for tab button
    */
   const getTabButtonClass = (isActive: boolean): string => {
-    // Assuming 'ruler' archetype for active tab styling, as in original component
-    return `px-6 py-2 ${isActive ? `bg-${getArchetypeColor('ruler')} text-white` : 'bg-slate-800 text-gray-300'}`;
+    // Using 'primary' theme color for active tab styling with correct intensity level
+    if (isActive) {
+      const colorClass = getThemeColorClass('primary');
+      const intensityClass = getOpacityByIntensity(2); // Use intensity level 2 to match the rest of the components
+      return `px-6 py-2 bg-${colorClass} ${intensityClass} text-white`;
+    }
+    return 'px-6 py-2 bg-slate-800 text-gray-300';
   };
 
   const renderProjectList = (projects: Project[], isCompleted: boolean, panelId: string) => (
@@ -53,7 +59,8 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
               icon={project.icon}
               tags={project.tags || []}
               stats={project.stats}
-              archetype={project.archetype}
+              themeColor={project.themeColor}
+              intensityLevel={project.intensityLevel}
               ariaLabelledById={`project-${isCompleted ? 'completed' : 'development'}-${index}`}
               titleNarrativeSignal={getProjectNarrativeSignal(isCompleted)}
             />

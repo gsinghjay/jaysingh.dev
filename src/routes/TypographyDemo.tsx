@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Typography from '../components/ui/Typography';
 import { Menu, X } from 'lucide-react';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
+import { ThemeColor, getThemeColorClass } from '../utils/colorUtils';
 import { IntensityLevel, intensityMap, getOpacityByIntensity } from '../utils/intensityUtils';
 
 /**
@@ -22,13 +22,13 @@ const TypographyDemo = () => {
   };
   
   /**
-   * Gets the CSS class for a navigation link based on archetype
-   * @param archetype The brand archetype
+   * Gets the CSS class for a navigation link based on theme color
+   * @param themeColor The theme color
    * @returns CSS class for the link
    */
-  const getNavLinkClass = (archetype: Archetype): string => {
-    const colorName = getArchetypeColor(archetype);
-    return `text-${colorName} hover:text-${colorName}-300 transition-colors duration-200`;
+  const getNavLinkClass = (themeColor: ThemeColor): string => {
+    const colorClass = getThemeColorClass(themeColor);
+    return `text-${colorClass} hover:text-${colorClass}-300 transition-colors duration-200`;
   };
   
   return (
@@ -56,7 +56,7 @@ const TypographyDemo = () => {
             <a href="#intensity" className="text-gray-300 hover:text-white transition-colors duration-200" role="menuitem">Intensity</a>
             <a href="#responsive" className="text-gray-300 hover:text-white transition-colors duration-200" role="menuitem">Responsive</a>
             <a href="#accessibility" className="text-gray-300 hover:text-white transition-colors duration-200" role="menuitem">Accessibility</a>
-            <a href="/" className={getNavLinkClass('ruler')} role="menuitem">Back Home</a>
+            <a href="/" className={getNavLinkClass('primary')} role="menuitem">Back Home</a>
           </div>
 
           {/* Mobile Navigation */}
@@ -75,7 +75,7 @@ const TypographyDemo = () => {
               <a href="#intensity" onClick={closeMenu} className="text-gray-300 hover:text-white transition-colors duration-200 text-xl" role="menuitem">Intensity</a>
               <a href="#responsive" onClick={closeMenu} className="text-gray-300 hover:text-white transition-colors duration-200 text-xl" role="menuitem">Responsive</a>
               <a href="#accessibility" onClick={closeMenu} className="text-gray-300 hover:text-white transition-colors duration-200 text-xl" role="menuitem">Accessibility</a>
-              <a href="/" onClick={closeMenu} className={getNavLinkClass('ruler')} role="menuitem">Back Home</a>
+              <a href="/" onClick={closeMenu} className={getNavLinkClass('primary')} role="menuitem">Back Home</a>
             </div>
           </div>
         </div>

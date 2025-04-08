@@ -1,10 +1,11 @@
 import React from 'react';
 import Typography from '../ui/Typography';
-import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { ThemeColor, getThemeColorClass } from '../../utils/colorUtils';
+import { getOpacityByIntensity } from '../../utils/intensityUtils';
 
 interface ContactFormProps {
-  /** Archetype for button background color */
-  buttonArchetype: Archetype;
+  /** Theme color for button background */
+  buttonThemeColor: ThemeColor;
 }
 
 /**
@@ -13,11 +14,13 @@ interface ContactFormProps {
  * @param {ContactFormProps} props - Component props.
  * @returns {JSX.Element} The ContactForm component.
  */
-const ContactForm: React.FC<ContactFormProps> = ({ buttonArchetype }) => {
+const ContactForm: React.FC<ContactFormProps> = ({ buttonThemeColor }) => {
 
   // Get background color class for button
   const getBgColorClass = (): string => {
-    return `bg-${getArchetypeColor(buttonArchetype)}`;
+    const colorClass = getThemeColorClass(buttonThemeColor);
+    const intensityClass = getOpacityByIntensity(2); // Use intensity level 2 to match the rest of the components
+    return `bg-${colorClass} ${intensityClass}`;
   };
 
   // TODO: Implement form submission logic (e.g., using state, form library, API call)
