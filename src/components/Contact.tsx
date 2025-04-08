@@ -29,7 +29,6 @@ const Contact: React.FC<ContactProps> = ({ data }) => {
             className="mb-6"
             narrativeSignal="technical"
             archetype="default"
-            intensityLevel={3}
           >
             Connect With Me
           </Typography>

@@ -77,7 +77,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             narrativeSignal={titleNarrativeSignal}
             disableNarrativeBorders={true}
             archetype="default"
-            intensityLevel={intensityLevel}
           >
             {title}
           </Typography>

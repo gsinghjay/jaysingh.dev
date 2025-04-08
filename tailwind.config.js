@@ -1,4 +1,3 @@
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -9,8 +8,6 @@ export default {
     'text-metro-blue', 'text-metro-green', 'text-metro-purple', 'text-metro-orange', 'text-metro-teal',
     // Background opacity variants
     'bg-opacity-20', 'bg-opacity-40', 'bg-opacity-80',
-    // Text opacity variants
-    'text-opacity-20', 'text-opacity-40', 'text-opacity-80',
     // Hover variants for links
     'hover:text-metro-blue-300', 'hover:text-metro-green-300', 'hover:text-metro-purple-300', 
     'hover:text-metro-orange-300', 'hover:text-metro-teal-300',

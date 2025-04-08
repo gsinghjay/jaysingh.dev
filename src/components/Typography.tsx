@@ -1,21 +1,19 @@
 import React, { ReactNode } from 'react';
 import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
-import { IntensityLevel, getTextOpacityByIntensity, getOpacityByIntensity } from '../utils/intensityUtils';
+import { getOpacityByIntensity } from '../utils/intensityUtils';
 
 /**
  * Props for the Typography component
  */
 type TypographyProps = {
   /** Typography variant defining the size, line height, and tracking */
-  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body' | 'body-lg' | 'body-sm' | 'caption' | 'label';
+  variant?: 'h1' | 'h2' | 'h3' | 'h5' | 'body' | 'body-lg' | 'body-sm' | 'caption' | 'label';
   /** Brand archetype for text color */
-  archetype?: Archetype | 'default' | 'muted';
-  /** Emotional intensity level affecting text opacity: 1 (10-20%), 2 (30-50%), 3 (70-90%), 4 (100%) */
-  intensityLevel?: IntensityLevel;
+  archetype?: 'default' | 'muted';
   /** Text alignment */
-  align?: 'left' | 'center' | 'right';
+  align?: 'left' | 'center';
   /** Font weight */
-  weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
+  weight?: 'light' | 'normal' | 'medium';
   /** Additional CSS classes */
   className?: string;
   /** Content to be rendered */
@@ -26,8 +24,6 @@ type TypographyProps = {
   narrativeSignal?: 'discovery' | 'achievement' | 'transition' | 'technical' | 'future' | null;
   /** Disable border styling for narrative signals (useful in card layouts) */
   disableNarrativeBorders?: boolean;
-  /** Accessibility label */
-  ariaLabel?: string;
   /** Element ID */
   id?: string;
   /** For label elements */
@@ -47,7 +43,6 @@ type TypographyProps = {
 export const Typography: React.FC<TypographyProps> = ({
   variant = 'body',
   archetype = 'default',
-  intensityLevel = 1, // Default intensity if not provided
   align = 'left',
   weight = 'normal',
   className = '',
@@ -55,7 +50,6 @@ export const Typography: React.FC<TypographyProps> = ({
   component,
   narrativeSignal = null,
   disableNarrativeBorders = false,
-  ariaLabel,
   id,
   htmlFor,
   ...props
@@ -73,12 +67,8 @@ export const Typography: React.FC<TypographyProps> = ({
         return 'text-3xl sm:text-4xl md:text-5xl leading-tight tracking-[-0.03em]';
       case 'h3':
         return 'text-2xl sm:text-3xl md:text-4xl leading-snug tracking-[-0.025em]';
-      case 'h4':
-        return 'text-xl sm:text-2xl md:text-3xl leading-snug tracking-[-0.02em]';
       case 'h5':
         return 'text-lg sm:text-xl md:text-2xl leading-normal tracking-[-0.015em]';
-      case 'h6':
-        return 'text-base sm:text-lg md:text-xl leading-normal tracking-[-0.01em]';
       case 'body-lg':
         return 'text-base sm:text-lg leading-relaxed tracking-[-0.01em]';
       case 'body':
@@ -95,28 +85,13 @@ export const Typography: React.FC<TypographyProps> = ({
   };
 
   /**
-   * Converts archetype to text color classes with appropriate intensity
-   * @returns CSS classes for text color with intensity
+   * Converts archetype to text color classes
+   * @returns CSS classes for text color
    */
   const getColorClass = (): string => {
     if (archetype === 'default') return 'text-white';
     if (archetype === 'muted') return 'text-gray-400';
-    
-    const colorName = getArchetypeColor(archetype as Archetype);
-    return `text-${colorName} ${getTextOpacityByIntensity(intensityLevel)}`;
-  };
-
-  /**
-   * Converts archetype to background color classes with appropriate intensity
-   * (Potentially unused here after refactor, but kept for potential future use)
-   * @returns CSS classes for background color with intensity
-   */
-  const getBgColorClass = (): string => {
-    if (archetype === 'default') return 'bg-transparent';
-    if (archetype === 'muted') return 'bg-gray-700';
-    
-    const colorName = getArchetypeColor(archetype as Archetype);
-    return `bg-${colorName} ${getOpacityByIntensity(intensityLevel)}`;
+    return 'text-white';
   };
 
   /**
@@ -127,8 +102,6 @@ export const Typography: React.FC<TypographyProps> = ({
     switch (align) {
       case 'center':
         return 'text-center';
-      case 'right':
-        return 'text-right';
       case 'left':
       default:
         return 'text-left';
@@ -145,10 +118,6 @@ export const Typography: React.FC<TypographyProps> = ({
         return 'font-light';
       case 'medium':
         return 'font-medium';
-      case 'semibold':
-        return 'font-semibold';
-      case 'bold':
-        return 'font-bold';
       case 'normal':
       default:
         return 'font-normal';
@@ -177,7 +146,6 @@ export const Typography: React.FC<TypographyProps> = ({
         return `italic ${borderClass('border-l-4 pl-4 py-2')}`;
       case 'technical':
         // Technical deepening: mono font, background
-        // Note: Background color applied directly, not using getBgColorClass
         return 'font-mono bg-slate-800 bg-opacity-50 px-2 py-1';
       case 'future':
         // Forward-leaning: optional border/margin
@@ -196,9 +164,7 @@ export const Typography: React.FC<TypographyProps> = ({
       case 'h1': return 'h1';
       case 'h2': return 'h2';
       case 'h3': return 'h3';
-      case 'h4': return 'h4';
       case 'h5': return 'h5';
-      case 'h6': return 'h6';
       case 'body':
       case 'body-lg':
       case 'body-sm': return 'p';
@@ -225,7 +191,6 @@ export const Typography: React.FC<TypographyProps> = ({
   const elementProps: { [key: string]: any } = {
     className: combinedClasses,
     ...(id && { id }),
-    ...(ariaLabel && { 'aria-label': ariaLabel }),
     ...(htmlFor && Element === 'label' && { htmlFor }),
     ...props, // Spread remaining props
   };
@@ -235,4 +200,4 @@ export const Typography: React.FC<TypographyProps> = ({
 
 // Export the component as default or named export as needed
 // export { Typography }; // If using named export
-export default Typography; 
+export default Typography;

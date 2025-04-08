@@ -54,7 +54,6 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
               tags={project.tags || []}
               stats={project.stats}
               archetype={project.archetype}
-              intensityLevel={project.intensityLevel}
               ariaLabelledById={`project-${isCompleted ? 'completed' : 'development'}-${index}`}
               titleNarrativeSignal={getProjectNarrativeSignal(isCompleted)}
             />

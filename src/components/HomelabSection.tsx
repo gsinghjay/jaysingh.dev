@@ -37,7 +37,6 @@ const HomelabSection: React.FC<HomelabSectionProps> = ({ data }) => {
             icon={section.icon}
             tags={section.tags}
             archetype={section.archetype}
-            intensityLevel={section.intensityLevel}
             ariaLabelledById={`homelab-section-${index}`}
             titleNarrativeSignal={getNarrativeSignal(section.archetype)}
           />
