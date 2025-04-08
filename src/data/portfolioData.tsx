@@ -1,5 +1,5 @@
 import React from 'react';
-import { Server, Code2, Cloud, GitBranch, Database, Terminal, Brain, Settings, Book, Linkedin, Github, Mail, Network } from 'lucide-react';
+import { Server, Code2, Cloud, Database, Terminal, Brain, Settings, Book, Linkedin, Github, Network } from 'lucide-react';
 import { Archetype } from '../utils/archetypeUtils';
 import { IntensityLevel } from '../utils/intensityUtils';
 
@@ -220,7 +220,7 @@ export const projectsData: ProjectsData = {
 
 // --- Homelab ---
 
-export interface TechSection extends CardItem {}
+export type TechSection = CardItem;
 
 export interface HomelabData extends ContentSection {
   sections: TechSection[];
@@ -258,10 +258,9 @@ export const homelabData: HomelabData = {
   ]
 };
 
-
 // --- Future ---
 
-export interface FutureGoal extends CardItem {}
+export type FutureGoal = CardItem;
 
 export interface FutureData extends ContentSection {
   goals: FutureGoal[];
