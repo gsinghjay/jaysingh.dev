@@ -3,13 +3,13 @@ import Modal from 'react-modal';
 import { ArrowUp } from 'lucide-react';
 
 // Import refactored components
-import Navigation from './components/Navigation';
-import Hero from './components/Hero';
-import Journey from './components/Journey';
-import Expertise from './components/Expertise';
-import Projects from './components/Projects';
-import HomelabSection from './components/HomelabSection';
-import Contact from './components/Contact';
+import Navigation from './components/layout/Navigation';
+import Hero from './components/sections/Hero';
+import Journey from './components/sections/Journey';
+import Expertise from './components/sections/Expertise';
+import Projects from './components/sections/Projects';
+import HomelabSection from './components/sections/HomelabSection';
+import Contact from './components/sections/Contact';
 
 // Import data (from .tsx file now)
 import {
