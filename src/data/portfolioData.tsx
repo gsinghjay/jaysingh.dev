@@ -1,6 +1,6 @@
 import React from 'react';
 import { Server, Code2, Cloud, Database, Terminal, Brain, Settings, Book, Linkedin, Github, Network } from 'lucide-react';
-import { Archetype } from '../utils/archetypeUtils';
+import { ThemeColor } from '../utils/colorUtils';
 import { IntensityLevel } from '../utils/intensityUtils';
 
 // --- Common Interfaces ---
@@ -16,7 +16,7 @@ interface CardItem {
   description: string;
   icon?: React.ReactNode;
   tags?: string[];
-  archetype: Archetype;
+  themeColor: ThemeColor;
   intensityLevel?: IntensityLevel;
 }
 
@@ -26,7 +26,7 @@ export interface HeroData {
   title: string;
   description: string;
   tags: string[];
-  primaryArchetype: Archetype;
+  primaryThemeColor: ThemeColor;
   intensityLevel?: IntensityLevel;
 }
 
@@ -34,8 +34,8 @@ export const heroData: HeroData = {
   title: 'Building Systems, Driving Innovation',
   description: 'A journey through tech entrepreneurship, system administration, and web development. Currently pursuing Information Technology while building the future with AI.',
   tags: ['Full Stack Developer', 'Systems Engineer', 'Tech Entrepreneur'],
-  primaryArchetype: 'ruler',
-  intensityLevel: 3
+  primaryThemeColor: 'primary',
+  intensityLevel: 2
 };
 
 // --- Journey ---
@@ -59,15 +59,15 @@ export const journeyData: JourneyData = {
     {
       title: 'Early Passion (Age 8-10)',
       description: 'Started with gaming communities, learning web hosting basics through cPanel, MySQL, and phpMyAdmin. Built and managed community forums using vBulletin and XenForo.',
-      archetype: 'ruler',
-      intensityLevel: 3,
+      themeColor: 'primary',
+      intensityLevel: 2,
       year: '2003-2005',
       keySkills: ['Basic Linux', 'cPanel', 'MySQL', 'Community Management', 'Basic Networking']
     },
     {
       title: 'Server Hosting (Age 10-16)',
       description: 'Progressed to VPS management, running game servers (TF2, Counter-Strike) and web services. Mastered Linux (CentOS, Debian), Apache, SSH, and server security.',
-      archetype: 'ruler',
+      themeColor: 'primary',
       intensityLevel: 2,
       year: '2005-2010',
       keySkills: ['Linux Administration', 'Apache/Nginx', 'Network Security', 'Virtualization']
@@ -75,7 +75,7 @@ export const journeyData: JourneyData = {
     {
       title: 'Entrepreneurship (Age 16-20)',
       description: 'Founded Simple Server Hosting, LLC. Built and managed 1U/2U servers in Chicago data centers. Handled everything from hardware procurement to client management.',
-      archetype: 'ruler',
+      themeColor: 'primary',
       intensityLevel: 2,
       year: '2010-2014',
       keySkills: ['Business Operations', 'Hardware Management', 'Client Relations', 'System Architecture']
@@ -83,8 +83,8 @@ export const journeyData: JourneyData = {
     {
       title: 'Professional Growth',
       description: 'Transitioned through retail management to IT support. Currently pursuing Information Technology while developing web applications and automation solutions.',
-      archetype: 'ruler',
-      intensityLevel: 3,
+      themeColor: 'primary',
+      intensityLevel: 2,
       year: '2014-Present',
       keySkills: ['Containerization', 'CI/CD Pipelines', 'Cloud Infrastructure', 'System Design'],
       isCurrent: true
@@ -118,8 +118,8 @@ export const expertiseData: ExpertiseData = {
         'Network Configuration & Security',
         'High-Availability System Design'
       ],
-      archetype: 'ruler',
-      intensityLevel: 3
+      themeColor: 'primary',
+      intensityLevel: 2
     },
     {
       title: 'Development & Integration',
@@ -131,7 +131,7 @@ export const expertiseData: ExpertiseData = {
         'Database Optimization',
         'JAMstack Architecture'
       ],
-      archetype: 'ruler',
+      themeColor: 'primary',
       intensityLevel: 2
     },
     {
@@ -144,8 +144,8 @@ export const expertiseData: ExpertiseData = {
         'Infrastructure as Code',
         'Monitoring & Observability'
       ],
-      archetype: 'ruler',
-      intensityLevel: 3
+      themeColor: 'primary',
+      intensityLevel: 2
     }
   ]
 };
@@ -176,8 +176,8 @@ export const projectsData: ProjectsData = {
       description: 'Built and scaled a successful hosting company from the ground up, managing all technical infrastructure and business operations before successful acquisition.',
       icon: <Server className="w-12 h-12 text-white mb-6" />,
       tags: ['Virtualization', 'Business Development', 'Client Management'],
-      archetype: 'ruler',
-      intensityLevel: 3,
+      themeColor: 'primary',
+      intensityLevel: 2,
       stats: [
         { value: '130+', label: 'Clients' },
         { value: '100+', label: 'Servers' },
@@ -189,7 +189,7 @@ export const projectsData: ProjectsData = {
       description: 'Built and managed multiple gaming communities with custom web interfaces, game servers, and donation systems.',
       icon: <Terminal className="w-12 h-12 text-white mb-6" />,
       tags: ['Community', 'Development', 'Gaming'],
-      archetype: 'ruler',
+      themeColor: 'primary',
       intensityLevel: 2,
       stats: [
         { value: '5', label: 'Locations' },
@@ -204,15 +204,15 @@ export const projectsData: ProjectsData = {
       description: 'Building containerized web applications with Flask and FastAPI, creating modular components that can be deployed and scaled independently while maintaining consistent development environments.',
       icon: <Database className="w-12 h-12 text-white mb-6" />,
       tags: ['Docker', 'Kubernetes', 'Python'],
-      archetype: 'ruler',
-      intensityLevel: 3
+      themeColor: 'primary',
+      intensityLevel: 2
     },
     {
       title: 'QA Automation Framework',
       description: 'Developing comprehensive testing architecture with pytest and playwright, creating automated validation of complex application behavior with detailed reporting and CI/CD integration.',
       icon: <Terminal className="w-12 h-12 text-white mb-6" />,
       tags: ['Python', 'Testing', 'Automation'],
-      archetype: 'ruler',
+      themeColor: 'primary',
       intensityLevel: 2
     }
   ]
@@ -236,15 +236,15 @@ export const homelabData: HomelabData = {
       description: 'Proxmox hypervisor cluster with N+1 redundancy, running both KVM virtual machines and LXC containers with centralized storage backed by ZFS for data integrity.',
       icon: <Server className="w-12 h-12 text-white mb-6" aria-hidden="true" />,
       tags: ['Proxmox', 'ZFS', 'Clustering'],
-      archetype: 'ruler',
-      intensityLevel: 3
+      themeColor: 'primary',
+      intensityLevel: 2
     },
     {
       title: 'Container Orchestration',
       description: 'Lightweight Kubernetes cluster (K3s) with declarative application deployment through GitOps principles, enabling production-like experimentation.',
       icon: <Cloud className="w-12 h-12 text-white mb-6" aria-hidden="true" />,
       tags: ['Kubernetes', 'GitOps', 'ArgoCD'],
-      archetype: 'ruler',
+      themeColor: 'primary',
       intensityLevel: 2
     },
     {
@@ -252,8 +252,8 @@ export const homelabData: HomelabData = {
       description: 'Comprehensive monitoring with Prometheus for metrics, Loki for logs, and Grafana for visualization, implementing SRE best practices.',
       icon: <Network className="w-12 h-12 text-white mb-6" aria-hidden="true" />,
       tags: ['Prometheus', 'Grafana', 'Alerting'],
-      archetype: 'ruler',
-      intensityLevel: 3
+      themeColor: 'primary',
+      intensityLevel: 2
     }
   ]
 };
@@ -275,22 +275,22 @@ export const futureData: FutureData = {
       title: 'AI Engineering',
       description: 'Pursuing expertise in AI product development and integration. Focus on practical applications and business solutions.',
       icon: <Brain className="w-12 h-12 text-white mb-6" aria-hidden="true" />,
-      archetype: 'ruler',
-      intensityLevel: 3
+      themeColor: 'primary',
+      intensityLevel: 2
     },
     {
       title: 'Career Transition',
       description: 'Moving from retail to full-time tech, focusing on DevOps and AI engineering roles while completing my degree.',
       icon: <Settings className="w-12 h-12 text-white mb-6" aria-hidden="true" />,
-      archetype: 'ruler',
+      themeColor: 'primary',
       intensityLevel: 2
     },
     {
       title: 'Education',
       description: 'Completing B.S. in Information Technology at NJIT. Pursuing additional certifications in AI and cloud technologies.',
       icon: <Book className="w-12 h-12 text-white mb-6" aria-hidden="true" />,
-      archetype: 'ruler',
-      intensityLevel: 3
+      themeColor: 'primary',
+      intensityLevel: 2
     }
   ]
 };
@@ -307,7 +307,7 @@ export interface ContactData extends ContentSection {
   connectDescription: string;
   socialLinks: SocialLink[];
   email: string;
-  primaryArchetype: Archetype;
+  primaryThemeColor: ThemeColor;
 }
 
 export const contactData: ContactData = {
@@ -328,7 +328,7 @@ export const contactData: ContactData = {
     }
   ],
   email: 'contact@jaysingh.dev',
-  primaryArchetype: 'ruler'
+  primaryThemeColor: 'primary'
 };
 
 
@@ -339,7 +339,7 @@ export interface NavLink {
   className?: string;
 }
 
-// This needs getArchetypeColor, so might be better defined near Navigation or passed in
+// This needs getThemeColor, so might be better defined near Navigation or passed in
 // For now, define structure here
 export const navLinksData: Omit<NavLink, 'className'>[] = [
   { href: "#journey", label: "Journey" },
