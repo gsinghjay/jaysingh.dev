@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
-import Typography from './Typography';
-import { Archetype } from '../utils/archetypeUtils';
+import Typography from '../ui/Typography';
 
 interface SectionProps {
   /** The ID for the section element, used for navigation */
@@ -10,9 +9,9 @@ interface SectionProps {
   /** The introductory description for the section */
   description: string;
   /** The archetype for the title text color */
-  titleArchetype?: Archetype | 'default' | 'muted';
+  titleArchetype?: 'default' | 'muted';
   /** The archetype for the description text color */
-  descriptionArchetype?: Archetype | 'default' | 'muted';
+  descriptionArchetype?: 'default' | 'muted';
   /** Background color class for the section (e.g., 'bg-slate-900', 'bg-[#0D1117]') */
   bgColorClass?: string;
   /** Additional CSS classes for the section element */

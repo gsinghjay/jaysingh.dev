@@ -1,8 +1,8 @@
 import React from 'react';
-import Typography from './Typography';
-import { HeroData } from '../data/portfolioData';
-import { getArchetypeColor } from '../utils/archetypeUtils';
-import { getOpacityByIntensity } from '../utils/intensityUtils';
+import Typography from '../ui/Typography';
+import { HeroData } from '../../data/portfolioData';
+import { getArchetypeColor } from '../../utils/archetypeUtils';
+import { getOpacityByIntensity } from '../../utils/intensityUtils';
 
 interface HeroProps {
   data: HeroData;

@@ -1,9 +1,8 @@
 import React from 'react';
-import Section from './Section';
-import InfoCard from './InfoCard';
-import { ExpertiseData } from '../data/portfolioData';
-import { Archetype } from '../utils/archetypeUtils'; // Keep for narrative signal logic if needed
-import Typography from './Typography';
+import Section from '../layout/Section';
+import InfoCard from '../ui/InfoCard';
+import { ExpertiseData } from '../../data/portfolioData';
+import { Archetype } from '../../utils/archetypeUtils'; // Keep for narrative signal logic if needed
 
 interface ExpertiseProps {
   data: ExpertiseData;

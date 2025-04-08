@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Section from './Section';
-import ProjectCard from './ProjectCard';
-import { ProjectsData, Project } from '../data/portfolioData';
-import { getArchetypeColor } from '../utils/archetypeUtils'; // Needed for tab styling
+import Section from '../layout/Section';
+import ProjectCard from '../ui/ProjectCard';
+import { ProjectsData, Project } from '../../data/portfolioData';
+import { getArchetypeColor } from '../../utils/archetypeUtils'; // Needed for tab styling
 
 interface ProjectsProps {
   data: ProjectsData;

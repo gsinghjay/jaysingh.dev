@@ -1,9 +1,9 @@
 import React from 'react';
-import Section from './Section';
-import TimelineItem from './TimelineItem';
-import TransitionMarker from './TransitionMarker';
-import { JourneyData } from '../data/portfolioData';
-import { Archetype } from '../utils/archetypeUtils';
+import Section from '../layout/Section';
+import TimelineItem from '../ui/TimelineItem';
+import TransitionMarker from '../layout/TransitionMarker';
+import { JourneyData } from '../../data/portfolioData';
+import { Archetype } from '../../utils/archetypeUtils';
 
 interface JourneyProps {
   data: JourneyData;

@@ -1,8 +1,8 @@
 import React from 'react';
 import Typography from './Typography';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
-import { IntensityLevel, getOpacityByIntensity } from '../utils/intensityUtils';
-import { ProjectStat } from '../data/portfolioData'; // Import ProjectStat type
+import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { IntensityLevel, getOpacityByIntensity } from '../../utils/intensityUtils';
+import { ProjectStat } from '../../data/portfolioData'; // Import ProjectStat type
 
 interface ProjectCardProps {
   /** The main title of the project */

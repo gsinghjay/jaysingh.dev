@@ -1,8 +1,8 @@
 import React from 'react';
-import Section from './Section';
-import InfoCard from './InfoCard';
-import { HomelabData } from '../data/portfolioData';
-import { Archetype } from '../utils/archetypeUtils'; // Keep for narrative signal logic if needed
+import Section from '../layout/Section';
+import InfoCard from '../ui/InfoCard';
+import { HomelabData } from '../../data/portfolioData';
+import { Archetype } from '../../utils/archetypeUtils'; // Keep for narrative signal logic if needed
 
 interface HomelabSectionProps {
   data: HomelabData;

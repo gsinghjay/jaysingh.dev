@@ -1,7 +1,7 @@
 import React from 'react';
 import Typography from './Typography';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
-import { IntensityLevel, getOpacityByIntensity } from '../utils/intensityUtils';
+import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { IntensityLevel, getOpacityByIntensity } from '../../utils/intensityUtils';
 
 interface TimelineItemProps {
   /** The main title of the timeline stage */
@@ -35,7 +35,6 @@ interface TimelineItemProps {
 const TimelineItem: React.FC<TimelineItemProps> = ({
   title,
   description,
-  year,
   keySkills,
   archetype,
   intensityLevel = 3,
@@ -59,8 +58,9 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
     ? title.replace(/\s*\(Age \d+-\d+\)|\s*\(Present\)/, '')
     : title;
   const ageRangeMatch = title.match(/\(Age \d+-\d+\)|\(Present\)/);
-  const ageRangeText = ageRangeMatch ? ageRangeMatch[0].replace(/[\(\)]/g, '') : null;
+  const ageRangeText = ageRangeMatch ? ageRangeMatch[0].replace(/[()]/g, '') : null;
 
+  // Function to handle key skills that may have code tags in them
   return (
     <div
       className={`bg-slate-800 transform hover:translate-y-[-4px] transition-transform relative overflow-hidden shadow-md`}

@@ -1,6 +1,6 @@
 import React from 'react';
-import Typography from './Typography';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
+import Typography from '../ui/Typography';
+import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
 
 interface ContactFormProps {
   /** Archetype for button background color */

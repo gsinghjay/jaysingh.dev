@@ -1,7 +1,7 @@
 import React from 'react';
 import Typography from './Typography';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
-import { IntensityLevel, getOpacityByIntensity } from '../utils/intensityUtils';
+import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { IntensityLevel, getOpacityByIntensity } from '../../utils/intensityUtils';
 
 interface InfoCardProps {
   /** The main title of the card */

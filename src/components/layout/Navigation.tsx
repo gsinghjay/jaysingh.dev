@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-import Typography from './Typography';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
-import { navLinksData, NavLink } from '../data/portfolioData.tsx'; // Import data and type
+import Typography from '../ui/Typography';
+import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { navLinksData, NavLink } from '../../data/portfolioData'; // Import data and type
 
 /**
  * Navigation component that provides responsive navigation with mobile menu toggle functionality

@@ -1,7 +1,6 @@
 import React from 'react';
-import Typography from './Typography';
-import { SocialLink } from '../data/portfolioData';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
+import { SocialLink } from '../../data/portfolioData';
+import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
 import { Mail } from 'lucide-react';
 
 interface SocialLinksProps {

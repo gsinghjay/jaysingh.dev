@@ -1,9 +1,7 @@
 import React, { ReactNode } from 'react';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
-import { getOpacityByIntensity } from '../utils/intensityUtils';
 
 /**
- * Props for the Typography component
+ * Props for Typography component
  */
 type TypographyProps = {
   /** Typography variant defining the size, line height, and tracking */
@@ -188,7 +186,11 @@ export const Typography: React.FC<TypographyProps> = ({
   ].filter(Boolean).join(' ');
 
   // Prepare props for the element
-  const elementProps: { [key: string]: any } = {
+  const elementProps: React.HTMLAttributes<HTMLElement> & {
+    id?: string;
+    htmlFor?: string;
+    className: string;
+  } = {
     className: combinedClasses,
     ...(id && { id }),
     ...(htmlFor && Element === 'label' && { htmlFor }),
@@ -198,6 +200,5 @@ export const Typography: React.FC<TypographyProps> = ({
   return <Element {...elementProps}>{children}</Element>;
 };
 
-// Export the component as default or named export as needed
-// export { Typography }; // If using named export
+// Export the component as default
 export default Typography;

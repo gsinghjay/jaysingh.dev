@@ -1,9 +1,9 @@
 import React from 'react';
-import Section from './Section';
-import Typography from './Typography';
-import SocialLinks from './SocialLinks';
-import ContactForm from './ContactForm';
-import { ContactData } from '../data/portfolioData';
+import Section from '../layout/Section';
+import Typography from '../ui/Typography';
+import SocialLinks from '../ui/SocialLinks';
+import ContactForm from '../forms/ContactForm';
+import { ContactData } from '../../data/portfolioData';
 
 interface ContactProps {
   data: ContactData;

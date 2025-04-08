@@ -1,7 +1,7 @@
 import React from 'react';
-import Section from './Section';
-import InfoCard from './InfoCard';
-import { FutureData } from '../data/portfolioData';
+import Section from '../layout/Section';
+import InfoCard from '../ui/InfoCard';
+import { FutureData } from '../../data/portfolioData';
 
 interface FutureProps {
   data: FutureData;

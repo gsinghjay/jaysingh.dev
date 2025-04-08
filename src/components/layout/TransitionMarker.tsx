@@ -1,6 +1,6 @@
 import React from 'react';
-import { Archetype, getArchetypeColor } from '../utils/archetypeUtils';
-import { IntensityLevel, getOpacityByIntensity } from '../utils/intensityUtils';
+import { Archetype, getArchetypeColor } from '../../utils/archetypeUtils';
+import { IntensityLevel, getOpacityByIntensity } from '../../utils/intensityUtils';
 
 /**
  * Props for the TransitionMarker component
