@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-kerning: normal;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  }
+  
+  body {
+    @apply bg-[#0D1117] text-base text-white font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans tracking-tight font-light;
+  }
+
+  h1 {
+    @apply text-5xl leading-tight md:text-6xl;
+  }
+
+  h2 {
+    @apply text-4xl leading-tight;
+  }
+
+  h3 {
+    @apply text-2xl leading-snug;
+  }
+
+  p {
+    @apply my-4 leading-normal text-gray-100;
+  }
+
+  small {
+    @apply text-sm;
+  }
+
+  /* Improved accessibility for focus states */
+  a:focus, button:focus, input:focus, select:focus, textarea:focus {
+    @apply outline-none ring-2 ring-offset-2 ring-offset-[#0D1117] ring-metro-blue-400;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4;
+  }
+
+  /* Metro-inspired text styles */
+  .metro-heading {
+    @apply font-light tracking-tight;
+  }
+
+  .metro-body {
+    @apply font-normal tracking-tight;
+  }
+}
+
+/* Improved Metro UI elements with better typography */
+button, input, textarea, div {
+  @apply rounded-none;
+}
+
+/* Focus States with improved accessibility */
+button:focus, 
+input:focus, 
+textarea:focus {
+  @apply outline-none ring-2 ring-metro-blue-400;
+}
+
+/* Transitions */
+.transition-transform {
+  transition-duration: 200ms;
+}
+
+/* Mobile Navigation Overlay */
+.mobile-nav-overlay {
+  backdrop-filter: blur(4px);
+}
+
+/* Responsive typography adjustments */
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+/* Improve reading experience with proper line length constraints */
+.readable-content {
+  @apply max-w-prose mx-auto;
+}
+
+/* Print styles for better typographic experience */
+@media print {
+  body {
+    @apply text-black bg-white;
+  }
+  
+  a {
+    @apply font-normal text-black;
+  }
+}

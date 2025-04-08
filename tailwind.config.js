@@ -1,0 +1,146 @@
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  safelist: [
+    // Metro colors with their background classes
+    'bg-metro-blue', 'bg-metro-green', 'bg-metro-purple', 'bg-metro-orange', 'bg-metro-teal',
+    // Text color variants
+    'text-metro-blue', 'text-metro-green', 'text-metro-purple', 'text-metro-orange', 'text-metro-teal',
+    // Background opacity variants
+    'bg-opacity-20', 'bg-opacity-40', 'bg-opacity-80',
+    // Text opacity variants
+    'text-opacity-20', 'text-opacity-40', 'text-opacity-80',
+    // Hover variants for links
+    'hover:text-metro-blue-300', 'hover:text-metro-green-300', 'hover:text-metro-purple-300', 
+    'hover:text-metro-orange-300', 'hover:text-metro-teal-300',
+    // Border colors for narrative signals
+    'border-metro-blue', 'border-metro-green', 'border-metro-purple', 'border-metro-orange', 'border-metro-teal',
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: [
+          'Inter var', 
+          'Inter', 
+          'system-ui', 
+          '-apple-system', 
+          'BlinkMacSystemFont', 
+          'Segoe UI', 
+          'Roboto', 
+          'Helvetica Neue', 
+          'Arial', 
+          'sans-serif'
+        ],
+        mono: [
+          'JetBrains Mono', 
+          'SF Mono', 
+          'Monaco', 
+          'Consolas', 
+          'Liberation Mono', 
+          'Courier New', 
+          'monospace'
+        ],
+      },
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1.125rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem', letterSpacing: '-0.01em' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem', letterSpacing: '-0.01em' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem', letterSpacing: '-0.01em' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.015em' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem', letterSpacing: '-0.02em' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.025em' }],
+        '5xl': ['3rem', { lineHeight: '1.16', letterSpacing: '-0.03em' }],
+        '6xl': ['3.75rem', { lineHeight: '1.1', letterSpacing: '-0.035em' }],
+      },
+      colors: {
+        'metro-blue': {
+          DEFAULT: '#0078D7',
+          50: '#E6F3FF',
+          100: '#BFE0FF',
+          200: '#99CDFF',
+          300: '#66B3FF',
+          400: '#339CFF',
+          500: '#0078D7',
+          600: '#0069BE',
+          700: '#0059A0',
+          800: '#004682',
+          900: '#003764',
+        },
+        'metro-green': {
+          DEFAULT: '#107C10',
+          50: '#E7F5E7',
+          100: '#C5E7C5',
+          200: '#A0D8A0',
+          300: '#7AC87A',
+          400: '#54B754',
+          500: '#107C10',
+          600: '#0E6E0E',
+          700: '#0C600C',
+          800: '#0A520A',
+          900: '#084408',
+        },
+        'metro-purple': {
+          DEFAULT: '#5C2D91',
+          50: '#F0E9F8',
+          100: '#DBC8ED',
+          200: '#C7A6E3',
+          300: '#B383D9',
+          400: '#9F61CE',
+          500: '#5C2D91',
+          600: '#51277F',
+          700: '#46216E',
+          800: '#3B1C5C',
+          900: '#30164A',
+        },
+        'metro-orange': {
+          DEFAULT: '#E51400',
+          50: '#FFE5E5',
+          100: '#FFCCCC', 
+          200: '#FF9999',
+          300: '#FF6666',
+          400: '#FF3333',
+          500: '#E51400',
+          600: '#CC1100',
+          700: '#B30F00',
+          800: '#990D00',
+          900: '#800B00',
+        },
+        'metro-teal': {
+          DEFAULT: '#008575',
+          50: '#E6F7F5',
+          100: '#C0ECE7',
+          200: '#99E1D9',
+          300: '#73D5CB',
+          400: '#4DCABD',
+          500: '#008575',
+          600: '#007668',
+          700: '#00665A',
+          800: '#00574D',
+          900: '#00473F',
+        },
+      },
+      spacing: {
+        '72': '18rem',
+        '84': '21rem',
+        '96': '24rem',
+      },
+      lineHeight: {
+        'tight': '1.15',
+        'snug': '1.25',
+        'normal': '1.5',
+        'relaxed': '1.625',
+        'loose': '2',
+      },
+      letterSpacing: {
+        'tighter': '-0.04em',
+        'tight': '-0.02em',
+        'normal': '0em',
+        'wide': '0.02em',
+        'wider': '0.04em',
+      },
+    },
+  },
+  plugins: [],
+};
