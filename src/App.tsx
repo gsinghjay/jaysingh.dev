@@ -37,32 +37,12 @@ function App() {
         outline: 3px solid #4299e1;
         outline-offset: 2px;
       }
-      
-      .skip-link {
-        position: absolute;
-        top: -40px;
-        left: 0;
-        background: #4299e1;
-        color: white;
-        padding: 8px;
-        z-index: 100;
-        transition: top 0.3s;
-      }
-      
-      .skip-link:focus {
-        top: 0;
-      }
     `;
     document.head.appendChild(style);
   }, []);
 
   return (
     <div>
-      {/* Skip Link for keyboard users */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-      
       {/* Header with Navigation */}
       <header role="banner">
         {/* Navigation doesn't need data prop here unless customizing links */}
