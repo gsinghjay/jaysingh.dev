@@ -1,0 +1,15 @@
+{# Meta tags partial - extracted per Architecture spec #}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="{{ description | default('Jay Singh - Software Engineer') }}">
+<link rel="canonical" href="https://jaysingh.dev{{ page.url }}">
+
+{# Open Graph Tags #}
+<meta property="og:title" content="{{ title | default('Jay Singh') }}">
+<meta property="og:description" content="{{ description | default('Software Engineer') }}">
+<meta property="og:url" content="https://jaysingh.dev{{ page.url }}">
+<meta property="og:type" content="{{ og_type | default('website') }}">
+<meta property="og:image" content="{{ og_image | default('https://jaysingh.dev/images/og-default.png') }}">
+
+{# Theme color for mobile browsers #}
+<meta name="theme-color" content="#FFFBEB">

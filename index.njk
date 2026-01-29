@@ -1,22 +1,58 @@
 ---
 layout: layouts/base.njk
 title: Home
+description: Jay Singh - Software Engineer specializing in web development
 ---
 
-<h1 class="text-4xl font-bold mb-8 border-4 border-black p-4 shadow-brutal bg-white">
+<h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 border-4 border-black p-4 shadow-brutal bg-white">
   Jay Singh
 </h1>
 
-<p class="text-lg mb-4">
-  Welcome to my site. This is the 11ty static site foundation.
+<p class="text-base md:text-lg mb-4">
+  Welcome to my site. This is the 11ty static site foundation with the Neubrutalist design system.
 </p>
 
-<div class="border-4 border-black p-6 shadow-brutal-md bg-white mt-8">
-  <h2 class="text-2xl font-bold mb-4">Neubrutalist Design System</h2>
-  <p>Testing the design tokens:</p>
-  <ul class="list-disc list-inside mt-4 space-y-2">
-    <li>Background: <code class="bg-cream px-2">bg-cream</code></li>
-    <li>Shadow: <code class="shadow-brutal px-2 bg-white">shadow-brutal</code></li>
-    <li>Font: <code class="font-mono">font-mono</code></li>
-  </ul>
+{# Responsive Grid Demo #}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-8">
+
+  {# Card 1: brutal-box utility #}
+  <div class="brutal-box p-4 md:p-6 hover-lift">
+    <h2 class="text-xl md:text-2xl font-bold mb-2">brutal-box</h2>
+    <p class="text-sm md:text-base">Standard card with 4px border and md shadow.</p>
+  </div>
+
+  {# Card 2: brutal-box-sm utility #}
+  <div class="brutal-box-sm p-4 md:p-6 hover-lift">
+    <h2 class="text-xl md:text-2xl font-bold mb-2">brutal-box-sm</h2>
+    <p class="text-sm md:text-base">Smaller variant with 2px border and sm shadow.</p>
+  </div>
+
+  {# Card 3: brutal-box-lg utility #}
+  <div class="brutal-box-lg p-4 md:p-6 hover-lift-lg">
+    <h2 class="text-xl md:text-2xl font-bold mb-2">brutal-box-lg</h2>
+    <p class="text-sm md:text-base">Large variant with 4px border and lg shadow.</p>
+  </div>
+
+</div>
+
+{# Color Palette Demo #}
+<div class="mt-8 brutal-box p-4 md:p-6">
+  <h2 class="text-xl md:text-2xl font-bold mb-4">Color Palette</h2>
+  <div class="flex flex-wrap gap-2 md:gap-4">
+    <span class="bg-lime-400 border-2 border-black px-3 py-1 text-sm md:text-base">lime-400</span>
+    <span class="bg-pink-400 border-2 border-black px-3 py-1 text-sm md:text-base">pink-400</span>
+    <span class="bg-yellow-400 border-2 border-black px-3 py-1 text-sm md:text-base">yellow-400</span>
+    <span class="bg-blue-400 border-2 border-black px-3 py-1 text-sm md:text-base">blue-400</span>
+  </div>
+</div>
+
+{# Interactive Elements Demo #}
+<div class="mt-8 brutal-box p-4 md:p-6">
+  <h2 class="text-xl md:text-2xl font-bold mb-4">Interactive Elements</h2>
+  <p class="mb-4 text-sm md:text-base">Tab through these to test focus states (4px black outline):</p>
+  <div class="flex flex-wrap gap-2 md:gap-4">
+    <button class="bg-lime-400 border-4 border-black px-4 py-2 font-bold hover-lift">Button 1</button>
+    <button class="bg-pink-400 border-4 border-black px-4 py-2 font-bold hover-lift">Button 2</button>
+    <a href="#" class="bg-yellow-400 border-4 border-black px-4 py-2 font-bold hover-lift inline-block">Link</a>
+  </div>
 </div>
