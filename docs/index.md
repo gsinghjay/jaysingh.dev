@@ -1,0 +1,188 @@
+# jaysingh.dev - Project Documentation Index
+
+**Generated:** 2026-01-29
+**Scan Level:** Exhaustive
+
+---
+
+## Project Overview
+
+| Attribute | Value |
+|-----------|-------|
+| **Type** | Web Application (Static Site) |
+| **Repository** | Monolith |
+| **Framework** | React 18.3.1 → 11ty + Nunjucks (planned) |
+| **Language** | TypeScript → JavaScript |
+| **Build Tool** | Vite → 11ty |
+| **Styling** | TailwindCSS 3.4.1 |
+| **Node.js** | 18+ → 24 LTS (target) |
+
+---
+
+## Quick Reference
+
+### Tech Stack
+- **Frontend:** React, TypeScript, TailwindCSS
+- **Build:** Vite, PostCSS
+- **Content:** Markdown, YAML, gray-matter
+- **Diagrams:** Mermaid
+- **Icons:** Lucide React
+
+### Architecture
+- Component-based SPA
+- Hash-based routing
+- Build-time content processing
+- Neubrutalist design system
+
+### Entry Points
+- **App:** `src/main.tsx`
+- **Content Build:** `scripts/build-content.js`
+- **HTML:** `index.html`
+
+---
+
+## Generated Documentation
+
+### Core Documents
+
+| Document | Description |
+|----------|-------------|
+| [Architecture](./architecture.md) | System architecture, data flow, component hierarchy |
+| [Technology Stack](./technology-stack.md) | Dependencies, versions, migration mapping |
+| [Architecture Patterns](./architecture-patterns.md) | Current vs target architecture diagrams |
+
+### Source Analysis
+
+| Document | Description |
+|----------|-------------|
+| [Source Tree Analysis](./source-tree-analysis.md) | Annotated directory structure |
+| [Project Structure](./project-structure.md) | High-level project overview |
+
+### Component Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Component Inventory](./component-inventory.md) | All 22 React components with props and patterns |
+| [State Management](./state-management.md) | React hooks, data loading, URL sync |
+
+### Content & Schema
+
+| Document | Description |
+|----------|-------------|
+| [Content Schema](./content-schema.md) | Frontmatter schemas for blog, projects, config |
+
+### Development
+
+| Document | Description |
+|----------|-------------|
+| [Development Guide](./development-guide.md) | Setup, scripts, workflow, troubleshooting |
+
+### Metadata
+
+| Document | Description |
+|----------|-------------|
+| [Existing Documentation](./existing-documentation.md) | Inventory of pre-existing docs |
+| [project-parts.json](./project-parts.json) | Machine-readable project metadata |
+| [project-scan-report.json](./project-scan-report.json) | Scan workflow state |
+
+---
+
+## Content Inventory
+
+### Blog Posts (5)
+- `content/blog/building-fastapi-microservices.md`
+- `content/blog/ci-cd-best-practices.md`
+- `content/blog/docker-observability.md`
+- `content/blog/oauth2-authentication-gateway.md`
+- `content/blog/postgresql-performance.md`
+
+### Projects (9)
+- `content/projects/authentication-gateway.md`
+- `content/projects/automation-scripts.md`
+- `content/projects/cicd-pipeline.md`
+- `content/projects/covid-dashboard.md`
+- `content/projects/event-driven-microservices.md`
+- `content/projects/jamf-pro-deployment.md`
+- `content/projects/observability-infrastructure.md`
+- `content/projects/qr-code-platform.md`
+
+### Configuration
+- `content/config/profile.yaml`
+- `content/config/resume.yaml`
+- `content/config/skills.yaml`
+
+---
+
+## Migration Context
+
+### Planned Changes
+- **Framework:** React → 11ty (Eleventy)
+- **Templating:** JSX → Nunjucks
+- **Routing:** Hash-based SPA → File-based static
+- **Node.js:** 18+ → 24 LTS
+- **Rendering:** Client-side → Pre-rendered
+
+### Deprecated (Ignore)
+- `@supabase/supabase-js` - Not used, will be removed
+
+### Preserved
+- TailwindCSS styling
+- Neubrutalist design system
+- Content structure (frontmatter schemas)
+- Mermaid diagrams
+- Icon library (static SVGs)
+
+---
+
+## Getting Started
+
+### Development
+```bash
+git clone https://github.com/gsinghjay/jaysingh.dev.git
+cd jaysingh.dev
+npm install
+npm run dev
+```
+
+### Content Changes
+```bash
+# Edit content
+vim content/blog/my-post.md
+
+# Rebuild
+npm run build:content
+```
+
+### Production Build
+```bash
+npm run build
+# Output: dist/
+```
+
+---
+
+## Key Files Reference
+
+| File | Purpose |
+|------|---------|
+| `src/main.tsx` | App entry point |
+| `src/App.tsx` | Root component, routing |
+| `src/types/index.ts` | TypeScript interfaces |
+| `scripts/build-content.js` | Content processor |
+| `tailwind.config.js` | Design system tokens |
+| `vite.config.ts` | Build configuration |
+
+---
+
+## Next Steps
+
+When creating features or modifications:
+
+1. **UI Changes:** Reference [Component Inventory](./component-inventory.md) for existing patterns
+2. **Content Changes:** Follow schemas in [Content Schema](./content-schema.md)
+3. **Architecture Changes:** Review [Architecture](./architecture.md) for system understanding
+4. **Migration Work:** Use [Technology Stack](./technology-stack.md) for dependency mapping
+
+---
+
+*This documentation was generated by the BMAD document-project workflow.*

@@ -1,0 +1,221 @@
+[
+  {
+    "id": "authentication-gateway",
+    "title": "ZERO-TRUST AUTHENTICATION GATEWAY",
+    "description": "Distributed authentication and authorization gateway serving 5,181+ active user accounts protecting sensitive faculty and student data. Leverages Traefik middleware and OAuth2-Proxy to enforce granular Role-Based Access Control (RBAC). Integrates with Keycloak SSO for unified identity management across university CMS. Implements comprehensive security with CSRF protection, input sanitization, and container security best practices.",
+    "technologies": [
+      "OAuth2-Proxy",
+      "Traefik",
+      "Keycloak",
+      "Docker",
+      "RBAC"
+    ],
+    "liveUrl": null,
+    "githubUrl": "https://github.com/gsinghjay/auth-gateway",
+    "imageAlt": "Authentication gateway architecture diagram",
+    "featured": true,
+    "projectType": "work",
+    "diagramType": "mermaid",
+    "diagramContent": "sequenceDiagram\n    participant User\n    participant Traefik\n    participant OAuth2Proxy\n    participant Keycloak\n    participant Backend\n    User->>Traefik: Request Resource\n    Traefik->>OAuth2Proxy: Forward Request\n    OAuth2Proxy->>OAuth2Proxy: Check Session\n    alt No Valid Session\n        OAuth2Proxy->>Keycloak: Redirect to Login\n        Keycloak->>User: Login Page\n        User->>Keycloak: Credentials\n        Keycloak->>OAuth2Proxy: Auth Token\n    end\n    OAuth2Proxy->>OAuth2Proxy: Validate RBAC\n    OAuth2Proxy->>Backend: Forward with Headers\n    Backend->>User: Protected Resource\n",
+    "diagramLabel": "Authentication Flow",
+    "longDescription": "An enterprise-grade authentication and authorization gateway implementing zero-trust security principles for a university content management system. The platform serves as a critical security layer protecting sensitive faculty and student information across multiple services. By leveraging modern authentication protocols and middleware architecture, the system provides seamless single sign-on experiences while maintaining strict access controls. The gateway integrates deeply with existing identity providers and implements defense-in-depth security strategies to protect against common web vulnerabilities.",
+    "challenge": "The university's legacy authentication system was fragmented across multiple applications, creating security gaps and poor user experience. Each service maintained its own authentication logic, leading to inconsistent security policies and increased attack surface. With 5,000+ active users including faculty, staff, and students accessing sensitive data, there was an urgent need for a centralized authentication solution that could enforce consistent security policies, provide audit trails, and integrate with existing Keycloak SSO infrastructure without disrupting ongoing operations.",
+    "solution": "Designed a distributed gateway architecture using Traefik as the reverse proxy with OAuth2-Proxy middleware for authentication enforcement. Implemented granular Role-Based Access Control (RBAC) policies that evaluate user permissions at the gateway level before routing requests to backend services. Integrated seamlessly with Keycloak for unified identity management, enabling single sign-on across all university services. Deployed security hardening measures including CSRF protection, input sanitization, secure session management, and container security best practices. Utilized Docker for consistent deployment across environments and simplified maintenance.",
+    "impact": "Successfully secured 5,181+ active user accounts with zero security incidents since deployment. Eliminated authentication inconsistencies across 11 backend services by centralizing access control. Reduced authentication-related support tickets by 60% through improved UX with seamless SSO. Improved security posture with comprehensive audit logging of all authentication attempts and access patterns. Enabled rapid deployment of new services with consistent security policies enforced at the gateway level. Maintained 99.99% uptime for critical authentication services.",
+    "keyFeatures": [
+      "Zero-trust security model with authentication required for all requests",
+      "Granular Role-Based Access Control (RBAC) with group-based permissions",
+      "Seamless Keycloak SSO integration for unified identity management",
+      "Comprehensive security hardening with CSRF and XSS protection",
+      "Complete audit trail of authentication attempts and access patterns",
+      "Container-based deployment for consistency and scalability"
+    ]
+  },
+  {
+    "id": "automation-scripts",
+    "title": "IT AUTOMATION SCRIPTS",
+    "description": "Developed comprehensive automation scripts using Python, Bash, PowerShell, and Ansible to automate routine sysadmin tasks and streamline infrastructure changes. Created password reset automation, user provisioning workflows, system health checks, and deployment scripts. Increased efficiency by 40% and reduced manual workload across IT operations. Scripts follow best practices with error handling, logging, and idempotency.",
+    "technologies": [
+      "Python",
+      "Bash",
+      "PowerShell",
+      "Ansible",
+      "Active Directory"
+    ],
+    "liveUrl": null,
+    "githubUrl": "https://github.com/gsinghjay/automation-scripts",
+    "imageAlt": "Terminal showing automation scripts",
+    "featured": false,
+    "projectType": "work",
+    "longDescription": "Developed comprehensive automation scripts using Python, Bash, PowerShell, and Ansible to automate routine sysadmin tasks and streamline infrastructure changes. Created password reset automation, user provisioning workflows, system health checks, and deployment scripts. Increased efficiency by 40% and reduced manual workload across IT operations. Scripts follow best practices with error handling, logging, and idempotency.",
+    "challenge": "",
+    "solution": "",
+    "impact": "",
+    "keyFeatures": []
+  },
+  {
+    "id": "cicd-pipeline",
+    "title": "CI/CD PIPELINE WITH GITHUB ACTIONS",
+    "description": "Designed and maintained comprehensive CI/CD pipelines using GitHub Actions with automated testing, container deployment, and zero-downtime deployments across dev/staging/production environments. Integrated pytest, MyPy, Black, and Ruff for code quality checks. Implemented semantic versioning, health checks, and automated rollback capabilities. Reduced deployment time from hours to minutes while maintaining high reliability.",
+    "technologies": [
+      "GitHub Actions",
+      "Docker",
+      "pytest",
+      "Bash",
+      "Semantic Versioning"
+    ],
+    "liveUrl": null,
+    "githubUrl": "https://github.com/gsinghjay/cicd-workflows",
+    "imageAlt": "CI/CD pipeline workflow",
+    "featured": false,
+    "projectType": "work",
+    "longDescription": "Designed and maintained comprehensive CI/CD pipelines using GitHub Actions with automated testing, container deployment, and zero-downtime deployments across dev/staging/production environments. Integrated pytest, MyPy, Black, and Ruff for code quality checks. Implemented semantic versioning, health checks, and automated rollback capabilities. Reduced deployment time from hours to minutes while maintaining high reliability.",
+    "challenge": "",
+    "solution": "",
+    "impact": "",
+    "keyFeatures": []
+  },
+  {
+    "id": "covid-dashboard",
+    "title": "COVID-19 COMMUNITY DASHBOARD",
+    "description": "Personalized COVID-19 community web dashboard built using Microsoft's Power Platform under Professor Mohammed Imam. Converted Excel/CSV/PDF files into maintainable and usable data for relational database. Employed HTML, CSS, JavaScript, and MySQL to create interactive dashboard enhancing data accessibility and visualization for community health monitoring.",
+    "technologies": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "MySQL",
+      "Microsoft Power Platform"
+    ],
+    "liveUrl": null,
+    "githubUrl": "https://github.com/gsinghjay/covid-dashboard",
+    "imageAlt": "COVID-19 dashboard interface",
+    "featured": false,
+    "projectType": "personal",
+    "longDescription": "Personalized COVID-19 community web dashboard built using Microsoft's Power Platform under Professor Mohammed Imam. Converted Excel/CSV/PDF files into maintainable and usable data for relational database. Employed HTML, CSS, JavaScript, and MySQL to create interactive dashboard enhancing data accessibility and visualization for community health monitoring.",
+    "challenge": "",
+    "solution": "",
+    "impact": "",
+    "keyFeatures": []
+  },
+  {
+    "id": "event-driven-microservices",
+    "title": "EVENT-DRIVEN MICROSERVICES ARCHITECTURE",
+    "description": "Architected event-driven microservices platform using Domain-Driven Design principles, FastAPI async framework, SQLAlchemy 2.0 ORM, and clean architecture patterns with bounded context isolation. Features real-time event sourcing, domain event processing, scan analytics, and student data integration workflows. Maintains 99.9% uptime supporting academic operations with fault-tolerant circuit breaker patterns and async/await architecture supporting 500+ concurrent users.",
+    "technologies": [
+      "FastAPI",
+      "SQLAlchemy",
+      "PostgreSQL",
+      "Docker",
+      "DDD",
+      "Clean Architecture"
+    ],
+    "liveUrl": null,
+    "githubUrl": "https://github.com/gsinghjay/microservices-platform",
+    "imageAlt": "Microservices architecture diagram",
+    "featured": true,
+    "projectType": "work",
+    "diagramType": "mermaid",
+    "diagramContent": "graph TB\n    subgraph Scan Context\n        A[Scan Service]\n        B[Analytics Engine]\n    end\n    subgraph Student Context\n        C[Student Service]\n        D[Data Integration]\n    end\n    subgraph Shared\n        E[Event Bus]\n        F[PostgreSQL]\n    end\n    A --> E\n    C --> E\n    E --> B\n    E --> D\n    A --> F\n    C --> F\n    B --> F\n    D --> F\n",
+    "diagramLabel": "Domain-Driven Design Architecture",
+    "longDescription": "An enterprise-scale event-driven microservices platform built using Domain-Driven Design principles to support critical university operations. The architecture leverages bounded contexts to isolate business domains, enabling independent development and deployment of services. Built with FastAPI for high-performance async processing and SQLAlchemy 2.0 for robust data management, the system handles complex workflows including scan analytics, student data integration, and real-time event processing. The platform implements clean architecture patterns ensuring testability, maintainability, and clear separation of concerns across all services.",
+    "challenge": "The existing monolithic system created tight coupling between business domains, making changes risky and deployments disruptive. As the university's digital operations grew, the monolith became a bottleneck for development velocity and system reliability. Different teams working on unrelated features would block each other during deployments. The system struggled to handle peak loads during registration periods and campus events. There was a critical need to modernize the architecture to support 500+ concurrent users while enabling independent team velocity and maintaining the 99.9% uptime required for academic operations.",
+    "solution": "Redesigned the system using event-driven microservices architecture with clear bounded contexts aligned to business domains. Implemented FastAPI for high-performance async request handling and SQLAlchemy 2.0 for database operations with async support. Applied Domain-Driven Design principles to identify aggregates, entities, and value objects within each bounded context. Built event sourcing infrastructure for audit trails and temporal queries. Implemented circuit breaker patterns for fault tolerance and graceful degradation. Created domain event processing pipelines enabling loose coupling between services. Deployed on Docker with container orchestration for easy scaling and management.",
+    "impact": "Achieved 99.9% uptime supporting critical academic operations with zero downtime deployments. Successfully handled 500+ concurrent users during peak registration periods with sub-second response times. Reduced deployment risk by enabling independent service releases without system-wide downtime. Improved development velocity by 40% through clear bounded contexts enabling parallel team work. Enhanced data integrity through event sourcing providing complete audit trails. Enabled rapid feature development with clean architecture facilitating testing and modifications. Maintained consistent performance under load through async processing and connection pooling.",
+    "keyFeatures": [
+      "Event-driven architecture with domain event processing",
+      "Bounded contexts with clear separation of business domains",
+      "FastAPI async framework for high-performance concurrent processing",
+      "SQLAlchemy 2.0 ORM with async support and connection pooling",
+      "Event sourcing for complete audit trails and temporal queries",
+      "Circuit breaker patterns for fault tolerance and graceful degradation"
+    ]
+  },
+  {
+    "id": "jamf-pro-deployment",
+    "title": "JAMF PRO DEVICE MANAGEMENT",
+    "description": "Configured and managed enterprise macOS device management infrastructure for 200+ devices using Jamf Pro. Successfully migrated 150+ macOS devices with zero downtime. Set up Apple DEP and VPP for automated device enrollment and app distribution. Created custom policies, profiles, and packages for streamlined deployment workflows. Reduced IT workload through automation and self-service capabilities.",
+    "technologies": [
+      "Jamf Pro",
+      "Apple DEP",
+      "Apple VPP",
+      "macOS",
+      "Mobile Device Management"
+    ],
+    "liveUrl": null,
+    "githubUrl": null,
+    "imageAlt": "Jamf Pro device management console",
+    "featured": false,
+    "projectType": "work",
+    "longDescription": "Configured and managed enterprise macOS device management infrastructure for 200+ devices using Jamf Pro. Successfully migrated 150+ macOS devices with zero downtime. Set up Apple DEP and VPP for automated device enrollment and app distribution. Created custom policies, profiles, and packages for streamlined deployment workflows. Reduced IT workload through automation and self-service capabilities.",
+    "challenge": "",
+    "solution": "",
+    "impact": "",
+    "keyFeatures": []
+  },
+  {
+    "id": "observability-infrastructure",
+    "title": "OBSERVABILITY INFRASTRUCTURE",
+    "description": "Comprehensive monitoring and observability platform with Prometheus/Grafana tracking application performance across PostgreSQL databases and 11-service Docker Compose architecture. Implemented structured logging with Grafana Loki and Promtail, custom dashboards for real-time metrics, distributed tracing with OpenTelemetry, and automated alerting for system health. Processes 500+ daily interactions with sub-second response times.",
+    "technologies": [
+      "Prometheus",
+      "Grafana",
+      "OpenTelemetry",
+      "Loki",
+      "Docker",
+      "Structlog"
+    ],
+    "liveUrl": null,
+    "githubUrl": "https://github.com/gsinghjay/observability-stack",
+    "imageAlt": "Grafana dashboard showing system metrics",
+    "featured": true,
+    "projectType": "work",
+    "diagramType": "mermaid",
+    "diagramContent": "graph LR\n    A[Services] --> B[Prometheus]\n    A --> C[Loki]\n    A --> D[OpenTelemetry]\n    B --> E[Grafana]\n    C --> E\n    D --> E\n    E --> F[Alertmanager]\n    F --> G[Notifications]\n    H[PostgreSQL] --> B\n    I[Promtail] --> C\n",
+    "diagramLabel": "Observability Stack",
+    "longDescription": "A production-grade observability stack providing comprehensive monitoring, logging, and tracing capabilities for a complex microservices architecture. The platform aggregates metrics from 11 containerized services, providing real-time insights into application performance, database operations, and system health. Built with industry-standard tools like Prometheus for metrics collection, Grafana for visualization, Loki for log aggregation, and OpenTelemetry for distributed tracing, the system enables rapid troubleshooting and proactive issue detection. Custom dashboards provide at-a-glance views of critical metrics while automated alerting ensures immediate notification of anomalies.",
+    "challenge": "Operating an 11-service microservices architecture without centralized observability created blind spots that made troubleshooting time-consuming and reactive. Logs were scattered across containers, metrics existed in isolated silos, and there was no way to trace requests across service boundaries. When issues occurred, the team spent hours correlating logs from different sources, often missing critical context. The lack of proactive monitoring meant problems were discovered by users rather than operations. The infrastructure needed a unified observability solution that could scale with the system while maintaining minimal performance overhead.",
+    "solution": "Architected a comprehensive observability stack using Prometheus for metrics collection from all services and PostgreSQL databases. Deployed Grafana with custom dashboards visualizing key performance indicators, request rates, error rates, and database query performance. Implemented structured logging across all Python services using Structlog, centralized with Grafana Loki and collected via Promtail agents. Integrated OpenTelemetry for distributed tracing, enabling request flow visualization across service boundaries. Created automated alerting rules for critical thresholds including CPU usage, memory consumption, error rates, and database connection pools. Deployed the entire stack using Docker Compose for consistent configuration and easy updates.",
+    "impact": "Reduced mean time to resolution (MTTR) for incidents by 75% through centralized logging and tracing. Achieved sub-second dashboard query times even with 6 months of historical data. Detected and resolved 12 potential outages proactively through automated alerting before users were impacted. Improved application performance by identifying and optimizing slow database queries revealed by metrics analysis. Enabled data-driven capacity planning by tracking resource utilization trends over time. Maintained 99.9% monitoring uptime while processing 500+ daily interactions across all services.",
+    "keyFeatures": [
+      "Real-time metrics collection from 11 services and PostgreSQL databases",
+      "Custom Grafana dashboards with application and infrastructure metrics",
+      "Centralized structured logging with Loki and Promtail",
+      "Distributed tracing with OpenTelemetry for request flow visibility",
+      "Automated alerting for critical thresholds and anomalies",
+      "Historical data retention enabling trend analysis and capacity planning"
+    ]
+  },
+  {
+    "id": "qr-code-platform",
+    "title": "QR CODE GENERATION PLATFORM",
+    "description": "High-performance QR code generation and analytics platform processing 92+ unique campaigns with 2,837 total scans across 6 months. Achieved 85% genuine engagement rate serving 1,736+ unique visitors with real-time analytics tracking. Built with FastAPI, PostgreSQL, and comprehensive monitoring infrastructure. Features mobile-optimized interface supporting 84% mobile/tablet user base with device fingerprinting and bot detection.",
+    "technologies": [
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "Docker",
+      "Prometheus",
+      "Grafana"
+    ],
+    "liveUrl": null,
+    "githubUrl": "https://github.com/gsinghjay/qr-platform",
+    "imageAlt": "QR code analytics dashboard showing campaign performance",
+    "featured": true,
+    "projectType": "work",
+    "diagramType": "mermaid",
+    "diagramContent": "graph TB\n    A[User Browser] -->|HTTPS| B[Traefik Reverse Proxy]\n    B --> C[FastAPI Application]\n    C --> D[PostgreSQL Database]\n    C --> E[Redis Cache]\n    C --> F[Prometheus Metrics]\n    F --> G[Grafana Dashboard]\n    C --> H[QR Code Generator]\n    I[Admin Panel] --> B\n    J[Analytics Service] --> D\n    J --> F\n",
+    "diagramLabel": "System Architecture",
+    "longDescription": "A production-grade QR code generation and analytics platform built to serve a university community. The system handles dynamic QR code generation for various campaigns while providing real-time analytics and engagement tracking. The platform processes thousands of scans monthly, providing detailed insights into user behavior, device types, and engagement patterns. Built with a modern microservices architecture, the system features comprehensive monitoring, bot detection, and mobile-first design to ensure optimal user experience across all devices.",
+    "challenge": "The university needed a robust solution to manage multiple QR code campaigns across campus events, facilities, and services. The existing third-party solutions were expensive, lacked customization options, and didn't provide detailed analytics. Additionally, there was a critical need to distinguish genuine user engagement from bot traffic and ensure the platform could scale to handle peak usage during major campus events while maintaining sub-second response times.",
+    "solution": "Architected a custom platform using FastAPI for high-performance async processing and PostgreSQL for reliable data persistence. Implemented device fingerprinting and behavioral analysis to achieve 85% accuracy in bot detection. Built a comprehensive analytics engine that tracks scan patterns, user demographics, and campaign performance in real-time. Deployed on containerized infrastructure with Docker, enabling easy scaling and maintenance. Integrated Prometheus and Grafana for observability, providing instant insights into system health and performance metrics.",
+    "impact": "Processed 2,837 total scans across 92 unique campaigns serving 1,736+ unique visitors over 6 months. Achieved 85% genuine engagement rate through advanced bot detection, ensuring data accuracy for decision-making. Successfully supported 84% mobile and tablet users with optimized responsive design. Reduced QR code management costs by eliminating third-party services while providing superior analytics capabilities. Platform maintained 99.9% uptime during peak usage periods, handling 500+ concurrent users during major campus events.",
+    "keyFeatures": [
+      "Real-time analytics dashboard with campaign performance metrics",
+      "Advanced bot detection using device fingerprinting and behavioral analysis",
+      "Mobile-optimized interface supporting 84% mobile/tablet user base",
+      "Comprehensive monitoring with Prometheus and Grafana",
+      "RESTful API with FastAPI for high-performance request processing",
+      "PostgreSQL database with optimized queries for analytics workloads"
+    ]
+  }
+]

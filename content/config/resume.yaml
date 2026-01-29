@@ -1,0 +1,122 @@
+experience:
+  - id: exp-1
+    company: HUDSON COUNTY COMMUNITY COLLEGE
+    position: WEB DEVELOPER
+    location: JERSEY CITY, NJ
+    startDate: 2023-07
+    endDate: null
+    current: true
+    responsibilities:
+      - Engineered distributed zero-trust authentication gateway serving 5,181+ active users with OAuth2-Proxy and Traefik middleware for granular RBAC
+      - Built high-performance QR code platform processing 92+ campaigns with 2,837 scans achieving 85% genuine engagement rate
+      - Implemented comprehensive observability infrastructure with Prometheus/Grafana monitoring across 11-service Docker architecture
+      - Developed mobile-optimized web applications supporting 84% mobile/tablet user base with responsive design patterns
+      - Architected event-driven microservices using Domain-Driven Design, FastAPI async framework, and SQLAlchemy 2.0 ORM
+      - Maintained production database systems managing 11+ table schemas with real-time scan logging and domain event processing
+      - Designed CI/CD pipelines using GitHub Actions with automated testing and zero-downtime deployments
+      - Built customized reusable CMS components using JavaScript, PHP, and XSLT supporting 5,181+ registered users
+
+  - id: exp-2
+    company: HUDSON COUNTY COMMUNITY COLLEGE
+    position: IT SUPPORT ANALYST - LEVEL 2
+    location: JERSEY CITY, NJ
+    startDate: 2022-02
+    endDate: 2023-07
+    current: false
+    responsibilities:
+      - Configured and managed 200+ macOS devices using Jamf Pro for deployments, policies, and remote management
+      - Successfully migrated 150+ macOS devices to Jamf Pro ensuring seamless integration and minimal downtime
+      - Managed Apple DEP and VPP for streamlined deployment and app distribution
+      - Provided cross-platform support for VPN, VDI, Microsoft Authenticator, Office 365, and Cisco Webex
+      - Managed Active Directory accounts, workstations, organizational units, and distribution groups
+      - Handled hybrid events and C-suite presentations with 100+ attendees
+      - Migrated workstations to Windows 10 and deployed 500+ VDI thin clients across 10 campus locations
+      - Developed Python, Bash, and PowerShell scripts to automate password resets and IT processes
+
+  - id: exp-3
+    company: HUDSON COUNTY COMMUNITY COLLEGE
+    position: PEER LEADER
+    location: JERSEY CITY, NJ
+    startDate: 2021-06
+    endDate: 2022-03
+    current: false
+    responsibilities:
+      - Supported faculty and non-traditional students with portal navigation, registration, and appointment scheduling
+      - Developed Java program to analyze ESL and College Placement Data, significantly reducing screening time
+      - Analyzed data from SurveyMonkey, Microsoft Forms, Go2Orientation, and Calendly to enhance customer service
+      - Migrated advising department website from Google Sites to Microsoft SharePoint
+
+  - id: exp-4
+    company: HUDSON COUNTY COMMUNITY COLLEGE
+    position: DATA SCIENCE RESEARCH ASSISTANT
+    location: JERSEY CITY, NJ
+    startDate: 2021-06
+    endDate: 2022-03
+    current: false
+    responsibilities:
+      - Developed personalized COVID-19 community web dashboard using Microsoft's Power Platform
+      - Converted Excel/CSV/PDF files into maintainable data for relational database
+      - Employed HTML, CSS, JavaScript, and MySQL to create web-based dashboard
+
+  - id: exp-5
+    company: TOP TECH HVAC-R, LLC
+    position: WEB DEVELOPER (CONTRACT)
+    location: HACKENSACK, NJ
+    startDate: 2019-02
+    endDate: 2019-11
+    current: false
+    responsibilities:
+      - Deployed WordPress installation on AWS EC2 instance leveraging Amazon SES for email services
+      - Integrated Google Analytics and Google Tag Manager to gather insights on user behavior
+      - Conducted keyword research and on-page optimization for SEO improving organic search performance
+      - Implemented security best practices including SSL certificates and secure login features
+      - Configured and set up mail server enabling efficient email communication
+
+  - id: exp-6
+    company: CVS/PHARMACY
+    position: OPERATIONS SUPERVISOR
+    location: CLOSTER, NJ
+    startDate: 2015-01
+    endDate: 2022-02
+    current: false
+    responsibilities:
+      - Advised store manager in total leadership and strategic operation of CVS/Pharmacy store
+      - Migrated inventory scan management from Telxon guns to mobile app solution
+      - Upgraded kiosks, photo machines, and POS equipment speeding up upgrade process
+      - Leveraged Medallia ticketing system to analyze customer feedback increasing satisfaction
+      - Utilized Salesforce data to determine inaccurate inventory counts, passing 100% of audits for 4 consecutive years
+
+  - id: exp-7
+    company: SIMPLE DEDICATED SERVERS
+    position: SYSTEM ADMINISTRATOR/FOUNDER
+    location: CHICAGO, IL
+    startDate: 2011-01
+    endDate: 2014-03
+    current: false
+    responsibilities:
+      - Founded and operated hosting company providing dedicated servers to 130+ subscribers
+      - Built and shipped servers to collocated data centers, maintained 200+ SRC dedicated servers serving 2,000+ concurrent players
+      - Managed server configuration, network optimization, security, and monitoring
+      - Implemented backup and disaster recovery strategies to safeguard critical data
+      - Led company through successful acquisition creating value for stakeholders
+
+education:
+  - id: edu-1
+    institution: NEW JERSEY INSTITUTE OF TECHNOLOGY
+    degree: BS IN INFORMATION TECHNOLOGY
+    location: NEWARK, NJ
+    startDate: 2022-09
+    endDate: 2026-05
+    gpa: 3.63
+    details: Expected graduation May 2026. Focus on enterprise web development and system architecture.
+
+  - id: edu-2
+    institution: HUDSON COUNTY COMMUNITY COLLEGE
+    degree: AS IN COMPUTER SCIENCE
+    location: JERSEY CITY, NJ
+    startDate: 2019-09
+    endDate: 2022-05
+    gpa: 3.84
+    details: Graduated with high honors. Foundation in computer science fundamentals and web technologies.
+
+certifications: []

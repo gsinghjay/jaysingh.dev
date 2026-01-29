@@ -1,0 +1,94 @@
+languages:
+  - Python 3.12
+  - JavaScript
+  - TypeScript
+  - SQL
+  - Bash
+  - PowerShell
+  - PHP
+
+backend:
+  - FastAPI
+  - SQLAlchemy 2.0
+  - Pydantic
+  - AsyncPG
+  - Node.js
+  - RESTful APIs
+  - OpenAPI/Swagger
+  - Event-Driven Architecture
+
+frontend:
+  - React
+  - Jinja2
+  - HTML/CSS
+  - Tailwind CSS
+  - Vanilla JavaScript
+  - XSLT
+  - Responsive Design
+
+database:
+  - PostgreSQL 17
+  - Alembic Migrations
+  - MySQL
+  - Redis
+  - Database Design
+  - Repository Pattern
+
+devops:
+  - Docker
+  - Docker Compose
+  - GitHub Actions
+  - CI/CD
+  - Container Security
+  - Multi-stage Builds
+
+observability:
+  - Prometheus
+  - Grafana
+  - OpenTelemetry
+  - Grafana Loki
+  - Promtail
+  - Structlog
+  - Application Performance Monitoring
+
+security:
+  - OAuth2-Proxy
+  - Keycloak SSO
+  - Zero-Trust Architecture
+  - CSRF Protection
+  - Input Sanitization
+  - RBAC
+
+testing:
+  - pytest
+  - pytest-cov
+  - MyPy
+  - Black
+  - Ruff
+  - pip-audit
+  - Unit Testing
+  - Integration Testing
+
+tools:
+  - Git
+  - VS Code
+  - Linux
+  - Traefik
+  - Nginx
+  - Jamf Pro
+  - Active Directory
+
+architecture:
+  - Domain-Driven Design
+  - Clean Architecture
+  - Bounded Contexts
+  - Microservices
+  - Adapter Pattern
+  - CQRS
+  - Dependency Injection
+
+cloud:
+  - AWS EC2
+  - Amazon SES
+  - VDI
+  - Multi-VM Production Environment

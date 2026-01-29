@@ -1,0 +1,103 @@
+# generated: 2026-01-29
+# project: jaysingh.dev
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog -> in-progress: Automatically when first story is created (via create-story)
+#   - in-progress -> done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-01-29
+project: jaysingh.dev
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Foundation & Site Shell
+  # Visitors can view a working home page with navigation and the Neubrutalist design system.
+  epic-1: in-progress
+  1-1-initialize-11ty-project-with-tailwindcss-pipeline: done
+  1-2-create-base-layout-with-neubrutalist-design-system: backlog
+  1-3-implement-site-header-and-footer: backlog
+  1-4-implement-mobile-responsive-navigation: backlog
+  1-5-implement-accessibility-foundation: backlog
+  1-6-create-home-page: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Blog Experience
+  # Visitors can browse and read blog posts with syntax highlighting, code copying, and social sharing.
+  epic-2: backlog
+  2-1-create-blog-collection-and-listing-page: backlog
+  2-2-create-blog-post-detail-layout: backlog
+  2-3-implement-syntax-highlighting: backlog
+  2-4-implement-code-copy-functionality: backlog
+  2-5-implement-reading-time-display: backlog
+  2-6-implement-social-sharing: backlog
+  2-7-implement-related-projects-links: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Project Showcase
+  # Visitors can browse projects and view detailed case studies with architecture diagrams.
+  epic-3: backlog
+  3-1-create-projects-collection-and-listing-page: backlog
+  3-2-create-project-detail-layout: backlog
+  3-3-implement-mermaid-diagram-rendering: backlog
+  3-4-implement-external-project-links: backlog
+  3-5-implement-project-filtering: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Professional Profile
+  # Visitors can view Jay's resume, skills, education, and contact information.
+  epic-4: backlog
+  4-1-create-resume-page-with-work-experience: backlog
+  4-2-add-education-and-skills-sections: backlog
+  4-3-implement-profile-data-files: backlog
+  4-4-create-contact-page: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Content Authoring Pipeline
+  # Jay can create and preview content via Markdown with Mermaid diagrams.
+  epic-5: backlog
+  5-1-implement-blog-content-pipeline: backlog
+  5-2-implement-project-content-pipeline: backlog
+  5-3-implement-site-configuration-via-data-files: backlog
+  5-4-implement-mermaid-in-markdown-processing: backlog
+  5-5-implement-local-development-workflow: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Production Deployment & SEO
+  # Site is deployed to GitHub Pages, SEO-optimized, and achieves Lighthouse 100.
+  epic-6: backlog
+  6-1-implement-sitemap-generation: backlog
+  6-2-implement-robots-txt: backlog
+  6-3-implement-meta-tags-and-open-graph: backlog
+  6-4-implement-github-actions-deployment: backlog
+  6-5-achieve-lighthouse-100-scores: backlog
+  epic-6-retrospective: optional

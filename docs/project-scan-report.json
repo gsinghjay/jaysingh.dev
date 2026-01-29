@@ -1,0 +1,140 @@
+{
+  "workflow_version": "1.2.0",
+  "timestamps": {
+    "started": "2026-01-29T18:35:00Z",
+    "last_updated": "2026-01-29T19:00:00Z",
+    "completed": "2026-01-29T19:00:00Z"
+  },
+  "mode": "initial_scan",
+  "scan_level": "exhaustive",
+  "project_root": "/home/jay/github/jaysingh.dev",
+  "output_folder": "/home/jay/github/jaysingh.dev/docs",
+  "completed_steps": [
+    {
+      "step": "step_1",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:40:00Z",
+      "summary": "Classified as monolith with 1 part (web type)"
+    },
+    {
+      "step": "step_2",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:42:00Z",
+      "summary": "Found 2 placeholder docs, 17 content files"
+    },
+    {
+      "step": "step_3",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:45:00Z",
+      "summary": "Tech stack: React 18 + Vite → 11ty + Nunjucks migration"
+    },
+    {
+      "step": "step_4",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:50:00Z",
+      "summary": "22 components documented, state patterns analyzed, content schema mapped"
+    },
+    {
+      "step": "step_5",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:52:00Z",
+      "summary": "Source tree with 9 critical folders documented"
+    },
+    {
+      "step": "step_6",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:54:00Z",
+      "summary": "Development guide with scripts and workflow documented"
+    },
+    {
+      "step": "step_7",
+      "status": "skipped",
+      "timestamp": "2026-01-29T18:54:00Z",
+      "summary": "Single-part project - no multi-part integration"
+    },
+    {
+      "step": "step_8",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:56:00Z",
+      "summary": "Architecture document generated with migration plan"
+    },
+    {
+      "step": "step_9",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:57:00Z",
+      "summary": "Supporting documentation (merged with step 8)"
+    },
+    {
+      "step": "step_10",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:58:00Z",
+      "summary": "Master index generated with all document links"
+    },
+    {
+      "step": "step_11",
+      "status": "completed",
+      "timestamp": "2026-01-29T18:59:00Z",
+      "summary": "Validation complete, no incomplete items"
+    },
+    {
+      "step": "step_12",
+      "status": "completed",
+      "timestamp": "2026-01-29T19:00:00Z",
+      "summary": "Workflow finalized"
+    }
+  ],
+  "current_step": "completed",
+  "findings": {
+    "project_classification": {
+      "repository_type": "monolith",
+      "parts_count": 1,
+      "primary_tech": "React + TypeScript + Vite"
+    },
+    "existing_docs_count": 2,
+    "content_files_count": 17,
+    "technology_stack": {
+      "framework": "React 18.3.1",
+      "language": "TypeScript 5.5.3",
+      "build_tool": "Vite 5.4.2",
+      "styling": "TailwindCSS 3.4.1"
+    },
+    "components": {
+      "total": 22,
+      "layout": 2,
+      "pages": 5,
+      "detail_views": 2,
+      "primitives": 7,
+      "content_rendering": 5,
+      "utility": 4
+    }
+  },
+  "user_context": {
+    "migration_target": "11ty + Nunjucks",
+    "node_version_target": "24 LTS",
+    "deprecated_dependencies": ["@supabase/supabase-js"],
+    "notes": "1:1 migration planned, ignore Supabase references"
+  },
+  "project_types": [
+    {
+      "part_id": "main",
+      "project_type_id": "web",
+      "display_name": "jaysingh.dev"
+    }
+  ],
+  "outputs_generated": [
+    "project-scan-report.json",
+    "project-structure.md",
+    "project-parts.json",
+    "existing-documentation.md",
+    "technology-stack.md",
+    "architecture-patterns.md",
+    "component-inventory.md",
+    "state-management.md",
+    "content-schema.md",
+    "source-tree-analysis.md",
+    "development-guide.md",
+    "architecture.md",
+    "index.md"
+  ],
+  "resume_instructions": "Workflow completed successfully"
+}
