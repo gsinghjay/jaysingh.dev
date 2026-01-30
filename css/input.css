@@ -81,9 +81,25 @@
     box-shadow: 2px 2px 0 #000;
   }
 
-  /* Mobile nav button - full width */
+  /* Mobile nav button - full width with Neubrutalist styling */
   .nav-btn-mobile {
-    @apply w-full text-left;
+    @apply block w-full text-left px-4 py-3 text-sm font-bold uppercase;
+    @apply border-2 border-black bg-white text-black;
+    @apply transition-all duration-150;
+    box-shadow: var(--shadow-brutal-sm);
+  }
+
+  .nav-btn-mobile:hover {
+    @apply bg-lime-300;
+  }
+
+  .nav-btn-mobile:active {
+    @apply translate-y-1;
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .nav-btn-mobile.is-active {
+    @apply bg-yellow-400 text-black;
   }
 
   /* Hover lift interactions - subtle elevation on hover */

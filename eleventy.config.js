@@ -28,6 +28,7 @@ export default function(eleventyConfig) {
 
   // Passthrough copy for static assets
   eleventyConfig.addPassthroughCopy("public");
+  eleventyConfig.addPassthroughCopy("js");
 
   // Blog posts collection
   eleventyConfig.addCollection("posts", collection => {

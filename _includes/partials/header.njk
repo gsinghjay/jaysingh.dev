@@ -14,10 +14,26 @@
     JAYSINGH.DEV
   </a>
 
-  {# Mobile menu button - implemented in Story 1.4 #}
+  {# Mobile menu button #}
+  <button type="button"
+          data-mobile-menu-toggle
+          class="md:hidden border-2 border-black bg-white p-2 transition-all duration-150 active:translate-y-1"
+          style="box-shadow: 3px 3px 0 #000"
+          aria-label="Open menu"
+          aria-expanded="false">
+    <svg data-icon="menu" class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+    <svg data-icon="close" class="w-8 h-8 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <line x1="6" y1="6" x2="18" y2="18"/>
+      <line x1="6" y1="18" x2="18" y2="6"/>
+    </svg>
+  </button>
 
-  <nav aria-label="Main navigation">
-    <ul class="hidden md:flex gap-4">
+  <nav aria-label="Main navigation" class="hidden md:block">
+    <ul class="md:flex gap-4">
       {% for item in navItems %}
         <li>
           <a href="{{ item.url }}"
@@ -30,3 +46,18 @@
     </ul>
   </nav>
 </div>
+
+{# Mobile navigation menu #}
+<nav data-mobile-menu class="hidden md:hidden" aria-label="Mobile navigation">
+  <ul class="mt-4 border-t-4 border-black pt-4 flex flex-col gap-3">
+    {% for item in navItems %}
+      <li>
+        <a href="{{ item.url }}"
+           class="nav-btn-mobile{% if page.url == item.url %} is-active{% endif %}"
+           {% if page.url == item.url %}aria-current="page"{% endif %}>
+          {{ item.text }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</nav>
