@@ -63,6 +63,40 @@
     box-shadow: var(--shadow-brutal-lg);
   }
 
+  /* Logo button - matches React Header.tsx */
+  .logo-btn {
+    box-shadow: var(--shadow-brutal);
+  }
+
+  .logo-btn:active {
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  /* Navigation button styles - 1:1 parity with React */
+  .nav-btn {
+    @apply px-4 py-2 text-sm font-bold uppercase border-2 border-black bg-white text-black;
+    box-shadow: var(--shadow-brutal-sm);
+    transition: var(--transition-default);
+  }
+
+  .nav-btn:hover {
+    @apply bg-lime-300;
+  }
+
+  .nav-btn:active {
+    @apply translate-y-px;
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .nav-btn.is-active {
+    @apply bg-yellow-400 text-black;
+  }
+
+  /* Mobile nav button - full width */
+  .nav-btn-mobile {
+    @apply w-full text-left;
+  }
+
   /* Hover lift interactions - subtle elevation on hover */
   .hover-lift {
     transition: var(--transition-transform);

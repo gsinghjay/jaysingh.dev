@@ -1,0 +1,32 @@
+{# Header partial - 1:1 parity with React Header.tsx #}
+{% set navItems = [
+  { url: '/', text: 'HOME' },
+  { url: '/blog/', text: 'BLOG' },
+  { url: '/projects/', text: 'PROJECTS' },
+  { url: '/resume/', text: 'RESUME' },
+  { url: '/contact/', text: 'CONTACT' }
+] %}
+
+<div class="flex justify-between items-center">
+  <a href="/"
+     class="logo-btn bg-black text-white px-4 py-2 text-xl font-bold border-4 border-black hover:bg-yellow-400 hover:text-black transition-all duration-150 active:translate-y-1"
+     aria-label="JAYSINGH.DEV - Home">
+    JAYSINGH.DEV
+  </a>
+
+  {# Mobile menu button - implemented in Story 1.4 #}
+
+  <nav aria-label="Main navigation">
+    <ul class="hidden md:flex gap-4">
+      {% for item in navItems %}
+        <li>
+          <a href="{{ item.url }}"
+             class="nav-btn{% if page.url == item.url %} is-active{% endif %}"
+             {% if page.url == item.url %}aria-current="page"{% endif %}>
+            {{ item.text }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</div>

@@ -37,7 +37,7 @@ test.describe('Smoke Tests - Core Functionality', () => {
     await expect(page.locator('header')).toBeVisible();
 
     // And: Navigation should be present (FR1)
-    await expect(page.locator('nav')).toBeVisible();
+    await expect(page.locator('header nav')).toBeVisible();
   });
 
   test('footer is present', async ({ page }) => {
