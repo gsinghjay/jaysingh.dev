@@ -24,10 +24,14 @@ export default function(eleventyConfig) {
   // Ignore Claude Code configuration
   eleventyConfig.ignores.add(".claude/**");
 
+  // Ignore README files (shouldn't be published as pages)
+  eleventyConfig.ignores.add("README.md");
+  eleventyConfig.ignores.add("tests/**/*.md");
+
   // Syntax highlighting for code blocks
   eleventyConfig.addPlugin(syntaxHighlight);
 
-  // Date filter for formatting dates
+  // Date filter for formatting dates (default: "Jan 15, 2026" format)
   eleventyConfig.addFilter("date", (dateObj, format) => {
     if (!dateObj) return '';
     const date = new Date(dateObj);
@@ -37,7 +41,17 @@ export default function(eleventyConfig) {
     if (format === '%B %d, %Y') {
       return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     }
-    return date.toLocaleDateString();
+    // Default: "Jan 15, 2026" format (matches React implementation)
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  });
+
+  // Get category from tags for blog posts (matches React getCategoryFromTags logic)
+  eleventyConfig.addFilter("getCategoryFromTags", (tags) => {
+    if (!tags || !Array.isArray(tags)) return 'GENERAL';
+    if (tags.some(t => t.toLowerCase().includes('opinion'))) return 'OPINION';
+    if (tags.some(t => t.toLowerCase().includes('technical'))) return 'TECHNICAL';
+    if (tags.some(t => t.toLowerCase().includes('tutorial'))) return 'TUTORIAL';
+    return 'GENERAL';
   });
 
   // Filter to get items where a data attribute is truthy

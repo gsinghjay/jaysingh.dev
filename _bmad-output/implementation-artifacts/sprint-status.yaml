@@ -53,8 +53,8 @@ development_status:
 
   # Epic 2: Blog Experience
   # Visitors can browse and read blog posts with syntax highlighting, code copying, and social sharing.
-  epic-2: backlog
-  2-1-create-blog-collection-and-listing-page: backlog
+  epic-2: in-progress
+  2-1-create-blog-collection-and-listing-page: done
   2-2-create-blog-post-detail-layout: backlog
   2-3-implement-syntax-highlighting: backlog
   2-4-implement-code-copy-functionality: backlog
