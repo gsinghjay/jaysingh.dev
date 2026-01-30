@@ -1,0 +1,38 @@
+{# Tag macro for tech stack and categories #}
+{# Parameters: text, type (tech/category) #}
+{% macro tag(text, type="tech") %}
+  {% set techColors = {
+    "React": "bg-pink-400",
+    "Vue": "bg-pink-400",
+    "Python": "bg-blue-400",
+    "Go": "bg-blue-400",
+    "PostgreSQL": "bg-green-400",
+    "SQL": "bg-green-400",
+    "Node": "bg-lime-400",
+    "JavaScript": "bg-lime-400",
+    "TypeScript": "bg-lime-400",
+    "Kubernetes": "bg-blue-400",
+    "AWS": "bg-yellow-400",
+    "Docker": "bg-blue-400",
+    "OAuth2": "bg-purple-400",
+    "Traefik": "bg-cyan-400",
+    "Keycloak": "bg-orange-400"
+  } %}
+  {% set categoryColors = {
+    "OPINION": "bg-yellow-400",
+    "TECHNICAL": "bg-blue-400",
+    "WAR": "bg-red-400",
+    "TUTORIAL": "bg-lime-400",
+    "ANNOUNCEMENT": "bg-pink-400"
+  } %}
+
+  {% if type == "tech" %}
+    {% set bgColor = techColors[text] | default("bg-neutral-100") %}
+  {% else %}
+    {% set bgColor = categoryColors[text] | default("bg-neutral-100") %}
+  {% endif %}
+
+  <span class="{{ bgColor }} px-3 py-1 border-2 border-black text-sm font-bold uppercase text-black">
+    {{ text }}
+  </span>
+{% endmacro %}

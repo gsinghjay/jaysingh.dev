@@ -1,0 +1,18 @@
+{# Button macro with Neubrutalist styling #}
+{# Parameters: text, href, variant (lime/pink/yellow/blue/secondary), showArrow #}
+{% macro button(text, href, variant="lime", showArrow=false) %}
+  {% set variantClasses = {
+    "lime": "bg-lime-400",
+    "pink": "bg-pink-400",
+    "yellow": "bg-yellow-400",
+    "blue": "bg-blue-400",
+    "secondary": "bg-white"
+  } %}
+  {% set shadowSize = "6px 6px 0 #000" if variant != "secondary" else "3px 3px 0 #000" %}
+
+  <a href="{{ href }}"
+     class="btn-brutal {{ variantClasses[variant] }} border-4 border-black px-6 py-6 text-xl font-black uppercase text-black text-center block transition-all duration-150 active:translate-y-1 active:shadow-[2px_2px_0_#000]"
+     style="box-shadow: {{ shadowSize }};">
+    {{ text }}{% if showArrow %} &rarr;{% endif %}
+  </a>
+{% endmacro %}

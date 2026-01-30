@@ -152,12 +152,12 @@ test.describe('Story 1.5: Focus Indicators (AC3)', () => {
     // Given: User navigates to home page
     await page.goto('/');
 
-    // When: Button receives focus
-    const button = page.getByRole('button').first();
-    await button.focus();
+    // When: An interactive element receives focus (use nav link which is always visible)
+    const link = page.locator('header nav[aria-label="Main navigation"]').getByRole('link').first();
+    await link.focus();
 
     // Then: Focus uses outline (not just color change)
-    const styles = await button.evaluate((el) => {
+    const styles = await link.evaluate((el) => {
       const computed = window.getComputedStyle(el);
       return {
         outlineStyle: computed.outlineStyle,
@@ -208,7 +208,7 @@ test.describe('Story 1.5: Screen Reader Landmarks (AC4)', () => {
 
       // All pages should have these landmarks
       await expect(page.locator('header')).toBeVisible();
-      await expect(page.locator('nav[aria-label]')).toBeVisible();
+      await expect(page.locator('nav[aria-label="Main navigation"]')).toBeVisible();
       await expect(page.locator('main#main-content')).toBeVisible();
       await expect(page.locator('footer')).toBeVisible();
     }

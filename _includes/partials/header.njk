@@ -37,7 +37,7 @@
       {% for item in navItems %}
         <li>
           <a href="{{ item.url }}"
-             class="nav-btn inline-block px-4 py-2 text-sm font-bold uppercase border-2 border-black transition-all duration-150 active:translate-y-1 {% if page.url == item.url %}bg-yellow-400 text-black{% else %}bg-white text-black hover:bg-lime-300{% endif %}"
+             class="nav-btn inline-block px-4 py-2 text-sm font-bold uppercase border-2 border-black transition-all duration-150 active:translate-y-1 {% if page.url == item.url %}is-active bg-yellow-400 text-black{% else %}bg-white text-black hover:bg-lime-300{% endif %}"
              {% if page.url == item.url %}aria-current="page"{% endif %}>
             {{ item.text }}
           </a>

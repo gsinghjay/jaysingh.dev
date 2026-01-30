@@ -42,13 +42,13 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   # Epic 1: Foundation & Site Shell
   # Visitors can view a working home page with navigation and the Neubrutalist design system.
-  epic-1: in-progress
+  epic-1: done
   1-1-initialize-11ty-project-with-tailwindcss-pipeline: done
   1-2-create-base-layout-with-neubrutalist-design-system: done
   1-3-implement-site-header-and-footer: done
   1-4-implement-mobile-responsive-navigation: done
   1-5-implement-accessibility-foundation: done
-  1-6-create-home-page: ready-for-dev
+  1-6-create-home-page: done
   epic-1-retrospective: optional
 
   # Epic 2: Blog Experience

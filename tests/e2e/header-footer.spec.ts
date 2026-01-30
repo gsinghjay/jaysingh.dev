@@ -34,7 +34,7 @@ test.describe('Story 1.3: Header Navigation (ATDD)', () => {
     await page.goto('/');
 
     // Then: Header should contain navigation with 5 links
-    const nav = page.locator('header nav, header [role="navigation"]');
+    const nav = page.locator('header nav[aria-label="Main navigation"]');
     await expect(nav).toBeVisible();
 
     // And: All navigation links should be visible
@@ -47,7 +47,7 @@ test.describe('Story 1.3: Header Navigation (ATDD)', () => {
     // Given: User is on home page
     await page.goto('/');
 
-    const nav = page.locator('header nav, header [role="navigation"]');
+    const nav = page.locator('header nav[aria-label="Main navigation"]');
 
     // Then: Each link should have correct href (clean URL)
     for (const item of NAV_ITEMS) {
@@ -63,7 +63,7 @@ test.describe('Story 1.3: Header Navigation (ATDD)', () => {
       await page.goto('/');
 
       // When: User clicks navigation link
-      const nav = page.locator('header nav, header [role="navigation"]');
+      const nav = page.locator('header nav[aria-label="Main navigation"]');
       await nav.getByRole('link', { name: item.text }).click();
 
       // Then: URL should be the clean URL for that page
@@ -82,7 +82,7 @@ test.describe('Story 1.3: Active Page Indication (ATDD)', () => {
       await page.goto(item.url);
 
       // Then: The corresponding nav link should have active state
-      const nav = page.locator('header nav, header [role="navigation"]');
+      const nav = page.locator('header nav[aria-label="Main navigation"]');
       const link = nav.getByRole('link', { name: item.text });
 
       // Active state indicated by is-active class (per Architecture spec)
@@ -103,7 +103,7 @@ test.describe('Story 1.3: Active Page Indication (ATDD)', () => {
     await page.goto('/blog/');
 
     // Then: Active link should have visual distinction beyond color
-    const nav = page.locator('header nav, header [role="navigation"]');
+    const nav = page.locator('header nav[aria-label="Main navigation"]');
     const activeLink = nav.getByRole('link', { name: 'Blog' });
 
     // Check for border or background change (not just color)
@@ -178,7 +178,7 @@ test.describe('Story 1.3: Keyboard Navigation (ATDD)', () => {
     await page.goto('/');
 
     // When: User tabs through navigation
-    const nav = page.locator('header nav, header [role="navigation"]');
+    const nav = page.locator('header nav[aria-label="Main navigation"]');
     const firstLink = nav.getByRole('link').first();
 
     // Focus first nav link
@@ -198,7 +198,7 @@ test.describe('Story 1.3: Keyboard Navigation (ATDD)', () => {
     await page.goto('/');
 
     // When: User focuses a nav link
-    const nav = page.locator('header nav, header [role="navigation"]');
+    const nav = page.locator('header nav[aria-label="Main navigation"]');
     const link = nav.getByRole('link', { name: 'Blog' });
     await link.focus();
 
@@ -217,7 +217,7 @@ test.describe('Story 1.3: Keyboard Navigation (ATDD)', () => {
     await page.goto('/');
 
     // When: User focuses Blog link and presses Enter
-    const nav = page.locator('header nav, header [role="navigation"]');
+    const nav = page.locator('header nav[aria-label="Main navigation"]');
     const blogLink = nav.getByRole('link', { name: 'Blog' });
     await blogLink.focus();
     await page.keyboard.press('Enter');
@@ -232,12 +232,12 @@ test.describe('Story 1.3: Header Accessibility (ATDD)', () => {
     // Given: User is on home page
     await page.goto('/');
 
-    // Then: Navigation should have proper ARIA landmark
-    const nav = page.locator('header nav[aria-label], header [role="navigation"][aria-label]');
-    await expect(nav).toHaveCount(1);
+    // Then: Navigation should have proper ARIA landmark (desktop + mobile navs both have aria-labels)
+    const mainNav = page.locator('header nav[aria-label="Main navigation"]');
+    await expect(mainNav).toHaveCount(1);
 
     // And: Should have descriptive label
-    const ariaLabel = await nav.getAttribute('aria-label');
+    const ariaLabel = await mainNav.getAttribute('aria-label');
     expect(ariaLabel?.toLowerCase()).toContain('main');
   });
 

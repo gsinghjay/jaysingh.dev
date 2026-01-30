@@ -4,55 +4,112 @@ title: Home
 description: Jay Singh - Software Engineer specializing in web development
 ---
 
-<h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 border-4 border-black p-4 shadow-brutal bg-white">
-  Jay Singh
-</h1>
+{% from "components/card.njk" import card %}
+{% from "components/tag.njk" import tag %}
+{% from "components/button.njk" import button %}
 
-<p class="text-base md:text-lg mb-4">
-  Welcome to my site. This is the 11ty static site foundation with the Neubrutalist design system.
-</p>
+<div class="space-y-12">
 
-{# Responsive Grid Demo #}
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-8">
+  {# Hero Section - Task 1 #}
+  {% call card("lg") %}
+    <div class="flex flex-col md:flex-row items-start gap-8">
+      {# Avatar #}
+      <div class="w-32 h-32 bg-lime-400 border-4 border-black flex items-center justify-center text-6xl flex-shrink-0"
+           style="box-shadow: 4px 4px 0 #000;">
+        👋
+      </div>
 
-  {# Card 1: brutal-box utility #}
-  <div class="brutal-box p-4 md:p-6 hover-lift">
-    <h2 class="text-xl md:text-2xl font-bold mb-2">brutal-box</h2>
-    <p class="text-sm md:text-base">Standard card with 4px border and md shadow.</p>
+      {# Content #}
+      <div class="flex-1">
+        <h1 class="text-4xl md:text-5xl font-black mb-4">
+          I BUILD <span class="bg-yellow-400 px-2">STUFF</span> FOR THE WEB
+        </h1>
+        <p class="text-lg text-neutral-600 mb-6">
+          Full-stack developer. No frameworks religion. Just working software.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          {{ tag("React", "tech") }}
+          {{ tag("Python", "tech") }}
+          {{ tag("PostgreSQL", "tech") }}
+          {{ tag("Node", "tech") }}
+          {{ tag("TypeScript", "tech") }}
+        </div>
+      </div>
+    </div>
+  {% endcall %}
+
+  {# CTA Buttons Grid - Task 2 #}
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {{ button("VIEW WORK", "/projects/", "lime", true) }}
+    {{ button("READ BLOG", "/blog/", "pink", true) }}
+    {{ button("HIRE ME", "/contact/", "yellow", true) }}
   </div>
 
-  {# Card 2: brutal-box-sm utility #}
-  <div class="brutal-box-sm p-4 md:p-6 hover-lift">
-    <h2 class="text-xl md:text-2xl font-bold mb-2">brutal-box-sm</h2>
-    <p class="text-sm md:text-base">Smaller variant with 2px border and sm shadow.</p>
-  </div>
+  {# Featured Posts Section - Task 3 #}
+  {% set featuredPosts = collections.posts | where("data.featured") | take(1) %}
+  {% if featuredPosts.length > 0 %}
+    {% set featuredPost = featuredPosts[0] %}
+    <section aria-labelledby="featured-posts-heading">
+      <h2 id="featured-posts-heading" class="text-3xl font-black mb-6">Featured Posts</h2>
+      {% call card("default") %}
+        <article>
+          <h3 class="text-2xl font-bold mb-2">
+            <a href="{{ featuredPost.url }}" class="hover:text-pink-600 transition-colors">
+              {{ featuredPost.data.title }}
+            </a>
+          </h3>
+          <div class="flex items-center gap-4 text-sm text-neutral-500 mb-4">
+            <time datetime="{{ featuredPost.data.date | date('%Y-%m-%d') }}">
+              {{ featuredPost.data.date | date('%B %d, %Y') }}
+            </time>
+            {% if featuredPost.data.readTime %}
+              <span>{{ featuredPost.data.readTime }} read</span>
+            {% endif %}
+          </div>
+          <p class="text-neutral-600 mb-4 line-clamp-2">
+            {{ featuredPost.data.excerpt }}
+          </p>
+          <a href="{{ featuredPost.url }}" class="inline-flex items-center font-bold text-pink-600 hover:text-pink-800 transition-colors">
+            READ MORE &rarr;
+          </a>
+        </article>
+      {% endcall %}
+    </section>
+  {% endif %}
 
-  {# Card 3: brutal-box-lg utility #}
-  <div class="brutal-box-lg p-4 md:p-6 hover-lift-lg">
-    <h2 class="text-xl md:text-2xl font-bold mb-2">brutal-box-lg</h2>
-    <p class="text-sm md:text-base">Large variant with 4px border and lg shadow.</p>
-  </div>
+  {# Featured Work Section - Task 4 #}
+  {% set featuredProjects = collections.projects | where("data.featured") | take(2) %}
+  {% if featuredProjects.length > 0 %}
+    <section aria-labelledby="featured-work-heading">
+      <h2 id="featured-work-heading" class="text-3xl font-black mb-6">Featured Work</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for project in featuredProjects %}
+          <a href="{{ project.url }}" class="block group">
+            {% call card("default", true) %}
+              <div class="flex items-start gap-4">
+                <span class="text-4xl font-black text-neutral-300 group-hover:text-pink-400 transition-colors">
+                  {{ "0" + loop.index }}
+                </span>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-2 group-hover:text-pink-600 transition-colors">
+                    {{ project.data.title }}
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity">&rarr;</span>
+                  </h3>
+                  <p class="text-neutral-600 text-sm mb-3 line-clamp-2">
+                    {{ project.data.description }}
+                  </p>
+                  <div class="flex flex-wrap gap-1">
+                    {% for tech in project.data.technologies | take(3) %}
+                      {{ tag(tech, "tech") }}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% endcall %}
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
 
-</div>
-
-{# Color Palette Demo #}
-<div class="mt-8 brutal-box p-4 md:p-6">
-  <h2 class="text-xl md:text-2xl font-bold mb-4">Color Palette</h2>
-  <div class="flex flex-wrap gap-2 md:gap-4">
-    <span class="bg-lime-400 border-2 border-black px-3 py-1 text-sm md:text-base">lime-400</span>
-    <span class="bg-pink-400 border-2 border-black px-3 py-1 text-sm md:text-base">pink-400</span>
-    <span class="bg-yellow-400 border-2 border-black px-3 py-1 text-sm md:text-base">yellow-400</span>
-    <span class="bg-blue-400 border-2 border-black px-3 py-1 text-sm md:text-base">blue-400</span>
-  </div>
-</div>
-
-{# Interactive Elements Demo #}
-<div class="mt-8 brutal-box p-4 md:p-6">
-  <h2 class="text-xl md:text-2xl font-bold mb-4">Interactive Elements</h2>
-  <p class="mb-4 text-sm md:text-base">Tab through these to test focus states (4px black outline):</p>
-  <div class="flex flex-wrap gap-2 md:gap-4">
-    <button class="bg-lime-400 border-4 border-black px-4 py-2 font-bold hover-lift">Button 1</button>
-    <button class="bg-pink-400 border-4 border-black px-4 py-2 font-bold hover-lift">Button 2</button>
-    <a href="#" class="bg-yellow-400 border-4 border-black px-4 py-2 font-bold hover-lift inline-block">Link</a>
-  </div>
 </div>

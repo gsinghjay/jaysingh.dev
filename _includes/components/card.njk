@@ -1,0 +1,19 @@
+{# Card macro with Neubrutalist styling #}
+{# Parameters: size (sm/default/lg), clickable #}
+{% macro card(size="default", clickable=false) %}
+  {% set paddingClass = {
+    "sm": "p-4",
+    "default": "p-6",
+    "lg": "p-8"
+  } %}
+  {% set shadowSize = {
+    "sm": "4px 4px 0 #000",
+    "default": "6px 6px 0 #000",
+    "lg": "8px 8px 0 #000"
+  } %}
+
+  <div class="bg-white border-4 border-black {{ paddingClass[size] }}{% if clickable %} cursor-pointer active:translate-y-1 transition-all duration-150 group{% endif %}"
+       style="box-shadow: {{ shadowSize[size] }};">
+    {{ caller() }}
+  </div>
+{% endmacro %}
