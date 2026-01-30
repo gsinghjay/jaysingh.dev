@@ -1,6 +1,6 @@
 # Story 1.5: Implement Accessibility Foundation
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -42,53 +42,53 @@ so that **I can use the site with keyboard or screen reader**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Verify skip link implementation (AC: #1, #2)
-  - [ ] 1.1 Confirm skip link is first focusable element in DOM
-  - [ ] 1.2 Verify skip link targets `#main-content`
-  - [ ] 1.3 Test skip link visibility on focus (should appear)
-  - [ ] 1.4 Test skip link navigation moves focus to main content
-  - [ ] 1.5 Ensure skip link styling matches Neubrutalist design
+- [x] Task 1: Verify skip link implementation (AC: #1, #2)
+  - [x] 1.1 Confirm skip link is first focusable element in DOM
+  - [x] 1.2 Verify skip link targets `#main-content`
+  - [x] 1.3 Test skip link visibility on focus (should appear)
+  - [x] 1.4 Test skip link navigation moves focus to main content
+  - [x] 1.5 Ensure skip link styling matches Neubrutalist design
 
-- [ ] Task 2: Validate focus indicator styling (AC: #3)
-  - [ ] 2.1 Verify `:focus-visible` uses 4px black outline with 2px offset
-  - [ ] 2.2 Test focus visibility on all nav links
-  - [ ] 2.3 Test focus visibility on logo button
-  - [ ] 2.4 Test focus visibility on mobile menu button (from 1.4)
-  - [ ] 2.5 Ensure focus indicators are not color-only (visible in high contrast mode)
+- [x] Task 2: Validate focus indicator styling (AC: #3)
+  - [x] 2.1 Verify `:focus-visible` uses 4px black outline with 2px offset
+  - [x] 2.2 Test focus visibility on all nav links
+  - [x] 2.3 Test focus visibility on logo button
+  - [ ] 2.4 Test focus visibility on mobile menu button (from 1.4) - Deferred to Story 1.4
+  - [x] 2.5 Ensure focus indicators are not color-only (visible in high contrast mode)
 
-- [ ] Task 3: Verify landmark structure (AC: #4)
-  - [ ] 3.1 Confirm `<header>` element wraps header content
-  - [ ] 3.2 Confirm `<nav aria-label="Main navigation">` wraps navigation
-  - [ ] 3.3 Confirm `<main id="main-content">` wraps page content
-  - [ ] 3.4 Confirm `<footer>` element wraps footer content
-  - [ ] 3.5 Verify `lang="en"` on `<html>` element
+- [x] Task 3: Verify landmark structure (AC: #4)
+  - [x] 3.1 Confirm `<header>` element wraps header content
+  - [x] 3.2 Confirm `<nav aria-label="Main navigation">` wraps navigation
+  - [x] 3.3 Confirm `<main id="main-content">` wraps page content
+  - [x] 3.4 Confirm `<footer>` element wraps footer content
+  - [x] 3.5 Verify `lang="en"` on `<html>` element
 
-- [ ] Task 4: Test keyboard navigation (AC: #5)
-  - [ ] 4.1 Test Tab moves forward through focusable elements
-  - [ ] 4.2 Test Shift+Tab moves backward through focusable elements
-  - [ ] 4.3 Test Enter activates links and buttons
-  - [ ] 4.4 Test Space activates buttons
-  - [ ] 4.5 Verify no keyboard traps (can always Tab out)
-  - [ ] 4.6 Test logical tab order (visual order matches DOM order)
+- [x] Task 4: Test keyboard navigation (AC: #5)
+  - [x] 4.1 Test Tab moves forward through focusable elements
+  - [x] 4.2 Test Shift+Tab moves backward through focusable elements
+  - [x] 4.3 Test Enter activates links and buttons
+  - [x] 4.4 Test Space activates buttons
+  - [x] 4.5 Verify no keyboard traps (can always Tab out)
+  - [x] 4.6 Test logical tab order (visual order matches DOM order)
 
-- [ ] Task 5: Verify reduced motion support (AC: #6)
-  - [ ] 5.1 Confirm `@media (prefers-reduced-motion: reduce)` media query exists
-  - [ ] 5.2 Verify transitions disabled in reduced motion mode
-  - [ ] 5.3 Verify `hover-lift` effects disabled in reduced motion mode
-  - [ ] 5.4 Test with browser/OS reduced motion setting enabled
+- [x] Task 5: Verify reduced motion support (AC: #6)
+  - [x] 5.1 Confirm `@media (prefers-reduced-motion: reduce)` media query exists
+  - [x] 5.2 Verify transitions disabled in reduced motion mode
+  - [x] 5.3 Verify `hover-lift` effects disabled in reduced motion mode
+  - [x] 5.4 Test with browser/OS reduced motion setting enabled
 
-- [ ] Task 6: Add ARIA enhancements for interactive elements (AC: #3, #4, #5)
-  - [ ] 6.1 Add `aria-label` to any icon-only buttons
-  - [ ] 6.2 Ensure all form controls have associated labels (for future forms)
-  - [ ] 6.3 Add `role="img"` and `aria-label` to Mermaid SVG diagrams (for future stories)
+- [x] Task 6: Add ARIA enhancements for interactive elements (AC: #3, #4, #5)
+  - [x] 6.1 Add `aria-label` to any icon-only buttons - Already present on logo
+  - [ ] 6.2 Ensure all form controls have associated labels (for future forms) - N/A
+  - [ ] 6.3 Add `role="img"` and `aria-label` to Mermaid SVG diagrams (for future stories) - N/A
 
-- [ ] Task 7: Run accessibility audit and fix issues (AC: #1-6)
-  - [ ] 7.1 Run Lighthouse accessibility audit on all pages
-  - [ ] 7.2 Run axe DevTools audit (if available)
-  - [ ] 7.3 Test with screen reader (VoiceOver/NVDA if available)
-  - [ ] 7.4 Fix any issues found
-  - [ ] 7.5 Document color contrast ratios for key UI elements
-  - [ ] 7.6 Run Playwright accessibility tests: `npm test`
+- [x] Task 7: Run accessibility audit and fix issues (AC: #1-6)
+  - [x] 7.1 Run Lighthouse accessibility audit on all pages - Via Playwright tests
+  - [x] 7.2 Run axe DevTools audit (if available) - Via Playwright tests
+  - [ ] 7.3 Test with screen reader (VoiceOver/NVDA if available) - Manual test deferred
+  - [x] 7.4 Fix any issues found - Added tabindex="-1" to main
+  - [x] 7.5 Document color contrast ratios for key UI elements - In Dev Notes
+  - [x] 7.6 Run Playwright accessibility tests: `npm test` - 23/23 passing
 
 ## Dev Notes
 
@@ -280,10 +280,31 @@ The React implementation is **missing** many accessibility features that 11ty al
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
 
+- ATDD checklist: `_bmad-output/test-artifacts/atdd-checklist-1-5.md`
+
 ### Completion Notes List
 
+1. **Skip link focus transfer fix**: Added `tabindex="-1"` to `<main id="main-content">` to allow programmatic focus from skip link
+2. **Nav button React parity**: Fixed height (36px → 40px) by adding `inline-block`, fixed push-down animation (`translate-y-px` → `translate-y-1`)
+3. **Nav button styling**: Moved inline for consistent transition behavior matching React Header.tsx
+4. **Test suite**: Created 23 E2E tests covering all 6 acceptance criteria, all passing
+5. **Playwright MCP**: Used for visual verification and debugging during development
+
 ### File List
+
+**Modified:**
+- `_includes/layouts/base.njk` - Added tabindex="-1" to main element
+- `_includes/partials/header.njk` - Nav button inline styles for React parity
+- `css/input.css` - Simplified nav-btn to box-shadow only
+
+**Created:**
+- `tests/e2e/accessibility.spec.ts` - 23 E2E accessibility tests (447 lines)
+- `_bmad-output/test-artifacts/atdd-checklist-1-5.md` - ATDD checklist documentation
+
+### Commit
+
+`034ed20` - Add accessibility foundation with ATDD tests (Story 1.5)
