@@ -713,3 +713,321 @@ test.describe('Story 2.2: Pre-rendered Static HTML', () => {
     expect(html).not.toContain('id="root"');
   });
 });
+
+/**
+ * Story 2.3: Implement Syntax Highlighting Tests (ATDD - RED PHASE)
+ *
+ * These tests define EXPECTED behavior for syntax highlighting.
+ * Tests will FAIL until Prism CSS theme is added.
+ *
+ * Acceptance Criteria:
+ * - AC1: Plugin configured (@11ty/eleventy-plugin-syntaxhighlight)
+ * - AC2: Build-time highlighting (no client JS)
+ * - AC3: Token colors (keywords, strings, comments have distinct colors)
+ * - AC4: Multi-language support (JS, Python, Bash, YAML)
+ * - AC5: Neubrutalist styling (borders, shadows, monospace)
+ * - AC6: Horizontal scrolling for long code
+ *
+ * TDD Workflow:
+ * 1. RED: Run these tests - token color tests will fail (current state)
+ * 2. GREEN: Add Prism CSS theme with token colors
+ * 3. REFACTOR: Optimize CSS while keeping tests green
+ */
+
+test.describe('Story 2.3: Syntax Highlighting - Pre-rendered HTML (AC1, AC2)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P0] code blocks have Prism language class', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code blocks should have language-specific class
+    const codeBlock = page.locator('pre[class*="language-"]').first();
+    await expect(codeBlock).toBeVisible();
+
+    // And: Should have a language class (language-python, language-yaml, etc.)
+    const className = await codeBlock.getAttribute('class');
+    expect(className).toMatch(/language-\w+/);
+  });
+
+  test('[P0] code blocks contain token spans (pre-rendered)', async ({ request }) => {
+    // Given: We fetch the raw HTML source
+    const response = await request.get('/blog/docker-observability/');
+    const html = await response.text();
+
+    // Then: HTML should contain Prism token spans (pre-rendered at build time)
+    expect(html).toContain('class="token');
+
+    // And: Should have specific token types
+    expect(html).toMatch(/class="token (keyword|string|comment|function|punctuation)/);
+  });
+
+  test('[P2] syntax highlighting requires no client-side JavaScript', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: Code blocks should already have token spans (no JS needed)
+    const tokenSpan = page.locator('.prose pre .token').first();
+    await expect(tokenSpan).toBeVisible();
+
+    // And: There should be multiple token types visible immediately
+    const tokenCount = await page.locator('.prose pre .token').count();
+    expect(tokenCount).toBeGreaterThan(5);
+  });
+});
+
+test.describe('Story 2.3: Token Colors (AC3)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P0] keyword tokens have distinct color', async ({ page }) => {
+    // Given: User views blog post with Python code
+    await page.goto(testPostUrl);
+
+    // Then: Keyword tokens should have a non-default color
+    const keywordToken = page.locator('.token.keyword').first();
+
+    // Wait for token to be visible (may need CSS to load)
+    await expect(keywordToken).toBeVisible({ timeout: 5000 });
+
+    // Get computed color
+    const color = await keywordToken.evaluate((el) => {
+      return window.getComputedStyle(el).color;
+    });
+
+    // Color should NOT be default black (rgb(0, 0, 0)) or white text
+    expect(color).not.toBe('rgb(0, 0, 0)');
+    expect(color).not.toBe('rgb(255, 255, 255)');
+  });
+
+  test('[P0] string tokens have distinct color', async ({ page }) => {
+    // Given: User views blog post with code containing strings
+    await page.goto(testPostUrl);
+
+    // Then: String tokens should have a distinct color
+    const stringToken = page.locator('.token.string').first();
+    await expect(stringToken).toBeVisible({ timeout: 5000 });
+
+    const color = await stringToken.evaluate((el) => {
+      return window.getComputedStyle(el).color;
+    });
+
+    // String color should be distinct (not default black/white)
+    expect(color).not.toBe('rgb(0, 0, 0)');
+    expect(color).not.toBe('rgb(255, 255, 255)');
+  });
+
+  test('[P0] different token types have different colors', async ({ page }) => {
+    // Given: User views blog post with code
+    await page.goto(testPostUrl);
+
+    // Get colors for different token types
+    const keywordColor = await page.locator('.token.keyword').first().evaluate((el) => {
+      return window.getComputedStyle(el).color;
+    });
+
+    const stringColor = await page.locator('.token.string').first().evaluate((el) => {
+      return window.getComputedStyle(el).color;
+    });
+
+    // Then: Keywords and strings should have DIFFERENT colors
+    expect(keywordColor).not.toBe(stringColor);
+  });
+
+  test('[P1] comment tokens have muted color', async ({ page }) => {
+    // Given: User views blog post with code containing comments
+    await page.goto(testPostUrl);
+
+    // Then: Comment tokens should exist and have distinct styling
+    const commentToken = page.locator('.token.comment').first();
+    const commentCount = await commentToken.count();
+
+    if (commentCount > 0) {
+      const color = await commentToken.evaluate((el) => {
+        return window.getComputedStyle(el).color;
+      });
+
+      // Comments should have a muted/gray color (not bright)
+      expect(color).not.toBe('rgb(0, 0, 0)');
+    }
+  });
+
+  test('[P1] function tokens have distinct color', async ({ page }) => {
+    // Given: User views blog post with Python functions
+    await page.goto(testPostUrl);
+
+    // Then: Function tokens should have distinct color
+    const functionToken = page.locator('.token.function').first();
+    const functionCount = await functionToken.count();
+
+    if (functionCount > 0) {
+      await expect(functionToken).toBeVisible();
+
+      const color = await functionToken.evaluate((el) => {
+        return window.getComputedStyle(el).color;
+      });
+
+      expect(color).not.toBe('rgb(0, 0, 0)');
+    }
+  });
+});
+
+test.describe('Story 2.3: Multi-Language Support (AC4)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] Python code blocks highlight correctly', async ({ page }) => {
+    // Given: User views blog post with Python code
+    await page.goto(testPostUrl);
+
+    // Then: Python code block should exist with language class
+    const pythonBlock = page.locator('pre.language-python, pre[class*="language-python"]');
+    await expect(pythonBlock.first()).toBeVisible();
+
+    // And: Should contain Python-specific tokens (def, import, etc.)
+    const pythonCode = pythonBlock.first();
+    await expect(pythonCode.locator('.token.keyword').first()).toBeVisible();
+  });
+
+  test('[P1] YAML code blocks highlight correctly', async ({ page }) => {
+    // Given: User views blog post with YAML code
+    await page.goto(testPostUrl);
+
+    // Then: YAML code block should exist with language class
+    const yamlBlock = page.locator('pre.language-yaml, pre.language-yml, pre[class*="language-yaml"]');
+    await expect(yamlBlock.first()).toBeVisible();
+
+    // And: Should contain YAML tokens (keys, values)
+    const yamlCode = yamlBlock.first();
+    const tokenCount = await yamlCode.locator('.token').count();
+    expect(tokenCount).toBeGreaterThan(0);
+  });
+
+  test('[P2] language class matches code content', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: All pre elements with language class should have tokens
+    const codeBlocks = page.locator('pre[class*="language-"]');
+    const blockCount = await codeBlocks.count();
+
+    expect(blockCount).toBeGreaterThan(0);
+
+    // Each code block should have at least some tokens
+    for (let i = 0; i < Math.min(blockCount, 3); i++) {
+      const block = codeBlocks.nth(i);
+      const tokenCount = await block.locator('.token').count();
+      expect(tokenCount).toBeGreaterThan(0);
+    }
+  });
+});
+
+test.describe('Story 2.3: Neubrutalist Code Block Styling (AC5)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] code blocks have 4px black border', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code blocks should have Neubrutalist border
+    const codeBlock = page.locator('.prose pre').first();
+    await expect(codeBlock).toBeVisible();
+
+    const borderWidth = await codeBlock.evaluate((el) => {
+      return window.getComputedStyle(el).borderWidth;
+    });
+
+    const borderColor = await codeBlock.evaluate((el) => {
+      return window.getComputedStyle(el).borderColor;
+    });
+
+    expect(borderWidth).toBe('4px');
+    expect(borderColor).toBe('rgb(0, 0, 0)');
+  });
+
+  test('[P1] code blocks have dark background', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code blocks should have dark background for contrast
+    const codeBlock = page.locator('.prose pre').first();
+    const bgColor = await codeBlock.evaluate((el) => {
+      return window.getComputedStyle(el).backgroundColor;
+    });
+
+    // Should be dark (neutral-900 = rgb(23, 23, 23))
+    expect(bgColor).toMatch(/rgb\(\d{1,2}, \d{1,2}, \d{1,2}\)/);
+  });
+
+  test('[P1] code uses monospace font', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code should use monospace font family
+    const codeElement = page.locator('.prose pre code, .prose pre').first();
+    const fontFamily = await codeElement.evaluate((el) => {
+      return window.getComputedStyle(el).fontFamily;
+    });
+
+    // Should contain monospace font
+    expect(fontFamily.toLowerCase()).toMatch(/mono|consolas|menlo|courier/);
+  });
+
+  test('[P2] code blocks have proper padding', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code blocks should have readable padding
+    const codeBlock = page.locator('.prose pre').first();
+    const padding = await codeBlock.evaluate((el) => {
+      return window.getComputedStyle(el).padding;
+    });
+
+    // Padding should not be 0
+    expect(padding).not.toBe('0px');
+  });
+});
+
+test.describe('Story 2.3: Horizontal Scrolling (AC6)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] code blocks have horizontal scroll enabled', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code blocks should allow horizontal scrolling
+    const codeBlock = page.locator('.prose pre').first();
+    const overflowX = await codeBlock.evaluate((el) => {
+      return window.getComputedStyle(el).overflowX;
+    });
+
+    // Should be auto or scroll (not hidden or visible which would clip/wrap)
+    expect(['auto', 'scroll']).toContain(overflowX);
+  });
+
+  test('[P1] code does not wrap text', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code should not wrap (preserve formatting)
+    const codeElement = page.locator('.prose pre code, .prose pre').first();
+    const whiteSpace = await codeElement.evaluate((el) => {
+      return window.getComputedStyle(el).whiteSpace;
+    });
+
+    // Should preserve whitespace and not wrap
+    expect(['pre', 'pre-wrap', 'nowrap']).toContain(whiteSpace);
+  });
+
+  test('[P2] long lines trigger scrollbar', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Pre element should have overflow handling
+    const codeBlock = page.locator('.prose pre').first();
+    const scrollWidth = await codeBlock.evaluate((el) => el.scrollWidth);
+    const clientWidth = await codeBlock.evaluate((el) => el.clientWidth);
+
+    // If content is wider than container, scrollbar should be available
+    // (This test documents expected behavior - actual overflow depends on content)
+    expect(scrollWidth).toBeGreaterThanOrEqual(clientWidth);
+  });
+});

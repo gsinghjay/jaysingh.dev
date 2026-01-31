@@ -29,7 +29,12 @@ export default function(eleventyConfig) {
   eleventyConfig.ignores.add("tests/**/*.md");
 
   // Syntax highlighting for code blocks
-  eleventyConfig.addPlugin(syntaxHighlight);
+  // tabindex enables keyboard users to scroll code blocks
+  eleventyConfig.addPlugin(syntaxHighlight, {
+    preAttributes: {
+      tabindex: 0
+    }
+  });
 
   // Date filter for formatting dates (default: "Jan 15, 2026" format)
   // Uses UTC to avoid timezone-related date shifts
