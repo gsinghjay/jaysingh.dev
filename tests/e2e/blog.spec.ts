@@ -931,15 +931,17 @@ test.describe('Story 2.3: Neubrutalist Code Block Styling (AC5)', () => {
     const codeBlock = page.locator('.prose pre').first();
     await expect(codeBlock).toBeVisible();
 
-    const borderWidth = await codeBlock.evaluate((el) => {
-      return window.getComputedStyle(el).borderWidth;
+    // Note: When inside code-block-wrapper (Story 2.4), top border is removed
+    // for seamless connection with header. Check that other borders exist.
+    const borderBottomWidth = await codeBlock.evaluate((el) => {
+      return window.getComputedStyle(el).borderBottomWidth;
     });
 
     const borderColor = await codeBlock.evaluate((el) => {
       return window.getComputedStyle(el).borderColor;
     });
 
-    expect(borderWidth).toBe('4px');
+    expect(borderBottomWidth).toBe('4px');
     expect(borderColor).toBe('rgb(0, 0, 0)');
   });
 
@@ -1029,5 +1031,273 @@ test.describe('Story 2.3: Horizontal Scrolling (AC6)', () => {
     // If content is wider than container, scrollbar should be available
     // (This test documents expected behavior - actual overflow depends on content)
     expect(scrollWidth).toBeGreaterThanOrEqual(clientWidth);
+  });
+});
+
+/**
+ * Story 2.4: Implement Code Copy Functionality Tests (ATDD - RED PHASE)
+ *
+ * These tests define EXPECTED behavior for code block copy functionality.
+ * All tests will FAIL until implementation is complete.
+ *
+ * Acceptance Criteria:
+ * - AC1: Copy button visible on code blocks
+ * - AC2: Copy to clipboard on click
+ * - AC3: Visual feedback ("COPIED" for 2s, then reverts)
+ * - AC4: Vanilla JS with data-* attributes
+ * - AC5: Graceful degradation (code visible if JS disabled)
+ * - AC6: Keyboard accessible (focusable, Enter/Space activation)
+ *
+ * TDD Workflow:
+ * 1. RED: Run these tests - they will fail (current state)
+ * 2. GREEN: Implement code copy in js/main.js and css/input.css
+ * 3. REFACTOR: Improve code quality while keeping tests green
+ */
+
+test.describe('Story 2.4: Code Copy Button Visibility (AC1)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P0] copy button is visible on code blocks', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Copy button should be visible on code blocks
+    const copyButton = page.locator('[data-copy-button]').first();
+    await expect(copyButton).toBeVisible();
+
+    // And: Button should have "COPY" text
+    await expect(copyButton).toHaveText('COPY');
+  });
+
+  test('[P0] language label displays correctly', async ({ page }) => {
+    // Given: User views blog post with Python code
+    await page.goto(testPostUrl);
+
+    // Then: Language label should be visible in header
+    const langLabel = page.locator('.code-block-language').first();
+    await expect(langLabel).toBeVisible();
+
+    // And: Should show language name in uppercase
+    const labelText = await langLabel.textContent();
+    expect(labelText).toMatch(/^[A-Z]+$/);
+  });
+
+  test('[P1] code block has wrapper structure', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code block should be wrapped with data attribute
+    const wrapper = page.locator('[data-code-block]').first();
+    await expect(wrapper).toBeVisible();
+
+    // And: Wrapper should contain header and pre element
+    await expect(wrapper.locator('.code-block-header')).toBeVisible();
+    await expect(wrapper.locator('pre')).toBeVisible();
+  });
+
+  test('[P2] multiple code blocks each have copy button', async ({ page }) => {
+    // Given: User views blog post with multiple code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Each code block should have its own copy button
+    const codeBlocks = page.locator('pre[class*="language-"]');
+    const copyButtons = page.locator('[data-copy-button]');
+
+    const blockCount = await codeBlocks.count();
+    const buttonCount = await copyButtons.count();
+
+    // Should have same number of buttons as code blocks
+    expect(buttonCount).toBe(blockCount);
+    expect(buttonCount).toBeGreaterThan(0);
+  });
+});
+
+test.describe('Story 2.4: Copy Feedback (AC2, AC3)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P0] copy button shows COPIED feedback on click', async ({ page, isMobile }) => {
+    // Skip on mobile - Playwright mobile emulation has clipboard API restrictions
+    test.skip(isMobile, 'Clipboard API restricted on mobile emulation');
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // When: User clicks the copy button
+    const copyButton = page.locator('[data-copy-button]').first();
+    await copyButton.click();
+
+    // Then: Button text should change to "COPIED"
+    await expect(copyButton).toHaveText('COPIED');
+  });
+
+  test('[P0] copy button reverts after feedback timeout', async ({ page, isMobile }) => {
+    // Skip on mobile - Playwright mobile emulation has clipboard API restrictions
+    test.skip(isMobile, 'Clipboard API restricted on mobile emulation');
+
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // When: User clicks the copy button
+    const copyButton = page.locator('[data-copy-button]').first();
+    await copyButton.click();
+
+    // Then: Button should show "COPIED" initially
+    await expect(copyButton).toHaveText('COPIED');
+
+    // And: Button should revert to "COPY" after 2 seconds
+    await expect(copyButton).toHaveText('COPY', { timeout: 3000 });
+  });
+
+  test('[P1] copy button has visual state change during feedback', async ({ page, isMobile }) => {
+    // Skip on mobile - Playwright mobile emulation has clipboard API restrictions
+    test.skip(isMobile, 'Clipboard API restricted on mobile emulation');
+
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // When: User clicks the copy button
+    const copyButton = page.locator('[data-copy-button]').first();
+    await copyButton.click();
+
+    // Then: Button should have copied state class
+    await expect(copyButton).toHaveClass(/is-copied/);
+
+    // And: Class should be removed after timeout
+    await page.waitForTimeout(2500);
+    await expect(copyButton).not.toHaveClass(/is-copied/);
+  });
+});
+
+test.describe('Story 2.4: Keyboard Accessibility (AC6)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] copy button is keyboard focusable', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // When: User focuses the copy button
+    const copyButton = page.locator('[data-copy-button]').first();
+    await copyButton.focus();
+
+    // Then: Button should be focused
+    await expect(copyButton).toBeFocused();
+  });
+
+  test('[P1] Enter key activates copy button', async ({ page, isMobile }) => {
+    // Skip on mobile - Playwright mobile emulation has clipboard API restrictions
+    test.skip(isMobile, 'Clipboard API restricted on mobile emulation');
+
+    // Given: User has focused a copy button
+    await page.goto(testPostUrl);
+    const copyButton = page.locator('[data-copy-button]').first();
+    await copyButton.focus();
+
+    // When: User presses Enter
+    await page.keyboard.press('Enter');
+
+    // Then: Button should show "COPIED" feedback
+    await expect(copyButton).toHaveText('COPIED');
+  });
+
+  test('[P2] Space key activates copy button', async ({ page, isMobile }) => {
+    // Skip on mobile - Playwright mobile emulation has clipboard API restrictions
+    test.skip(isMobile, 'Clipboard API restricted on mobile emulation');
+
+    // Given: User has focused a copy button
+    await page.goto(testPostUrl);
+    const copyButton = page.locator('[data-copy-button]').first();
+    await copyButton.focus();
+
+    // When: User presses Space
+    await page.keyboard.press('Space');
+
+    // Then: Button should show "COPIED" feedback
+    await expect(copyButton).toHaveText('COPIED');
+  });
+
+  test('[P2] copy button has visible focus indicator', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // When: User focuses the copy button
+    const copyButton = page.locator('[data-copy-button]').first();
+    await copyButton.focus();
+
+    // Then: Focus outline should be visible (4px black per PRD)
+    const outlineWidth = await copyButton.evaluate((el) => {
+      return window.getComputedStyle(el).outlineWidth;
+    });
+
+    // Should have visible focus indicator (not 0px)
+    expect(outlineWidth).not.toBe('0px');
+  });
+});
+
+test.describe('Story 2.4: Neubrutalist Styling (AC1)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] copy button has lime-400 background', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Copy button should have lime-400 background
+    const copyButton = page.locator('[data-copy-button]').first();
+    const bgColor = await copyButton.evaluate((el) => {
+      return window.getComputedStyle(el).backgroundColor;
+    });
+
+    // lime-400 = rgb(163, 230, 53)
+    expect(bgColor).toBe('rgb(163, 230, 53)');
+  });
+
+  test('[P1] copy button has black border', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Copy button should have 2px black border
+    const copyButton = page.locator('[data-copy-button]').first();
+
+    const borderWidth = await copyButton.evaluate((el) => {
+      return window.getComputedStyle(el).borderWidth;
+    });
+
+    const borderColor = await copyButton.evaluate((el) => {
+      return window.getComputedStyle(el).borderColor;
+    });
+
+    expect(borderWidth).toBe('2px');
+    expect(borderColor).toBe('rgb(0, 0, 0)');
+  });
+
+  test('[P1] code block header has black background', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Header bar should have black background
+    const header = page.locator('.code-block-header').first();
+    const bgColor = await header.evaluate((el) => {
+      return window.getComputedStyle(el).backgroundColor;
+    });
+
+    // black = rgb(0, 0, 0)
+    expect(bgColor).toBe('rgb(0, 0, 0)');
+  });
+
+  test('[P2] code block header has flex layout', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Header should use flexbox with space-between
+    const header = page.locator('.code-block-header').first();
+
+    const display = await header.evaluate((el) => {
+      return window.getComputedStyle(el).display;
+    });
+
+    const justifyContent = await header.evaluate((el) => {
+      return window.getComputedStyle(el).justifyContent;
+    });
+
+    expect(display).toBe('flex');
+    expect(justifyContent).toBe('space-between');
   });
 });

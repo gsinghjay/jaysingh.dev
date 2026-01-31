@@ -59,7 +59,11 @@ export default defineConfig({
     // Desktop browsers (PRD: Browser Support Matrix - latest 2 versions)
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        // Clipboard permissions for Story 2.4 copy tests (Chromium only)
+        permissions: ['clipboard-read', 'clipboard-write'],
+      },
     },
     {
       name: 'firefox',
@@ -72,7 +76,11 @@ export default defineConfig({
     // Mobile browsers (PRD: Mobile Safari iOS, Chrome Mobile Android)
     {
       name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'] },
+      use: {
+        ...devices['Pixel 5'],
+        // Clipboard permissions for Story 2.4 copy tests (Chromium only)
+        permissions: ['clipboard-read', 'clipboard-write'],
+      },
     },
     {
       name: 'mobile-safari',

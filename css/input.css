@@ -296,3 +296,34 @@
 .token.entity {
   cursor: help;
 }
+
+/* ==========================================================================
+   Code Block Copy Functionality - Story 2.4
+   Progressive enhancement: code remains visible without JS
+   ========================================================================== */
+
+.code-block-wrapper {
+  @apply mb-6;
+}
+
+.code-block-header {
+  @apply flex items-center justify-between bg-black text-white px-4 py-2 border-4 border-black;
+}
+
+.code-block-language {
+  @apply text-xs font-bold uppercase;
+}
+
+.code-block-copy {
+  @apply px-2 py-1 bg-lime-400 text-black border-2 border-black text-xs font-bold uppercase;
+  @apply hover:bg-yellow-400 transition-colors;
+}
+
+.code-block-copy.is-copied {
+  @apply bg-green-400;
+}
+
+/* Adjust pre element when inside wrapper (remove top border for seamless look) */
+.code-block-wrapper pre {
+  @apply border-t-0 mt-0;
+}
