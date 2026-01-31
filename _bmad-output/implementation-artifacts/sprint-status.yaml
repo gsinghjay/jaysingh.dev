@@ -66,8 +66,8 @@ development_status:
   # Epic 3: Project Showcase
   # Visitors can browse projects and view detailed case studies with architecture diagrams.
   epic-3: in-progress
-  3-1-create-projects-collection-and-listing-page: ready-for-dev
-  3-2-create-project-detail-layout: backlog
+  3-1-create-projects-collection-and-listing-page: done
+  3-2-create-project-detail-layout: ready-for-dev
   3-3-implement-mermaid-diagram-rendering: backlog
   3-4-implement-external-project-links: backlog
   3-5-implement-project-filtering: backlog

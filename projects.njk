@@ -5,7 +5,66 @@ description: Portfolio of software engineering projects and case studies
 permalink: /projects/
 ---
 
-<h1 class="text-4xl md:text-5xl font-black mb-8">Projects</h1>
+{% from "components/card.njk" import card %}
+{% from "components/tag.njk" import tag %}
 
-{# Content coming in Epic 3 #}
-<p class="text-lg">Coming soon...</p>
+<h1 class="text-4xl md:text-5xl font-black mb-8">
+  <span class="bg-pink-400 px-2">PROJECTS</span> & CASE STUDIES
+</h1>
+
+<p class="text-lg text-neutral-600 mb-12 max-w-2xl">
+  A collection of software engineering projects showcasing infrastructure, security, and platform work.
+</p>
+
+{# Project grid - 2 columns on md+ #}
+{% if collections.projects.length == 0 %}
+  <p class="text-lg text-neutral-600">No projects yet. Check back soon!</p>
+{% else %}
+<div class="grid gap-6 md:grid-cols-2">
+  {% for project in collections.projects %}
+    {# Card with relative positioning for stretched link #}
+    <div class="bg-white border-4 border-black p-6 relative group hover:bg-lime-50 active:translate-y-1 transition-all duration-150"
+         style="box-shadow: 6px 6px 0 #000;">
+      {# Project type badge #}
+      {% if project.data.projectType %}
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-sm font-bold uppercase px-3 py-1 border-2 border-black bg-neutral-100">
+          {{ project.data.projectType | upper }}
+        </span>
+      </div>
+      {% endif %}
+
+      {# Title as stretched link - covers entire card #}
+      <a href="{{ project.url }}" class="block focus:outline focus:outline-4 focus:outline-black focus:outline-offset-2 after:absolute after:inset-0 after:content-['']">
+        <h2 class="text-xl font-black mb-3 group-hover:text-pink-600 transition-colors duration-150">
+          {{ project.data.title }}
+        </h2>
+      </a>
+
+      {# Description #}
+      {% if project.data.description %}
+      <p class="text-neutral-600 mb-4 line-clamp-2">
+        {{ project.data.description }}
+      </p>
+      {% endif %}
+
+      {# Technology tags (max 4) #}
+      {% if project.data.technologies and project.data.technologies.length > 0 %}
+      <div class="flex flex-wrap gap-2 mb-4">
+        {% for tech in project.data.technologies | take(4) %}
+          {{ tag(tech, "tech") }}
+        {% endfor %}
+        {% if project.data.technologies.length > 4 %}
+          <span class="text-sm text-neutral-500">+{{ project.data.technologies.length - 4 }} more</span>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {# View project link - z-10 to be clickable above stretched card link #}
+      <a href="{{ project.url }}" class="font-bold text-black hover:underline focus:outline focus:outline-4 focus:outline-black focus:outline-offset-2 relative z-10" aria-label="View {{ project.data.title }} project details">
+        VIEW PROJECT →
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
