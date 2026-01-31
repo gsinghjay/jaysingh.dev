@@ -1,0 +1,66 @@
+---
+layout: layouts/base.njk
+---
+
+{% from "components/card.njk" import card %}
+{% from "components/tag.njk" import tag %}
+
+<div class="py-16">
+    {# Back button - top #}
+    <a href="/projects/" class="inline-flex items-center gap-2 px-4 py-2 bg-white border-4 border-black font-bold uppercase text-sm hover:bg-lime-300 transition-all duration-150 active:translate-y-1 mb-8"
+       style="box-shadow: 6px 6px 0 #000;">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      BACK TO PROJECTS
+    </a>
+
+    <div class="max-w-4xl">
+      {# Header #}
+      <div class="mb-8">
+        {# Project type badge #}
+        {% if projectType %}
+          {{ tag(projectType | upper, "category") }}
+        {% endif %}
+
+        {# Title with first word highlighted #}
+        {% set titleWords = title.split(' ') %}
+        <h1 class="text-4xl md:text-5xl font-black my-6">
+          <span class="bg-pink-400">{{ titleWords[0] }}</span>
+          {%- for word in titleWords %}{% if loop.index0 > 0 %} {{ word }}{% endif %}{% endfor -%}
+        </h1>
+
+        {# Description #}
+        {% if description %}
+          <p class="text-lg text-neutral-600 mb-6">{{ description }}</p>
+        {% endif %}
+
+        {# Technology tags - show ALL (not limited like listing page) #}
+        {% if technologies and technologies.length > 0 %}
+          <div class="flex flex-wrap gap-2">
+            {% for tech in technologies %}
+              {{ tag(tech, "tech") }}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      {# Content Card #}
+      {% call card("lg") %}
+        <div class="prose max-w-none">
+          {{ content | safe }}
+        </div>
+      {% endcall %}
+
+      {# Bottom back button #}
+      <div class="mt-12 flex justify-center">
+        <a href="/projects/" class="inline-flex items-center gap-2 px-6 py-3 bg-black text-white border-4 border-black font-bold uppercase text-sm hover:bg-pink-400 hover:text-black transition-all duration-150 active:translate-y-1"
+           style="box-shadow: 6px 6px 0 #000;">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          BACK TO ALL PROJECTS
+        </a>
+      </div>
+    </div>
+</div>

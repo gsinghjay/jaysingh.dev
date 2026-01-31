@@ -416,3 +416,232 @@ test.describe('Story 3.1: Grid Layout', () => {
     expect(Math.abs(firstBox!.y - secondBox!.y)).toBeLessThan(20);
   });
 });
+
+/**
+ * Story 3.2: Create Project Detail Layout
+ *
+ * These tests validate the project detail page implementation.
+ *
+ * Acceptance Criteria:
+ * - AC1: Project detail page accessible at /projects/{project-id}/
+ * - AC2: Challenge/Solution/Impact structure visible
+ * - AC3: Layout extends base.njk (verified via main#main-content from base layout)
+ * - AC4: Header with title, description, technology tags
+ * - AC5: Clean URL structure using project id field
+ * - AC6: Markdown formatting properly styled
+ */
+
+test.describe('Story 3.2: Project Detail Page Access (AC1, AC5)', () => {
+  test('[P0] project detail page loads at clean URL', async ({ page }) => {
+    // Given: A project exists with id "qr-code-platform"
+    // When: User navigates to the project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Page should load successfully (200 status)
+    await expect(page).toHaveURL('/projects/qr-code-platform/');
+
+    // And: Page should have main content area
+    await expect(page.locator('main')).toBeVisible();
+
+    // And: Page should have exactly one h1 (accessibility)
+    const h1Count = await page.locator('h1').count();
+    expect(h1Count).toBe(1);
+  });
+
+  test('[P2] invalid project URL returns 404 or redirects', async ({ page }) => {
+    // Given: User navigates to a non-existent project
+    const response = await page.goto('/projects/non-existent-project/');
+
+    // Then: Should return 404 or redirect to projects listing
+    const status = response?.status();
+    const url = page.url();
+
+    // Either 404 page or redirect to /projects/
+    expect(status === 404 || url.endsWith('/projects/')).toBeTruthy();
+  });
+
+  test('[P1] layout extends base.njk with proper structure (AC3)', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Page should have main element with id from base.njk
+    const main = page.locator('main#main-content');
+    await expect(main).toBeVisible();
+
+    // And: Page should have skip link (from base.njk)
+    const skipLink = page.locator('a.skip-link');
+    await expect(skipLink).toBeAttached();
+
+    // And: Page should have header with navigation (from base.njk)
+    const header = page.locator('header');
+    await expect(header).toBeVisible();
+
+    // And: Page should have footer (from base.njk)
+    const footer = page.locator('footer');
+    await expect(footer).toBeVisible();
+  });
+});
+
+test.describe('Story 3.2: Project Header Content (AC4)', () => {
+  test('[P0] project title displayed with pink highlight', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Project title should be visible as h1
+    const heading = page.getByRole('heading', { level: 1 });
+    await expect(heading).toBeVisible();
+    await expect(heading).toContainText('QR Code');
+
+    // And: First word should have pink highlight (bg-pink-400)
+    const highlight = heading.locator('.bg-pink-400');
+    await expect(highlight).toBeVisible();
+  });
+
+  test('[P0] project description displayed', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Project description should be visible
+    // Description contains "High-performance QR code" from frontmatter
+    await expect(page.getByText(/High-performance QR code/i)).toBeVisible();
+  });
+
+  test('[P0] all technology tags displayed', async ({ page }) => {
+    // Given: User navigates to a project with multiple technologies
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: All technology tags should be visible (not limited to 4 like listing)
+    // QR Code Platform has: Python, FastAPI, PostgreSQL, Docker, Prometheus
+    // Use exact text match to avoid matching content in body text
+    const tagsContainer = page.locator('.flex.flex-wrap.gap-2');
+    await expect(tagsContainer.getByText('Python', { exact: true })).toBeVisible();
+    await expect(tagsContainer.getByText('FastAPI', { exact: true })).toBeVisible();
+    await expect(tagsContainer.getByText('PostgreSQL', { exact: true })).toBeVisible();
+    await expect(tagsContainer.getByText('Docker', { exact: true })).toBeVisible();
+    await expect(tagsContainer.getByText('Prometheus', { exact: true })).toBeVisible();
+  });
+
+  test('[P1] project type badge displayed', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Project type badge should be visible (WORK or PERSONAL)
+    const typeBadge = page.locator('.bg-neutral-100.text-sm.font-bold, [class*="bg-neutral"]');
+    await expect(typeBadge.first()).toBeVisible();
+
+    // And: Badge should contain WORK (this is a work project)
+    await expect(page.getByText(/WORK/i)).toBeVisible();
+  });
+});
+
+test.describe('Story 3.2: Challenge/Solution/Impact Sections (AC2)', () => {
+  test('[P0] Challenge section heading visible', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Challenge heading should be visible as h2
+    const challengeHeading = page.getByRole('heading', { name: 'Challenge', level: 2 });
+    await expect(challengeHeading).toBeVisible();
+  });
+
+  test('[P0] Solution section heading visible', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Solution heading should be visible as h2
+    const solutionHeading = page.getByRole('heading', { name: 'Solution', level: 2 });
+    await expect(solutionHeading).toBeVisible();
+  });
+
+  test('[P0] Impact section heading visible', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Impact heading should be visible as h2
+    const impactHeading = page.getByRole('heading', { name: 'Impact', level: 2 });
+    await expect(impactHeading).toBeVisible();
+  });
+});
+
+test.describe('Story 3.2: Navigation (AC1)', () => {
+  test('[P1] top back button navigates to projects listing', async ({ page }) => {
+    // Given: User is on a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // When: User clicks the back button at top
+    const backButton = page.getByRole('link', { name: /back to projects/i }).first();
+    await expect(backButton).toBeVisible();
+    await backButton.click();
+
+    // Then: User should navigate to projects listing
+    await expect(page).toHaveURL('/projects/');
+  });
+
+  test('[P1] bottom back button present and styled', async ({ page }) => {
+    // Given: User is on a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Bottom back button should be visible
+    const bottomBackButton = page.getByRole('link', { name: /back to all projects/i });
+    await expect(bottomBackButton).toBeVisible();
+
+    // And: Button should have black background with white text (per blog-post pattern)
+    const bgColor = await bottomBackButton.evaluate((el) =>
+      window.getComputedStyle(el).backgroundColor
+    );
+    expect(bgColor).toBe('rgb(0, 0, 0)'); // black
+  });
+
+  test('[P1] keyboard navigation works on back buttons', async ({ page }) => {
+    // Given: User navigates to project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // When: User tabs to back button and presses Enter
+    const backButton = page.getByRole('link', { name: /back to projects/i }).first();
+    await backButton.focus();
+    await expect(backButton).toBeFocused();
+
+    // Then: Focus outline should be visible (accessibility)
+    const outlineWidth = await backButton.evaluate((el) =>
+      window.getComputedStyle(el).outlineWidth
+    );
+    expect(outlineWidth).not.toBe('0px');
+  });
+});
+
+test.describe('Story 3.2: Neubrutalist Styling (AC1, AC6)', () => {
+  test('[P1] content card has Neubrutalist styling', async ({ page }) => {
+    // Given: User views a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Content card (the one containing prose) should have 4px black border
+    const card = page.locator('.border-4.border-black').filter({ has: page.locator('.prose') });
+    await expect(card).toBeVisible();
+
+    const borderWidth = await card.evaluate((el) =>
+      window.getComputedStyle(el).borderWidth
+    );
+    expect(borderWidth).toBe('4px');
+
+    // And: Card should have brutal shadow (lg size = 8px)
+    const style = await card.getAttribute('style');
+    expect(style).toContain('8px 8px 0');
+  });
+
+  test('[P1] prose styling applied to content', async ({ page }) => {
+    // Given: User views a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Content should have prose class for markdown styling
+    const proseContent = page.locator('.prose');
+    await expect(proseContent).toBeVisible();
+
+    // And: Headings should be styled (h2 for Challenge/Solution/Impact)
+    const h2 = proseContent.locator('h2').first();
+    const fontWeight = await h2.evaluate((el) =>
+      window.getComputedStyle(el).fontWeight
+    );
+    // Font weight 700 = bold, 800+ = extra bold
+    expect(parseInt(fontWeight)).toBeGreaterThanOrEqual(700);
+  });
+});
