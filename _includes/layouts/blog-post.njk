@@ -26,7 +26,7 @@ layout: layouts/base.njk
               {% if lastUpdated and lastUpdated != date %}
                 <span>Updated: {{ lastUpdated | date }}</span>
               {% endif %}
-              <span class="font-bold">{{ readTime }}</span>
+              <span class="font-bold">{{ content | readingTime }}</span>
             </div>
           </div>
 
@@ -66,6 +66,9 @@ layout: layouts/base.njk
             {{ content | safe }}
           </div>
         {% endcall %}
+
+        {# Social Share Buttons #}
+        {% include "partials/social-share.njk" %}
 
         {# Bottom back button #}
         <div class="mt-12 flex justify-center">

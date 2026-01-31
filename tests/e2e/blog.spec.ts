@@ -1232,6 +1232,159 @@ test.describe('Story 2.4: Keyboard Accessibility (AC6)', () => {
   });
 });
 
+/**
+ * Story 2.5: Implement Reading Time Display Tests (ATDD - RED PHASE)
+ *
+ * These tests define EXPECTED behavior for dynamically calculated reading time.
+ * Tests will FAIL until readingTime filter is implemented.
+ *
+ * Acceptance Criteria:
+ * - AC1: Build-time calculation at ~200 WPM
+ * - AC2: Display on detail page with "X min read" format
+ * - AC3: Display on listing page with "X min read" format
+ * - AC4: 11ty filter implementation (not client-side JS)
+ * - AC5: Minimum value "1 min read" for short posts
+ *
+ * TDD Workflow:
+ * 1. RED: Run these tests - they will fail (current: "10 min", expected: "X min read")
+ * 2. GREEN: Implement readingTime filter and update templates
+ * 3. REFACTOR: Improve code quality while keeping tests green
+ */
+
+test.describe('Story 2.5: Reading Time Display - Listing Page (AC3)', () => {
+  test('[P0] reading time on listing shows "min read" format', async ({ page }) => {
+    // Given: User navigates to blog listing page
+    await page.goto('/blog/');
+
+    // Then: Reading time should display with "X min read" format
+    // Current implementation shows "10 min" - this test will FAIL
+    const readingTime = page.getByText(/\d+ min read/).first();
+    await expect(readingTime).toBeVisible();
+  });
+
+  test('[P1] all post cards show reading time with correct format', async ({ page }) => {
+    // Given: User views blog listing with multiple posts
+    await page.goto('/blog/');
+
+    // Then: Each post card should have reading time in "X min read" format
+    const postCards = page.locator('.border-4.border-black').filter({ has: page.locator('h2') });
+    const cardCount = await postCards.count();
+    expect(cardCount).toBeGreaterThan(0);
+
+    // Check first few cards for correct format
+    for (let i = 0; i < Math.min(cardCount, 3); i++) {
+      const card = postCards.nth(i);
+      const readingTime = card.getByText(/\d+ min read/);
+      await expect(readingTime).toBeVisible();
+    }
+  });
+});
+
+test.describe('Story 2.5: Reading Time Display - Detail Page (AC2)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P0] reading time on detail shows "min read" format', async ({ page }) => {
+    // Given: User navigates to blog post detail page
+    await page.goto(testPostUrl);
+
+    // Then: Reading time should display with "X min read" format in header
+    // Current implementation shows "10 min" - this test will FAIL
+    const metadataSection = page.locator('.flex.items-center.gap-4.text-sm.text-neutral-500');
+    const readingTime = metadataSection.getByText(/\d+ min read/);
+    await expect(readingTime).toBeVisible();
+  });
+
+  test('[P1] reading time has bold styling on detail page', async ({ page }) => {
+    // Given: User views blog post detail page
+    await page.goto(testPostUrl);
+
+    // Then: Reading time should have font-bold class
+    const readingTime = page.locator('.font-bold').filter({ hasText: /\d+ min read/ });
+    await expect(readingTime).toBeVisible();
+  });
+});
+
+test.describe('Story 2.5: Reading Time Calculation (AC1, AC5)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] reading time value is reasonable for content length', async ({ page }) => {
+    // Given: User views docker-observability post (~1500 words)
+    await page.goto(testPostUrl);
+
+    // Then: Reading time should be ~7-10 min at 200 WPM
+    // Extract the number from "X min read"
+    const readingTimeElement = page.getByText(/\d+ min read/).first();
+    await expect(readingTimeElement).toBeVisible();
+
+    const text = await readingTimeElement.textContent();
+    const minutes = parseInt(text?.match(/(\d+)/)?.[1] || '0');
+
+    // Docker observability post is ~1500 words, at 200 WPM = 7-8 min
+    // Allow 5-15 range for flexibility
+    expect(minutes).toBeGreaterThanOrEqual(5);
+    expect(minutes).toBeLessThanOrEqual(15);
+  });
+
+  test('[P2] short posts show minimum "1 min read"', async ({ page }) => {
+    // Given: Blog listing page
+    await page.goto('/blog/');
+
+    // Then: Any reading time shown should be at least "1 min read"
+    // (validates minimum value logic even if no short posts exist)
+    const readingTimes = page.getByText(/\d+ min read/);
+    const count = await readingTimes.count();
+
+    if (count > 0) {
+      for (let i = 0; i < count; i++) {
+        const text = await readingTimes.nth(i).textContent();
+        const minutes = parseInt(text?.match(/(\d+)/)?.[1] || '0');
+        expect(minutes).toBeGreaterThanOrEqual(1);
+      }
+    }
+  });
+});
+
+test.describe('Story 2.5: Build-Time Rendering (AC4)', () => {
+  test('[P2] reading time is pre-rendered in HTML (no client JS)', async ({ request }) => {
+    // Given: We fetch raw HTML source
+    const response = await request.get('/blog/docker-observability/');
+    const html = await response.text();
+
+    // Then: HTML should contain reading time with "min read" format
+    // This verifies build-time rendering (11ty filter, not client JS)
+    expect(html).toMatch(/\d+ min read/);
+  });
+
+  test('[P2] listing page reading time is pre-rendered', async ({ request }) => {
+    // Given: We fetch raw HTML of blog listing
+    const response = await request.get('/blog/');
+    const html = await response.text();
+
+    // Then: HTML should contain reading time values
+    expect(html).toMatch(/\d+ min read/);
+  });
+});
+
+test.describe('Story 2.5: Consistency Check (AC2, AC3)', () => {
+  test('[P2] listing and detail show same reading time value', async ({ page }) => {
+    // Given: User is on blog listing page
+    await page.goto('/blog/');
+
+    // Get reading time from first post card
+    const firstPostCard = page.locator('.border-4.border-black').filter({ has: page.locator('h2') }).first();
+    const listingReadTime = await firstPostCard.getByText(/\d+ min read/).textContent();
+
+    // When: User clicks through to that post
+    const postLink = firstPostCard.locator('a[href^="/blog/"]').first();
+    const href = await postLink.getAttribute('href');
+    await page.goto(href || '/blog/');
+
+    // Then: Detail page should show same reading time
+    const detailReadTime = await page.getByText(/\d+ min read/).first().textContent();
+    expect(detailReadTime).toBe(listingReadTime);
+  });
+});
+
 test.describe('Story 2.4: Neubrutalist Styling (AC1)', () => {
   const testPostUrl = '/blog/docker-observability/';
 
@@ -1299,5 +1452,386 @@ test.describe('Story 2.4: Neubrutalist Styling (AC1)', () => {
 
     expect(display).toBe('flex');
     expect(justifyContent).toBe('space-between');
+  });
+});
+
+/**
+ * Story 2.6: Implement Social Sharing Tests (ATDD - RED PHASE)
+ *
+ * These tests define EXPECTED behavior for social sharing functionality.
+ * All tests will FAIL until implementation is complete.
+ *
+ * Acceptance Criteria:
+ * - AC1: Share buttons visible (Twitter/X, LinkedIn, generic Share)
+ * - AC2: Web Share API support (native share dialog)
+ * - AC3: Platform fallback buttons (intent URLs in popups)
+ * - AC4: Vanilla JS implementation (code review - not E2E testable)
+ * - AC5: Keyboard accessibility (focusable, Enter/Space activation)
+ * - AC6: Reusable partial (code review - not E2E testable)
+ *
+ * TDD Workflow:
+ * 1. RED: Run these tests - they will fail (current state)
+ * 2. GREEN: Implement social-share.njk, initSocialShare() in main.js
+ * 3. REFACTOR: Improve code quality while keeping tests green
+ */
+
+test.describe('Story 2.6: Social Share Buttons Visibility (AC1)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P0] share buttons visible on blog detail page', async ({ page }) => {
+    // Given: User views a blog post
+    await page.goto(testPostUrl);
+
+    // Then: Twitter/X share button should be visible
+    await expect(page.locator('[data-share-twitter]')).toBeVisible();
+
+    // And: LinkedIn share button should be visible
+    await expect(page.locator('[data-share-linkedin]')).toBeVisible();
+
+    // And: Share section should have accessible label
+    const shareSection = page.locator('.social-share[aria-label="Share this post"]');
+    await expect(shareSection).toBeVisible();
+  });
+
+  test('[P1] share buttons have Neubrutalist styling', async ({ page }) => {
+    // Given: User views a blog post
+    await page.goto(testPostUrl);
+
+    // Then: Twitter button should have 4px black border
+    const twitterBtn = page.locator('[data-share-twitter]');
+    await expect(twitterBtn).toBeVisible();
+
+    const borderWidth = await twitterBtn.evaluate((el) => {
+      return window.getComputedStyle(el).borderWidth;
+    });
+    expect(borderWidth).toBe('4px');
+
+    // And: Button should have brutal shadow
+    const boxShadow = await twitterBtn.evaluate((el) => {
+      return window.getComputedStyle(el).boxShadow;
+    });
+    expect(boxShadow).toContain('4px 4px');
+  });
+});
+
+test.describe('Story 2.6: Platform Share URLs (AC3)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] Twitter button opens correct intent URL', async ({ page, context, isMobile }) => {
+    // Skip on mobile - popup handling differs on mobile emulators
+    test.skip(isMobile, 'Popup handling unreliable on mobile emulation');
+
+    // Given: User is on a blog post
+    await page.goto(testPostUrl);
+
+    // When: User clicks Twitter share button
+    const popupPromise = context.waitForEvent('page');
+    await page.click('[data-share-twitter]');
+    const popup = await popupPromise;
+
+    // Then: Popup should open Twitter/X intent URL (twitter.com redirects to x.com)
+    const url = popup.url();
+    expect(url).toMatch(/twitter\.com\/intent\/tweet|x\.com\/intent\/tweet/);
+
+    // And: URL should contain encoded post URL
+    expect(url).toContain('docker-observability');
+  });
+
+  test('[P1] LinkedIn button opens correct share URL', async ({ page, context, isMobile }) => {
+    // Skip on mobile - popup handling differs on mobile emulators
+    test.skip(isMobile, 'Popup handling unreliable on mobile emulation');
+
+    // Given: User is on a blog post
+    await page.goto(testPostUrl);
+
+    // When: User clicks LinkedIn share button
+    const popupPromise = context.waitForEvent('page');
+    await page.click('[data-share-linkedin]');
+    const popup = await popupPromise;
+
+    // Then: Popup should open LinkedIn share-offsite URL (may redirect to login first)
+    const url = popup.url();
+    expect(url).toContain('linkedin.com');
+    expect(url).toMatch(/sharing|share/); // share-offsite or redirect
+
+    // And: URL should contain encoded post URL
+    expect(url).toContain('docker-observability');
+  });
+});
+
+test.describe('Story 2.6: Web Share API (AC2)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P2] native share button hidden when API unsupported', async ({ page }) => {
+    // Given: User views blog post in browser without Web Share API
+    // (Most Playwright browsers don't support Web Share API)
+    await page.goto(testPostUrl);
+
+    // Then: Native share button should be hidden
+    await expect(page.locator('[data-share-native]')).toBeHidden();
+  });
+});
+
+test.describe('Story 2.6: Keyboard Accessibility (AC5)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] share buttons are keyboard focusable', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // When: User focuses Twitter button
+    const twitterBtn = page.locator('[data-share-twitter]');
+    await twitterBtn.focus();
+
+    // Then: Button should be focused
+    await expect(twitterBtn).toBeFocused();
+  });
+
+  test('[P1] Tab navigates between share buttons', async ({ page }) => {
+    // Given: User has focused Twitter button
+    await page.goto(testPostUrl);
+    const twitterBtn = page.locator('[data-share-twitter]');
+    await twitterBtn.focus();
+    await expect(twitterBtn).toBeFocused();
+
+    // When: User presses Tab
+    await page.keyboard.press('Tab');
+
+    // Then: LinkedIn button should be focused
+    const linkedinBtn = page.locator('[data-share-linkedin]');
+    await expect(linkedinBtn).toBeFocused();
+  });
+
+  test('[P2] Enter key activates share button', async ({ page, context, isMobile }) => {
+    // Skip on mobile - popup handling differs on mobile emulators
+    test.skip(isMobile, 'Popup handling unreliable on mobile emulation');
+
+    // Given: User has focused Twitter button
+    await page.goto(testPostUrl);
+    const twitterBtn = page.locator('[data-share-twitter]');
+    await twitterBtn.focus();
+
+    // When: User presses Enter
+    const popupPromise = context.waitForEvent('page');
+    await page.keyboard.press('Enter');
+    const popup = await popupPromise;
+
+    // Then: Twitter share popup should open (twitter.com redirects to x.com)
+    expect(popup.url()).toMatch(/twitter\.com\/intent\/tweet|x\.com\/intent\/tweet/);
+  });
+
+  test('[P2] Space key activates share button', async ({ page, context, isMobile }) => {
+    // Skip on mobile - popup handling differs on mobile emulators
+    test.skip(isMobile, 'Popup handling unreliable on mobile emulation');
+
+    // Given: User has focused LinkedIn button
+    await page.goto(testPostUrl);
+    const linkedinBtn = page.locator('[data-share-linkedin]');
+    await linkedinBtn.focus();
+
+    // When: User presses Space
+    const popupPromise = context.waitForEvent('page');
+    await page.keyboard.press('Space');
+    const popup = await popupPromise;
+
+    // Then: LinkedIn share popup should open
+    expect(popup.url()).toContain('linkedin.com');
+  });
+});
+
+test.describe('Story 2.6: Mobile Responsive (AC1)', () => {
+  test.use({ viewport: { width: 375, height: 667 } }); // iPhone SE
+
+  test('[P2] share buttons visible and centered on mobile', async ({ page }) => {
+    // Given: User views blog post on mobile
+    await page.goto('/blog/docker-observability/');
+
+    // Then: Share buttons should be visible
+    await expect(page.locator('[data-share-twitter]')).toBeVisible();
+    await expect(page.locator('[data-share-linkedin]')).toBeVisible();
+
+    // And: Buttons should be centered (flex-wrap layout)
+    const shareSection = page.locator('.social-share');
+    const justifyContent = await shareSection.evaluate((el) => {
+      return window.getComputedStyle(el).justifyContent;
+    });
+    expect(justifyContent).toBe('center');
+  });
+});
+
+/**
+ * Story 2.7: Implement Related Projects Links Tests (ATDD - RED PHASE)
+ *
+ * These tests define EXPECTED behavior for related projects links.
+ * All tests will FAIL until implementation is complete.
+ *
+ * Acceptance Criteria:
+ * - AC1: Related Projects Section Displays when relatedProjectIds exists
+ * - AC2: Project Link Content (title + description)
+ * - AC3: Navigation to Project page
+ * - AC4: Graceful Absence (section hidden when no relatedProjectIds)
+ * - AC5: Build-time Collection Lookup (11ty filter)
+ * - AC6: Invalid Reference Handling (gracefully ignored)
+ *
+ * TDD Workflow:
+ * 1. RED: Run these tests - they will fail (current state)
+ * 2. GREEN: Implement related-projects.njk, findProjectsByIds filter
+ * 3. REFACTOR: Improve code quality while keeping tests green
+ */
+
+test.describe('Story 2.7: Related Projects Section (AC1, AC4)', () => {
+  // Post WITH valid relatedProjectIds
+  const postWithRelated = '/blog/oauth2-authentication-gateway/';
+  // Post with invalid reference (observability-infrastructure doesn't exist)
+  const postWithInvalidRef = '/blog/docker-observability/';
+
+  test('[P0] related projects section visible when relatedProjectIds exists', async ({ page }) => {
+    // Given: User navigates to blog post with valid relatedProjectIds
+    await page.goto(postWithRelated);
+
+    // Then: Related projects section should be visible
+    const section = page.locator('.related-projects');
+    await expect(section).toBeVisible();
+
+    // And: Should have "RELATED PROJECTS" heading
+    await expect(page.getByRole('heading', { name: /RELATED.*PROJECTS/i })).toBeVisible();
+  });
+
+  test('[P1] section hidden when all relatedProjectIds are invalid', async ({ page }) => {
+    // Given: User navigates to blog post with invalid relatedProjectIds
+    // (observability-infrastructure project doesn't exist)
+    await page.goto(postWithInvalidRef);
+
+    // Then: Related projects section should NOT be visible
+    const section = page.locator('.related-projects');
+    await expect(section).toBeHidden();
+  });
+});
+
+test.describe('Story 2.7: Project Link Content (AC2)', () => {
+  const postWithRelated = '/blog/oauth2-authentication-gateway/';
+
+  test('[P0] project title and description displayed', async ({ page }) => {
+    // Given: User views blog post with related projects
+    await page.goto(postWithRelated);
+
+    // Then: Project card should be visible
+    const projectLink = page.locator('.related-projects a').first();
+    await expect(projectLink).toBeVisible();
+
+    // And: Should have project title (h3)
+    const title = projectLink.locator('h3');
+    await expect(title).toBeVisible();
+    await expect(title).toContainText(/Authentication/i);
+
+    // And: Should have project description
+    const description = projectLink.locator('p');
+    await expect(description).toBeVisible();
+    const descText = await description.textContent();
+    expect(descText?.trim().length).toBeGreaterThan(0);
+  });
+});
+
+test.describe('Story 2.7: Navigation to Project (AC3)', () => {
+  const postWithRelated = '/blog/oauth2-authentication-gateway/';
+
+  test('[P0] clicking project link navigates to project page', async ({ page }) => {
+    // Given: User is on blog post with related projects
+    await page.goto(postWithRelated);
+
+    // When: User clicks on a related project link
+    const projectLink = page.locator('.related-projects a').first();
+    await projectLink.click();
+
+    // Then: User should navigate to project detail page
+    await expect(page).toHaveURL(/\/projects\/[\w-]+\//);
+  });
+
+  test('[P1] project links are keyboard accessible', async ({ page }) => {
+    // Given: User is on blog post with related projects
+    await page.goto(postWithRelated);
+
+    // When: User focuses and activates project link via keyboard
+    const projectLink = page.locator('.related-projects a').first();
+    await projectLink.focus();
+
+    // Then: Link should be focused
+    await expect(projectLink).toBeFocused();
+
+    // When: User presses Enter
+    await page.keyboard.press('Enter');
+
+    // Then: Should navigate to project page
+    await expect(page).toHaveURL(/\/projects\/[\w-]+\//);
+  });
+});
+
+test.describe('Story 2.7: Build-time Rendering (AC5)', () => {
+  test('[P2] related projects pre-rendered in HTML (no client JS)', async ({ request }) => {
+    // Given: We fetch raw HTML source of blog post with related projects
+    const response = await request.get('/blog/oauth2-authentication-gateway/');
+    const html = await response.text();
+
+    // Then: HTML should contain related projects section (pre-rendered)
+    expect(html).toContain('related-projects');
+
+    // And: Should contain project title in HTML
+    expect(html).toMatch(/Authentication/i);
+
+    // And: Should NOT require client-side JavaScript to render
+    expect(html).not.toContain('Loading related projects');
+  });
+});
+
+test.describe('Story 2.7: Invalid Reference Handling (AC6)', () => {
+  const postWithInvalidRef = '/blog/docker-observability/';
+
+  test('[P1] invalid project references gracefully ignored', async ({ page }) => {
+    // Given: Blog post has relatedProjectIds with non-existent project
+    await page.goto(postWithInvalidRef);
+
+    // Then: Page should load without errors
+    await expect(page.locator('main')).toBeVisible();
+
+    // And: No JavaScript errors related to projects
+    const consoleErrors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') consoleErrors.push(msg.text());
+    });
+
+    // Reload to capture console
+    await page.reload();
+    await expect(page.locator('main')).toBeVisible();
+
+    // Filter for project-related errors only
+    const relatedErrors = consoleErrors.filter((e) => e.includes('project') || e.includes('related'));
+    expect(relatedErrors).toHaveLength(0);
+  });
+});
+
+test.describe('Story 2.7: Neubrutalist Styling', () => {
+  const postWithRelated = '/blog/oauth2-authentication-gateway/';
+
+  test('[P2] project cards have Neubrutalist styling', async ({ page }) => {
+    // Given: User views blog post with related projects
+    await page.goto(postWithRelated);
+
+    // Then: Project card should have 4px black border
+    const projectCard = page.locator('.related-projects a').first();
+    await expect(projectCard).toBeVisible();
+
+    const borderWidth = await projectCard.evaluate((el) => {
+      return window.getComputedStyle(el).borderWidth;
+    });
+    expect(borderWidth).toBe('4px');
+
+    const borderColor = await projectCard.evaluate((el) => {
+      return window.getComputedStyle(el).borderColor;
+    });
+    expect(borderColor).toBe('rgb(0, 0, 0)');
+
+    // And: Should have brutal shadow
+    const style = await projectCard.getAttribute('style');
+    expect(style).toContain('6px 6px 0');
   });
 });

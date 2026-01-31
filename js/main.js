@@ -5,6 +5,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize code copy functionality
   initCodeCopy();
+  // Initialize social share functionality
+  initSocialShare();
   // Mobile menu toggle
   const menuToggle = document.querySelector('[data-mobile-menu-toggle]');
   const mobileMenu = document.querySelector('[data-mobile-menu]');
@@ -138,6 +140,61 @@ function initCodeCopy() {
       copyBtn._copyTimeout = setTimeout(() => {
         copyBtn.textContent = 'COPY';
       }, 2000);
+    }
+  });
+}
+
+// Social share functionality - handles Twitter, LinkedIn, and native Web Share API
+function initSocialShare() {
+  // Show native share button if Web Share API is available
+  const nativeShareBtn = document.querySelector('[data-share-native]');
+  if (nativeShareBtn && navigator.share) {
+    nativeShareBtn.classList.remove('hidden');
+  }
+
+  // Event delegation for all share buttons
+  document.addEventListener('click', async (e) => {
+    // Twitter share
+    const twitterBtn = e.target.closest('[data-share-twitter]');
+    if (twitterBtn) {
+      const url = encodeURIComponent(window.location.origin + twitterBtn.dataset.shareUrl);
+      const title = encodeURIComponent(twitterBtn.dataset.shareTitle);
+      const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+      const popup = window.open(shareUrl, 'share-twitter', 'width=550,height=450');
+      // Fallback if popup blocked - navigate in current window
+      if (!popup || popup.closed) {
+        window.location.href = shareUrl;
+      }
+      return;
+    }
+
+    // LinkedIn share (using current share-offsite API)
+    const linkedinBtn = e.target.closest('[data-share-linkedin]');
+    if (linkedinBtn) {
+      const url = encodeURIComponent(window.location.origin + linkedinBtn.dataset.shareUrl);
+      const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+      const popup = window.open(shareUrl, 'share-linkedin', 'width=600,height=600');
+      // Fallback if popup blocked - navigate in current window
+      if (!popup || popup.closed) {
+        window.location.href = shareUrl;
+      }
+      return;
+    }
+
+    // Native share (Web Share API)
+    const nativeBtn = e.target.closest('[data-share-native]');
+    if (nativeBtn && navigator.share) {
+      try {
+        await navigator.share({
+          title: nativeBtn.dataset.shareTitle,
+          url: window.location.origin + nativeBtn.dataset.shareUrl
+        });
+      } catch (err) {
+        // User cancelled or error - ignore silently
+        if (err.name !== 'AbortError') {
+          console.error('Share failed:', err);
+        }
+      }
     }
   });
 }

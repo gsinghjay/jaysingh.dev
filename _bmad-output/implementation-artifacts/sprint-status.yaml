@@ -58,9 +58,9 @@ development_status:
   2-2-create-blog-post-detail-layout: done
   2-3-implement-syntax-highlighting: done
   2-4-implement-code-copy-functionality: done
-  2-5-implement-reading-time-display: backlog
-  2-6-implement-social-sharing: backlog
-  2-7-implement-related-projects-links: backlog
+  2-5-implement-reading-time-display: done
+  2-6-implement-social-sharing: done
+  2-7-implement-related-projects-links: ready-for-dev
   epic-2-retrospective: optional
 
   # Epic 3: Project Showcase
