@@ -1,0 +1,204 @@
+---
+layout: layouts/base.njk
+---
+
+{% from "components/card.njk" import card %}
+{% from "components/tag.njk" import tag %}
+
+<div class="py-16">
+    {# Back button - top #}
+    <a href="/blog/" class="inline-flex items-center gap-2 px-4 py-2 bg-white border-4 border-black font-bold uppercase text-sm hover:bg-lime-300 transition-all duration-150 active:translate-y-1 mb-8"
+       style="box-shadow: 6px 6px 0 #000;">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      BACK TO POSTS
+    </a>
+
+    <div class="lg:grid lg:grid-cols-[1fr_250px] lg:gap-8">
+      <div class="lg:col-start-1 min-w-0 overflow-hidden">
+        {# Header #}
+        <div class="mb-8">
+          <div class="flex items-center justify-between mb-4">
+            {{ tag(tags | getCategoryFromTags, "category") }}
+            <div class="flex items-center gap-4 text-sm text-neutral-500">
+              <span>{{ date | date }}</span>
+              {% if lastUpdated and lastUpdated != date %}
+                <span>Updated: {{ lastUpdated | date }}</span>
+              {% endif %}
+              <span class="font-bold">{{ readTime }}</span>
+            </div>
+          </div>
+
+          {# Title with first word highlighted #}
+          {% set titleWords = title.split(' ') %}
+          <h1 class="text-4xl md:text-5xl font-black mb-6">
+            <span class="bg-pink-400">{{ titleWords[0] }}</span>
+            {%- for word in titleWords %}{% if loop.index0 > 0 %} {{ word }}{% endif %}{% endfor -%}
+          </h1>
+
+          {# Author byline #}
+          {% if author %}
+            <div class="flex items-center gap-3 mb-6 p-4 bg-white border-4 border-black" style="box-shadow: 4px 4px 0 #000;">
+              {% if author.avatar %}
+                <img src="{{ author.avatar }}" alt="{{ author.name }}" class="w-12 h-12 border-2 border-black">
+              {% endif %}
+              <div>
+                <p class="font-bold">{{ author.name }}</p>
+                {% if author.bio %}
+                  <p class="text-sm text-neutral-600">{{ author.bio }}</p>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+
+          {# Tags #}
+          <div class="flex flex-wrap gap-2 mb-6">
+            {% for t in tags %}
+              {{ tag(t, "tech") }}
+            {% endfor %}
+          </div>
+        </div>
+
+        {# Content Card #}
+        {% call card("lg") %}
+          <div class="prose max-w-none" id="blog-content">
+            {{ content | safe }}
+          </div>
+        {% endcall %}
+
+        {# Bottom back button #}
+        <div class="mt-12 flex justify-center">
+          <a href="/blog/" class="inline-flex items-center gap-2 px-6 py-3 bg-black text-white border-4 border-black font-bold uppercase text-sm hover:bg-pink-400 hover:text-black transition-all duration-150 active:translate-y-1"
+             style="box-shadow: 6px 6px 0 #000;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            BACK TO ALL POSTS
+          </a>
+        </div>
+      </div>
+
+      {# Table of Contents sidebar - hidden on mobile, visible on lg screens #}
+      <aside class="hidden lg:block lg:col-start-2" id="toc-sidebar" aria-label="Table of Contents">
+        <div class="sticky top-24">
+          <div class="bg-white border-4 border-black p-4" style="box-shadow: 6px 6px 0 #000;">
+            <div class="mb-4">
+              <h3 class="text-sm font-black uppercase bg-pink-400 inline-block px-2 py-1">
+                TABLE OF CONTENTS
+              </h3>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="text-xs font-bold text-neutral-600">PROGRESS</span>
+                <span class="text-lg font-black text-black" id="scroll-progress">0%</span>
+              </div>
+            </div>
+            <nav aria-label="Table of Contents">
+              <ul class="space-y-2" id="toc-list">
+                {# TOC items populated by JavaScript #}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </aside>
+    </div>
+</div>
+
+<script>
+(function() {
+  // Initialize TOC on DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const content = document.getElementById('blog-content');
+    const tocList = document.getElementById('toc-list');
+    const tocSidebar = document.getElementById('toc-sidebar');
+    const scrollProgress = document.getElementById('scroll-progress');
+
+    if (!content || !tocList) return;
+
+    // Find all h2 and h3 headings in content
+    const headings = content.querySelectorAll('h2, h3');
+
+    // Hide TOC if no headings
+    if (headings.length === 0) {
+      if (tocSidebar) tocSidebar.style.display = 'none';
+      return;
+    }
+
+    // Add IDs to headings and build TOC
+    headings.forEach(function(heading, index) {
+      // Generate ID from heading text
+      const id = heading.textContent
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+      heading.id = id;
+
+      // Determine indentation level
+      const level = heading.tagName === 'H3' ? 1 : 0;
+      const paddingLeft = 12 + level * 8;
+
+      // Create TOC item
+      const li = document.createElement('li');
+      const button = document.createElement('button');
+      button.className = 'toc-item text-left w-full py-2 text-sm font-bold uppercase border-2 border-black transition-all duration-150 bg-white hover:bg-gray-100';
+      button.style.paddingLeft = paddingLeft + 'px';
+      button.style.paddingRight = '12px';
+      button.textContent = heading.textContent;
+      button.dataset.target = id;
+
+      // Click to scroll
+      button.addEventListener('click', function() {
+        const target = document.getElementById(id);
+        if (target) {
+          const offset = 100;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+
+      li.appendChild(button);
+      tocList.appendChild(li);
+    });
+
+    // Track active section and scroll progress
+    let activeId = '';
+
+    function updateTOC() {
+      // Find active heading
+      let newActiveId = '';
+      headings.forEach(function(heading) {
+        const rect = heading.getBoundingClientRect();
+        if (rect.top <= 150 && rect.bottom >= 0) {
+          newActiveId = heading.id;
+        }
+      });
+
+      // Update active state
+      if (newActiveId !== activeId) {
+        activeId = newActiveId;
+        document.querySelectorAll('.toc-item').forEach(function(btn) {
+          if (btn.dataset.target === activeId) {
+            btn.classList.remove('bg-white', 'hover:bg-gray-100');
+            btn.classList.add('bg-pink-400');
+            btn.style.boxShadow = '2px 2px 0px 0px rgba(0,0,0,1)';
+          } else {
+            btn.classList.remove('bg-pink-400');
+            btn.classList.add('bg-white', 'hover:bg-gray-100');
+            btn.style.boxShadow = 'none';
+          }
+        });
+      }
+
+      // Update scroll progress
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const scrollableHeight = documentHeight - windowHeight;
+      const percentage = scrollableHeight > 0 ? Math.round((scrollTop / scrollableHeight) * 100) : 0;
+      scrollProgress.textContent = Math.min(100, Math.max(0, percentage)) + '%';
+    }
+
+    window.addEventListener('scroll', updateTOC);
+    updateTOC();
+  });
+})();
+</script>

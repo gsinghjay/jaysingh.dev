@@ -14,6 +14,7 @@ featured: true
 relatedProjectIds:
   - observability-infrastructure
 permalink: /blog/docker-observability/
+layout: layouts/blog-post.njk
 ---
 
 You can't fix what you can't see. Observability is essential for running production microservices. Here's how we built comprehensive monitoring infrastructure that provides visibility into every layer of our stack serving 5,000+ users.

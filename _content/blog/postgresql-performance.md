@@ -12,6 +12,7 @@ tags:
 readTime: 12 min
 featured: false
 permalink: /blog/postgresql-performance/
+layout: layouts/blog-post.njk
 ---
 
 PostgreSQL is incredibly powerful, but it requires proper tuning for high-traffic applications. Here are the techniques we used to maintain sub-second response times while serving 5,000+ users with real-time analytics.

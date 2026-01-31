@@ -158,3 +158,60 @@
     transform: none !important;
   }
 }
+
+/* ==========================================================================
+   Blog Post Prose Styling - Story 2.2
+   Readable typography for Markdown content with Neubrutalist accents
+   ========================================================================== */
+
+.prose h2 {
+  @apply text-2xl font-black mt-8 mb-4;
+}
+
+.prose h3 {
+  @apply text-xl font-bold mt-6 mb-3;
+}
+
+.prose p {
+  @apply text-lg leading-relaxed text-neutral-700 mb-6;
+}
+
+.prose ul, .prose ol {
+  @apply mb-6 ml-6;
+}
+
+.prose ul {
+  @apply list-disc;
+}
+
+.prose ol {
+  @apply list-decimal;
+}
+
+.prose li {
+  @apply text-lg leading-relaxed text-neutral-700 mb-2;
+}
+
+.prose pre {
+  @apply bg-neutral-900 text-white p-4 mb-6 overflow-x-auto border-4 border-black;
+}
+
+.prose code:not(pre code) {
+  @apply bg-neutral-100 px-1 py-0.5 text-sm font-mono;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-black pl-4 py-2 bg-yellow-50 mb-6 italic;
+}
+
+.prose a {
+  @apply text-pink-600 hover:underline font-bold;
+}
+
+.prose strong {
+  @apply font-bold;
+}
+
+.prose em {
+  @apply italic;
+}

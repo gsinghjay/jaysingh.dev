@@ -55,7 +55,7 @@ development_status:
   # Visitors can browse and read blog posts with syntax highlighting, code copying, and social sharing.
   epic-2: in-progress
   2-1-create-blog-collection-and-listing-page: done
-  2-2-create-blog-post-detail-layout: backlog
+  2-2-create-blog-post-detail-layout: done
   2-3-implement-syntax-highlighting: backlog
   2-4-implement-code-copy-functionality: backlog
   2-5-implement-reading-time-display: backlog

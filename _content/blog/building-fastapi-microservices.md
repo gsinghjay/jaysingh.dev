@@ -15,6 +15,7 @@ relatedProjectIds:
   - event-driven-microservices
   - qr-code-platform
 permalink: /blog/building-fastapi-microservices/
+layout: layouts/blog-post.njk
 ---
 
 Event-driven microservices enable building scalable, maintainable systems that can handle complex business logic while remaining loosely coupled. In this post, I'll share lessons learned from building a production microservices platform serving 5,000+ users.

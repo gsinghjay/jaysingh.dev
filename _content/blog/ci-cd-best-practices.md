@@ -14,6 +14,7 @@ featured: true
 relatedProjectIds:
   - cicd-pipeline
 permalink: /blog/ci-cd-best-practices/
+layout: layouts/blog-post.njk
 ---
 
 Continuous Integration and Continuous Deployment enable shipping features faster while maintaining quality. Here's how we built CI/CD pipelines that reduced deployment time from hours to minutes while serving 5,000+ users.

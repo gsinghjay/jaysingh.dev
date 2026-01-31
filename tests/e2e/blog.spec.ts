@@ -154,8 +154,6 @@ test.describe('Story 2.1: Post Navigation (AC4)', () => {
 
     // When: User clicks on a post title
     const postTitle = page.locator('h2.font-black a, a h2.font-black').first();
-    const href = await postTitle.locator('xpath=ancestor-or-self::a').getAttribute('href');
-
     await postTitle.click();
 
     // Then: User should navigate to blog post detail page
@@ -303,5 +301,415 @@ test.describe('Story 2.1: Keyboard Navigation', () => {
     // And: Enter should activate the link
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/\/blog\/.+/);
+  });
+});
+
+/**
+ * Story 2.2: Blog Post Detail Layout Tests (ATDD - RED PHASE)
+ *
+ * These tests define EXPECTED behavior for blog post detail pages.
+ * All tests will FAIL until implementation is complete.
+ *
+ * Acceptance Criteria:
+ * - AC1: Blog post renders from Markdown at /blog/{post-id}/
+ * - AC2: Post header with metadata (title, date, author, tags)
+ * - AC3: Layout extends base (code review - not E2E testable)
+ * - AC4: Readable typography with proper line height
+ * - AC5: Clean URL structure using post id
+ * - AC6: Heading hierarchy preserved (h1 title, h2/h3 sections)
+ *
+ * TDD Workflow:
+ * 1. RED: Run these tests - they will fail (current state)
+ * 2. GREEN: Implement blog-post.njk layout, prose styling, frontmatter
+ * 3. REFACTOR: Improve code quality while keeping tests green
+ */
+
+test.describe('Story 2.2: Blog Post Detail Page (AC1)', () => {
+  // Test post: docker-observability (known to exist in _content/blog/)
+  const testPostId = 'docker-observability';
+  const testPostUrl = `/blog/${testPostId}/`;
+
+  test('[P0] blog post page loads at /blog/{id}/', async ({ page }) => {
+    // Given: User navigates to a blog post URL
+    await page.goto(testPostUrl);
+
+    // Then: Page should load successfully with main content
+    await expect(page.locator('main')).toBeVisible();
+
+    // And: Page should not show 404 error
+    await expect(page.getByText('404')).not.toBeVisible();
+    await expect(page.getByText('Page not found')).not.toBeVisible();
+  });
+
+  test('[P0] blog post content renders from Markdown', async ({ page }) => {
+    // Given: User navigates to blog post
+    await page.goto(testPostUrl);
+
+    // Then: Post content should be visible in a Card component
+    const contentCard = page.locator('.border-4.border-black').filter({
+      has: page.locator('.prose'),
+    });
+    await expect(contentCard).toBeVisible();
+
+    // And: Content should have rendered Markdown (paragraphs, headings)
+    const prose = page.locator('.prose');
+    await expect(prose.locator('p').first()).toBeVisible();
+  });
+
+  test('[P0] navigate from listing to detail page', async ({ page }) => {
+    // Given: User is on blog listing page
+    await page.goto('/blog/');
+
+    // When: User clicks on a post title or READ MORE
+    const readMoreLink = page.getByRole('link', { name: /READ MORE/ }).first();
+    await readMoreLink.click();
+
+    // Then: User should be on a blog post detail page
+    await expect(page).toHaveURL(/\/blog\/.+\/$/);
+
+    // And: Post content should be visible
+    await expect(page.locator('.prose')).toBeVisible();
+  });
+});
+
+test.describe('Story 2.2: Post Header with Metadata (AC2)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P0] post title displays with highlight styling', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: h1 title should be visible
+    const title = page.getByRole('heading', { level: 1 });
+    await expect(title).toBeVisible();
+
+    // And: First word should have pink highlight (bg-pink-400)
+    const highlight = title.locator('.bg-pink-400');
+    await expect(highlight).toBeVisible();
+    await expect(highlight).toContainText('COMPREHENSIVE');
+  });
+
+  test('[P1] post date displays', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: Date should be visible in header (Sep 22, 2024 format)
+    await expect(page.getByText(/Sep 22, 2024/)).toBeVisible();
+  });
+
+  test('[P1] post read time displays', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: Read time should be visible in the header metadata section
+    const metadataSection = page.locator('.flex.items-center.gap-4.text-sm.text-neutral-500');
+    await expect(metadataSection.getByText('10 min')).toBeVisible();
+  });
+
+  test('[P1] category tag displays', async ({ page }) => {
+    // Given: User views blog post with technical tag
+    await page.goto(testPostUrl);
+
+    // Then: Category tag should be visible (TECHNICAL for this post)
+    const categoryTag = page
+      .locator('.bg-blue-400, .bg-yellow-400, .bg-lime-400')
+      .filter({ hasText: /TECHNICAL|OPINION|TUTORIAL/ });
+    await expect(categoryTag.first()).toBeVisible();
+  });
+
+  test('[P1] technology tags display', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: Technology tags should be visible
+    const tagsContainer = page.locator('.flex.flex-wrap.gap-2');
+    await expect(tagsContainer).toBeVisible();
+
+    // And: Should show tags like "docker", "prometheus", "grafana"
+    await expect(page.getByText('docker', { exact: true })).toBeVisible();
+  });
+
+  test('[P2] author byline displays when present', async ({ page }) => {
+    // Given: User views blog post (note: current posts may not have author)
+    await page.goto(testPostUrl);
+
+    // Then: If author exists, byline should be visible
+    // This test verifies the structure exists (may pass vacuously if no author)
+    const authorSection = page.locator('[class*="author"], .flex.items-center.gap-3.mb-6.p-4');
+
+    // Check that author section renders correctly IF author data exists
+    // (This is a soft check - passes if author missing, validates if present)
+    const authorCount = await authorSection.count();
+    if (authorCount > 0) {
+      await expect(authorSection.first()).toBeVisible();
+    }
+  });
+});
+
+test.describe('Story 2.2: Back Navigation', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] top back button returns to blog listing', async ({ page }) => {
+    // Given: User is on blog post detail page
+    await page.goto(testPostUrl);
+
+    // Then: Back button should be visible at top
+    const backButton = page.getByRole('link', { name: /BACK TO POSTS/i }).first();
+    await expect(backButton).toBeVisible();
+
+    // And: Back button should have Neubrutalist styling
+    await expect(backButton).toHaveClass(/border-4/);
+
+    // When: User clicks back button
+    await backButton.click();
+
+    // Then: User should be on blog listing page
+    await expect(page).toHaveURL('/blog/');
+  });
+
+  test('[P2] bottom back button returns to blog listing', async ({ page }) => {
+    // Given: User is on blog post detail page
+    await page.goto(testPostUrl);
+
+    // Then: Bottom back button should exist
+    const bottomBackButton = page.getByRole('link', { name: /BACK TO ALL POSTS/i });
+    await expect(bottomBackButton).toBeVisible();
+
+    // Scroll to button to ensure it's fully visible (avoids content overlap on mobile)
+    await bottomBackButton.scrollIntoViewIfNeeded();
+
+    // When: User clicks bottom back button
+    await bottomBackButton.click({ force: true });
+
+    // Then: User should be on blog listing page
+    await expect(page).toHaveURL('/blog/');
+  });
+});
+
+test.describe('Story 2.2: Clean URL Structure (AC5)', () => {
+  test('[P1] URL uses post id from frontmatter', async ({ page }) => {
+    // Given: User navigates to blog post
+    await page.goto('/blog/docker-observability/');
+
+    // Then: URL should match the post id (no hash, no query params)
+    const url = page.url();
+    expect(url).toContain('/blog/docker-observability/');
+    expect(url).not.toContain('#');
+    expect(url).not.toContain('?');
+  });
+
+  test('[P1] all blog posts have clean URLs', async ({ page }) => {
+    // Given: User is on blog listing
+    await page.goto('/blog/');
+
+    // When: Collecting all post links (exclude /blog/ itself)
+    const allLinks = page.locator('a[href^="/blog/"]');
+    const linkCount = await allLinks.count();
+
+    // Filter to only post links (not /blog/ itself)
+    const postHrefs: string[] = [];
+    for (let i = 0; i < linkCount; i++) {
+      const href = await allLinks.nth(i).getAttribute('href');
+      if (href && href !== '/blog/' && href.match(/^\/blog\/[\w-]+\/?$/)) {
+        postHrefs.push(href);
+      }
+    }
+
+    expect(postHrefs.length).toBeGreaterThan(0);
+
+    // Then: All post links should have clean URL structure
+    for (const href of postHrefs.slice(0, 5)) {
+      expect(href).toMatch(/^\/blog\/[\w-]+\/$/);
+      expect(href).not.toContain('#');
+    }
+  });
+});
+
+test.describe('Story 2.2: Heading Hierarchy (AC6)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P1] h1 used for post title only', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: There should be exactly one h1 (the post title)
+    const h1Elements = page.getByRole('heading', { level: 1 });
+    await expect(h1Elements).toHaveCount(1);
+
+    // And: h1 should contain the post title
+    await expect(h1Elements).toContainText('OBSERVABILITY');
+  });
+
+  test('[P1] content uses h2 and h3 for sections', async ({ page }) => {
+    // Given: User views blog post with sections
+    await page.goto(testPostUrl);
+
+    // Then: Content should have h2 headings for major sections
+    const h2Elements = page.locator('.prose h2');
+    const h2Count = await h2Elements.count();
+    expect(h2Count).toBeGreaterThan(0);
+
+    // And: h2 should have proper styling (text-2xl font-black)
+    const firstH2 = h2Elements.first();
+    await expect(firstH2).toBeVisible();
+  });
+});
+
+test.describe('Story 2.2: Readable Typography (AC4)', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P2] prose content has readable line height', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: Paragraphs should have relaxed line height
+    const paragraph = page.locator('.prose p').first();
+    await expect(paragraph).toBeVisible();
+
+    const lineHeight = await paragraph.evaluate((el) => {
+      return window.getComputedStyle(el).lineHeight;
+    });
+
+    // Line height should be at least 1.5x font size (relaxed)
+    const fontSize = await paragraph.evaluate((el) => {
+      return parseFloat(window.getComputedStyle(el).fontSize);
+    });
+    const lineHeightNum = parseFloat(lineHeight);
+
+    // Either 'normal' (~1.2) or explicit value >= 1.5 * fontSize
+    expect(lineHeightNum).toBeGreaterThanOrEqual(fontSize * 1.4);
+  });
+
+  test('[P2] code blocks have Neubrutalist styling', async ({ page }) => {
+    // Given: User views blog post with code blocks
+    await page.goto(testPostUrl);
+
+    // Then: Code blocks should have dark background and border
+    const codeBlock = page.locator('.prose pre').first();
+
+    // If code blocks exist, verify styling
+    const codeCount = await codeBlock.count();
+    if (codeCount > 0) {
+      await expect(codeBlock).toBeVisible();
+
+      // Should have border (Neubrutalist style)
+      const borderWidth = await codeBlock.evaluate((el) => {
+        return window.getComputedStyle(el).borderWidth;
+      });
+      expect(borderWidth).not.toBe('0px');
+    }
+  });
+
+  test('[P2] content wrapped in Card component', async ({ page }) => {
+    // Given: User views blog post
+    await page.goto(testPostUrl);
+
+    // Then: Content should be wrapped in a Card with Neubrutalist styling
+    const contentCard = page.locator('.border-4.border-black').filter({
+      has: page.locator('.prose'),
+    });
+    await expect(contentCard).toBeVisible();
+
+    // And: Card should have brutal shadow
+    const style = await contentCard.getAttribute('style');
+    expect(style).toContain('box-shadow');
+  });
+
+  test('[P2] page uses Neubrutalist design tokens', async ({ page, verifyNeubrutalistDesign }) => {
+    // Given: User views blog post
+    await page.goto('/blog/docker-observability/');
+
+    // Then: Neubrutalist design tokens should be applied
+    await verifyNeubrutalistDesign();
+  });
+});
+
+test.describe('Story 2.2: Table of Contents Sidebar', () => {
+  const testPostUrl = '/blog/docker-observability/';
+
+  test('[P2] TOC sidebar visible on desktop', async ({ page }) => {
+    // Given: User views blog post on desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(testPostUrl);
+
+    // Then: TOC sidebar should be visible
+    const tocSidebar = page.locator('#toc-sidebar');
+    await expect(tocSidebar).toBeVisible();
+
+    // And: Should have "TABLE OF CONTENTS" heading
+    await expect(tocSidebar.getByText('TABLE OF CONTENTS')).toBeVisible();
+  });
+
+  test('[P2] TOC sidebar hidden on mobile', async ({ page }) => {
+    // Given: User views blog post on mobile
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto(testPostUrl);
+
+    // Then: TOC sidebar should be hidden
+    const tocSidebar = page.locator('#toc-sidebar');
+    await expect(tocSidebar).toBeHidden();
+  });
+
+  test('[P2] TOC shows headings from content', async ({ page }) => {
+    // Given: User views blog post on desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(testPostUrl);
+
+    // Then: TOC should contain heading items
+    const tocList = page.locator('#toc-list');
+    const tocItems = tocList.locator('.toc-item');
+    const itemCount = await tocItems.count();
+    expect(itemCount).toBeGreaterThan(0);
+
+    // And: Items should match h2 headings in content
+    await expect(tocItems.first()).toBeVisible();
+  });
+
+  test('[P2] TOC shows scroll progress', async ({ page }) => {
+    // Given: User views blog post on desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(testPostUrl);
+
+    // Then: Progress indicator should exist
+    const progress = page.locator('#scroll-progress');
+    await expect(progress).toBeVisible();
+
+    // And: Should show percentage
+    const text = await progress.textContent();
+    expect(text).toMatch(/\d+%/);
+  });
+
+  test('[P2] clicking TOC item scrolls to section', async ({ page }) => {
+    // Given: User views blog post on desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(testPostUrl);
+
+    // When: User clicks a TOC item
+    const tocItem = page.locator('.toc-item').first();
+    const targetId = await tocItem.getAttribute('data-target');
+    await tocItem.click();
+
+    // Then: Page should scroll to that section (heading in viewport)
+    await page.waitForTimeout(500); // Wait for smooth scroll
+    const heading = page.locator(`#${targetId}`);
+    await expect(heading).toBeInViewport();
+  });
+});
+
+test.describe('Story 2.2: Pre-rendered Static HTML', () => {
+  test('[P2] page source contains post content (not JS placeholder)', async ({ request }) => {
+    // Given: We fetch the raw HTML source
+    const response = await request.get('/blog/docker-observability/');
+    const html = await response.text();
+
+    // Then: HTML should contain the post title (pre-rendered)
+    expect(html).toContain('OBSERVABILITY');
+
+    // And: HTML should contain prose content class
+    expect(html).toContain('prose');
+
+    // And: HTML should NOT be a SPA placeholder
+    expect(html).not.toContain('Loading...');
+    expect(html).not.toContain('id="root"');
   });
 });

@@ -14,6 +14,7 @@ featured: true
 relatedProjectIds:
   - authentication-gateway
 permalink: /blog/oauth2-authentication-gateway/
+layout: layouts/blog-post.njk
 ---
 
 Modern web applications require robust authentication and authorization. A zero-trust architecture ensures every request is authenticated and authorized before accessing protected resources. Here's how we built an authentication gateway serving 5,181+ active users.

@@ -32,17 +32,24 @@ export default function(eleventyConfig) {
   eleventyConfig.addPlugin(syntaxHighlight);
 
   // Date filter for formatting dates (default: "Jan 15, 2026" format)
+  // Uses UTC to avoid timezone-related date shifts
   eleventyConfig.addFilter("date", (dateObj, format) => {
     if (!dateObj) return '';
     const date = new Date(dateObj);
     if (format === '%Y-%m-%d') {
       return date.toISOString().split('T')[0];
     }
+    // Use UTC methods to avoid timezone shifts
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthsFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const month = date.getUTCMonth();
+    const day = date.getUTCDate();
+    const year = date.getUTCFullYear();
     if (format === '%B %d, %Y') {
-      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      return `${monthsFull[month]} ${day}, ${year}`;
     }
     // Default: "Jan 15, 2026" format (matches React implementation)
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return `${months[month]} ${day}, ${year}`;
   });
 
   // Get category from tags for blog posts (matches React getCategoryFromTags logic)
