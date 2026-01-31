@@ -19,7 +19,7 @@ permalink: /blog/
         {{ tag(post.data.tags | getCategoryFromTags, "category") }}
         <div class="flex items-center gap-4 text-sm text-neutral-500">
           <span>{{ post.data.date | date }}</span>
-          <span>{{ post.data.readTime }}</span>
+          <span>{{ post.content | readingTime }}</span>
         </div>
       </div>
 

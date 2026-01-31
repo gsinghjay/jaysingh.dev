@@ -1,4 +1,5 @@
 import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
+import { readingTime, findProjectsByIds } from './lib/filters.js';
 
 export default function(eleventyConfig) {
   // Ignore non-content directories
@@ -84,6 +85,12 @@ export default function(eleventyConfig) {
     if (!array) return [];
     return array.slice(0, count);
   });
+
+  // Reading time filter - imported from lib/filters.js for testability
+  eleventyConfig.addFilter("readingTime", readingTime);
+
+  // Find projects by their IDs - imported from lib/filters.js for testability
+  eleventyConfig.addFilter("findProjectsByIds", findProjectsByIds);
 
   // Passthrough copy for static assets
   eleventyConfig.addPassthroughCopy("public");

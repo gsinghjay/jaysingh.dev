@@ -53,20 +53,20 @@ development_status:
 
   # Epic 2: Blog Experience
   # Visitors can browse and read blog posts with syntax highlighting, code copying, and social sharing.
-  epic-2: in-progress
+  epic-2: done
   2-1-create-blog-collection-and-listing-page: done
   2-2-create-blog-post-detail-layout: done
   2-3-implement-syntax-highlighting: done
   2-4-implement-code-copy-functionality: done
   2-5-implement-reading-time-display: done
   2-6-implement-social-sharing: done
-  2-7-implement-related-projects-links: ready-for-dev
+  2-7-implement-related-projects-links: done
   epic-2-retrospective: optional
 
   # Epic 3: Project Showcase
   # Visitors can browse projects and view detailed case studies with architecture diagrams.
-  epic-3: backlog
-  3-1-create-projects-collection-and-listing-page: backlog
+  epic-3: in-progress
+  3-1-create-projects-collection-and-listing-page: ready-for-dev
   3-2-create-project-detail-layout: backlog
   3-3-implement-mermaid-diagram-rendering: backlog
   3-4-implement-external-project-links: backlog
