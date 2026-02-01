@@ -4,6 +4,7 @@ layout: layouts/base.njk
 
 {% from "components/card.njk" import card %}
 {% from "components/tag.njk" import tag %}
+{% from "components/external-links.njk" import externalLinks %}
 
 <div class="py-16">
     {# Back button - top #}
@@ -15,52 +16,293 @@ layout: layouts/base.njk
       BACK TO PROJECTS
     </a>
 
-    <div class="max-w-4xl">
-      {# Header #}
-      <div class="mb-8">
-        {# Project type badge #}
-        {% if projectType %}
-          {{ tag(projectType | upper, "category") }}
-        {% endif %}
+    {# Two-column layout matching blog layout #}
+    <div class="lg:grid lg:grid-cols-[1fr_250px] lg:gap-8">
+      {# Main content column #}
+      <div class="lg:col-start-1 min-w-0 overflow-hidden" id="project-content">
+        {# Header #}
+        <div class="mb-8">
+          {# Project type badge #}
+          {% if projectType %}
+            {{ tag(projectType | upper, "category") }}
+          {% endif %}
 
-        {# Title with first word highlighted #}
-        {% set titleWords = title.split(' ') %}
-        <h1 class="text-4xl md:text-5xl font-black my-6">
-          <span class="bg-pink-400">{{ titleWords[0] }}</span>
-          {%- for word in titleWords %}{% if loop.index0 > 0 %} {{ word }}{% endif %}{% endfor -%}
-        </h1>
+          {# Title with first word highlighted in lime-400 #}
+          {% set titleWords = title.split(' ') %}
+          <h1 class="text-4xl md:text-5xl font-black my-6">
+            <span class="bg-lime-400">{{ titleWords[0] }}</span>
+            {%- for word in titleWords %}{% if loop.index0 > 0 %} {{ word }}{% endif %}{% endfor -%}
+          </h1>
 
-        {# Description #}
-        {% if description %}
-          <p class="text-lg text-neutral-600 mb-6">{{ description }}</p>
-        {% endif %}
+          {# Description #}
+          {% if description %}
+            <p class="text-lg text-neutral-600 mb-6">{{ description }}</p>
+          {% endif %}
 
-        {# Technology tags - show ALL (not limited like listing page) #}
-        {% if technologies and technologies.length > 0 %}
-          <div class="flex flex-wrap gap-2">
-            {% for tech in technologies %}
-              {{ tag(tech, "tech") }}
-            {% endfor %}
-          </div>
-        {% endif %}
-      </div>
+          {# Technology tags - show ALL (not limited like listing page) #}
+          {% if technologies and technologies.length > 0 %}
+            <div class="flex flex-wrap gap-2 mb-6">
+              {% for tech in technologies %}
+                {{ tag(tech, "tech") }}
+              {% endfor %}
+            </div>
+          {% endif %}
 
-      {# Content Card #}
-      {% call card("lg") %}
-        <div class="prose max-w-none">
-          {{ content | safe }}
+          {# External links row #}
+          {{ externalLinks(githubUrl, liveUrl, documentationUrl) }}
         </div>
-      {% endcall %}
 
-      {# Bottom back button #}
-      <div class="mt-12 flex justify-center">
-        <a href="/projects/" class="inline-flex items-center gap-2 px-6 py-3 bg-black text-white border-4 border-black font-bold uppercase text-sm hover:bg-pink-400 hover:text-black transition-all duration-150 active:translate-y-1"
-           style="box-shadow: 6px 6px 0 #000;">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-          </svg>
-          BACK TO ALL PROJECTS
-        </a>
+        {# Overview section - uses longDescription if available #}
+        {% if longDescription or description %}
+          <section class="mb-12" id="overview">
+            <h2 class="text-2xl font-black mb-4 flex items-center gap-2">
+              <span class="w-2 h-8 bg-neutral-800"></span>
+              Overview
+            </h2>
+            <div class="bg-white border-4 border-black p-6" style="box-shadow: 8px 8px 0 #000;">
+              <p class="text-neutral-700 leading-relaxed">{{ longDescription | default(description) }}</p>
+            </div>
+          </section>
+        {% endif %}
+
+        {# Diagram section - only if diagramContent exists #}
+        {% if diagramContent %}
+          <section class="mb-12" id="architecture">
+            <h2 class="text-2xl font-black mb-4 flex items-center gap-2">
+              <span class="w-2 h-8 bg-purple-400"></span>
+              Architecture
+            </h2>
+            <div class="relative" data-diagram-viewer>
+              <div class="bg-white border-4 border-black p-6" style="box-shadow: 8px 8px 0 #000;">
+                <div class="flex justify-center">
+                  <img
+                    src="/diagrams/{{ id }}.svg"
+                    alt="{{ diagramLabel | default('Architecture diagram for ' + title) }}"
+                    class="w-full h-auto max-w-md"
+                    loading="lazy"
+                  >
+                </div>
+                {% if diagramLabel %}
+                  <p class="text-sm text-neutral-500 mt-4 text-center">{{ diagramLabel }}</p>
+                {% endif %}
+              </div>
+              <span class="diagram-expand-hint">Click to expand</span>
+            </div>
+          </section>
+        {% endif %}
+
+        {# Challenge section with red border #}
+        {% if challenge %}
+          <section class="mb-12" id="challenge">
+            <h2 class="text-2xl font-black mb-4 flex items-center gap-2">
+              <span class="w-2 h-8 bg-red-400"></span>
+              Challenge
+            </h2>
+            <div class="bg-white border-4 border-black border-l-8 border-l-red-400 p-6" style="box-shadow: 8px 8px 0 #000;">
+              <p class="text-neutral-700 leading-relaxed">{{ challenge }}</p>
+            </div>
+          </section>
+        {% endif %}
+
+        {# Solution section with blue border #}
+        {% if solution %}
+          <section class="mb-12" id="solution">
+            <h2 class="text-2xl font-black mb-4 flex items-center gap-2">
+              <span class="w-2 h-8 bg-blue-400"></span>
+              Solution
+            </h2>
+            <div class="bg-white border-4 border-black border-l-8 border-l-blue-400 p-6" style="box-shadow: 8px 8px 0 #000;">
+              <p class="text-neutral-700 leading-relaxed">{{ solution }}</p>
+            </div>
+          </section>
+        {% endif %}
+
+        {# Impact section with lime border #}
+        {% if impact %}
+          <section class="mb-12" id="impact">
+            <h2 class="text-2xl font-black mb-4 flex items-center gap-2">
+              <span class="w-2 h-8 bg-lime-400"></span>
+              Impact
+            </h2>
+            <div class="bg-white border-4 border-black border-l-8 border-l-lime-400 p-6" style="box-shadow: 8px 8px 0 #000;">
+              <p class="text-neutral-700 leading-relaxed">{{ impact }}</p>
+            </div>
+          </section>
+        {% endif %}
+
+        {# Key Features section with yellow border #}
+        {% if keyFeatures and keyFeatures.length > 0 %}
+          <section class="mb-12" id="key-features">
+            <h2 class="text-2xl font-black mb-4 flex items-center gap-2">
+              <span class="w-2 h-8 bg-yellow-400"></span>
+              Key Features
+            </h2>
+            <div class="bg-white border-4 border-black border-l-8 border-l-yellow-400 p-6" style="box-shadow: 8px 8px 0 #000;">
+              <ol class="list-decimal list-inside space-y-3">
+                {% for feature in keyFeatures %}
+                  <li class="text-neutral-700">{{ feature }}</li>
+                {% endfor %}
+              </ol>
+            </div>
+          </section>
+        {% endif %}
+
+        {# Additional content from markdown body (if any beyond frontmatter sections) #}
+        {% if content and content.trim() %}
+          {% call card("lg") %}
+            <div class="prose max-w-none">
+              {{ content | safe }}
+            </div>
+          {% endcall %}
+        {% endif %}
+
+        {# Bottom back button #}
+        <div class="mt-12 flex justify-center">
+          <a href="/projects/" class="inline-flex items-center gap-2 px-6 py-3 bg-black text-white border-4 border-black font-bold uppercase text-sm hover:bg-lime-400 hover:text-black transition-all duration-150 active:translate-y-1"
+             style="box-shadow: 6px 6px 0 #000;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            BACK TO ALL PROJECTS
+          </a>
+        </div>
       </div>
+
+      {# Table of Contents sidebar - matching blog layout #}
+      <aside class="hidden lg:block lg:col-start-2" id="toc-sidebar" aria-label="Table of Contents">
+        <div class="sticky top-24">
+          <div class="bg-white border-4 border-black p-4" style="box-shadow: 6px 6px 0 #000;">
+            <div class="mb-4">
+              <h3 class="text-sm font-black uppercase bg-lime-400 inline-block px-2 py-1">
+                TABLE OF CONTENTS
+              </h3>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="text-xs font-bold text-neutral-600">PROGRESS</span>
+                <span class="text-lg font-black text-black" id="scroll-progress">0%</span>
+              </div>
+            </div>
+            <nav aria-label="Table of Contents">
+              <ul class="space-y-2" id="toc-list">
+                {% if longDescription or description %}
+                  <li>
+                    <button class="toc-item text-left w-full py-2 px-3 text-sm font-bold uppercase border-2 border-black bg-white hover:bg-gray-100 transition-all duration-150" data-target="overview">
+                      Overview
+                    </button>
+                  </li>
+                {% endif %}
+                {% if diagramContent %}
+                  <li>
+                    <button class="toc-item text-left w-full py-2 px-3 text-sm font-bold uppercase border-2 border-black bg-white hover:bg-gray-100 transition-all duration-150" data-target="architecture">
+                      Architecture
+                    </button>
+                  </li>
+                {% endif %}
+                {% if challenge %}
+                  <li>
+                    <button class="toc-item text-left w-full py-2 px-3 text-sm font-bold uppercase border-2 border-black bg-white hover:bg-gray-100 transition-all duration-150" data-target="challenge">
+                      Challenge
+                    </button>
+                  </li>
+                {% endif %}
+                {% if solution %}
+                  <li>
+                    <button class="toc-item text-left w-full py-2 px-3 text-sm font-bold uppercase border-2 border-black bg-white hover:bg-gray-100 transition-all duration-150" data-target="solution">
+                      Solution
+                    </button>
+                  </li>
+                {% endif %}
+                {% if impact %}
+                  <li>
+                    <button class="toc-item text-left w-full py-2 px-3 text-sm font-bold uppercase border-2 border-black bg-white hover:bg-gray-100 transition-all duration-150" data-target="impact">
+                      Impact
+                    </button>
+                  </li>
+                {% endif %}
+                {% if keyFeatures and keyFeatures.length > 0 %}
+                  <li>
+                    <button class="toc-item text-left w-full py-2 px-3 text-sm font-bold uppercase border-2 border-black bg-white hover:bg-gray-100 transition-all duration-150" data-target="key-features">
+                      Key Features
+                    </button>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </aside>
     </div>
 </div>
+
+<script>
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    var tocList = document.getElementById('toc-list');
+    var scrollProgress = document.getElementById('scroll-progress');
+    var tocItems = document.querySelectorAll('.toc-item');
+
+    if (!tocList || tocItems.length === 0) return;
+
+    // Get all section IDs from TOC items
+    var sectionIds = [];
+    tocItems.forEach(function(btn) {
+      sectionIds.push(btn.dataset.target);
+    });
+
+    // Add click handlers for smooth scrolling
+    tocItems.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(btn.dataset.target);
+        if (target) {
+          var offset = 100;
+          var top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Track active section and scroll progress
+    var activeId = '';
+
+    function updateTOC() {
+      // Find active section
+      var newActiveId = '';
+      sectionIds.forEach(function(id) {
+        var section = document.getElementById(id);
+        if (section) {
+          var rect = section.getBoundingClientRect();
+          if (rect.top <= 150 && rect.bottom >= 0) {
+            newActiveId = id;
+          }
+        }
+      });
+
+      // Update active state
+      if (newActiveId !== activeId) {
+        activeId = newActiveId;
+        tocItems.forEach(function(btn) {
+          if (btn.dataset.target === activeId) {
+            btn.classList.remove('bg-white', 'hover:bg-gray-100');
+            btn.classList.add('bg-lime-400');
+            btn.style.boxShadow = '2px 2px 0px 0px rgba(0,0,0,1)';
+          } else {
+            btn.classList.remove('bg-lime-400');
+            btn.classList.add('bg-white', 'hover:bg-gray-100');
+            btn.style.boxShadow = 'none';
+          }
+        });
+      }
+
+      // Update scroll progress
+      var windowHeight = window.innerHeight;
+      var documentHeight = document.documentElement.scrollHeight;
+      var scrollTop = window.scrollY;
+      var scrollableHeight = documentHeight - windowHeight;
+      var percentage = scrollableHeight > 0 ? Math.round((scrollTop / scrollableHeight) * 100) : 0;
+      scrollProgress.textContent = Math.min(100, Math.max(0, percentage)) + '%';
+    }
+
+    window.addEventListener('scroll', updateTOC);
+    updateTOC();
+  });
+})();
+</script>

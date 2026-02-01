@@ -327,3 +327,131 @@
 .code-block-wrapper pre {
   @apply border-t-0 mt-0;
 }
+
+/* ==========================================================================
+   Diagram Viewer - Fullscreen Modal with Zoom
+   Click on any diagram to view fullscreen with zoom controls
+   ========================================================================== */
+
+/* Clickable diagram wrapper */
+[data-diagram-viewer] {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+[data-diagram-viewer]:hover {
+  transform: translateY(-2px);
+}
+
+[data-diagram-viewer]:hover .diagram-expand-hint {
+  opacity: 1;
+}
+
+.diagram-expand-hint {
+  @apply absolute top-2 right-2 px-2 py-1 bg-black text-white text-xs font-bold uppercase;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* Modal backdrop and container */
+.diagram-modal {
+  @apply fixed inset-0 z-50 flex items-center justify-center;
+}
+
+.diagram-modal.hidden {
+  display: none;
+}
+
+.diagram-modal-backdrop {
+  @apply absolute inset-0 bg-black/80;
+}
+
+.diagram-modal-content {
+  @apply relative z-10 w-full max-w-5xl mx-4 bg-white border-4 border-black flex flex-col;
+  max-height: 90vh;
+  box-shadow: 12px 12px 0 #000;
+}
+
+/* Modal header */
+.diagram-modal-header {
+  @apply flex items-center justify-between px-4 py-3 border-b-4 border-black bg-yellow-400;
+}
+
+.diagram-modal-title {
+  @apply font-black uppercase;
+}
+
+.diagram-modal-controls {
+  @apply flex items-center gap-2;
+}
+
+.diagram-zoom-btn {
+  @apply p-2 bg-white border-2 border-black hover:bg-lime-300 transition-colors;
+}
+
+.diagram-zoom-btn:active {
+  transform: translateY(1px);
+}
+
+.diagram-zoom-level {
+  @apply px-2 py-1 bg-white border-2 border-black font-bold text-sm min-w-[60px] text-center;
+}
+
+.diagram-close-btn {
+  @apply p-2 bg-red-500 text-white border-2 border-black hover:bg-red-600 ml-2 transition-colors;
+}
+
+/* Modal body - scrollable container */
+.diagram-modal-body {
+  @apply flex-1 overflow-hidden;
+}
+
+.diagram-container {
+  @apply w-full h-full overflow-auto p-8 bg-neutral-100;
+  cursor: grab;
+  min-height: 400px;
+  max-height: calc(90vh - 140px);
+}
+
+.diagram-container:active {
+  cursor: grabbing;
+}
+
+.diagram-image {
+  @apply max-w-none mx-auto block;
+  transform-origin: center center;
+  transition: transform 0.15s ease;
+}
+
+/* Modal footer */
+.diagram-modal-footer {
+  @apply px-4 py-2 border-t-4 border-black bg-neutral-200;
+}
+
+.diagram-hint {
+  @apply text-xs text-neutral-600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .diagram-modal-content {
+    @apply mx-2;
+    max-height: 95vh;
+  }
+
+  .diagram-modal-header {
+    @apply flex-wrap gap-2;
+  }
+
+  .diagram-modal-title {
+    @apply w-full text-sm;
+  }
+
+  .diagram-zoom-level {
+    @apply text-xs min-w-[50px];
+  }
+
+  .diagram-container {
+    @apply p-4;
+  }
+}

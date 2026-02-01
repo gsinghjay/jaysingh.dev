@@ -102,14 +102,15 @@ test.describe('Story 3.1: Project Card Display (AC3)', () => {
 
     // Then: Project cards should have project type indicator (work/personal)
     // Filter for actual project cards (have h2 heading) to exclude nav elements
-    // Type badge uses bg-neutral-100 to distinguish from tech tags
+    // The type badge is in a flex justify-between container at top of card
     const projectCards = page.locator('.border-4.border-black').filter({ has: page.locator('h2') });
-    const typeBadge = projectCards.first().locator('.bg-neutral-100.text-sm.font-bold');
+    // Find badge by looking for WORK or PERSONAL text (trimmed)
+    const typeBadge = projectCards.first().locator('.flex.justify-between .bg-neutral-100').first();
     await expect(typeBadge).toBeVisible();
 
     // And: Badge should contain WORK or PERSONAL
     const badgeText = await typeBadge.textContent();
-    expect(badgeText?.toUpperCase()).toMatch(/WORK|PERSONAL/);
+    expect(badgeText?.trim().toUpperCase()).toMatch(/WORK|PERSONAL/);
   });
 
   test('[P2] technology tags limited to 4 with overflow indicator', async ({ page }) => {
@@ -132,6 +133,18 @@ test.describe('Story 3.1: Project Card Display (AC3)', () => {
     if (hasOverflow) {
       await expect(overflowIndicator).toBeVisible();
     }
+  });
+
+  test('[P2] project card shows feature indicator icons', async ({ page }) => {
+    // Given: User views projects listing
+    await page.goto('/projects/');
+
+    // Then: Project with diagram should show diagram icon
+    const projectCards = page.locator('.border-4.border-black').filter({ has: page.locator('h2') });
+
+    // Find the icons container (flex gap-2 containing the icons)
+    const iconsContainer = projectCards.first().locator('.flex.gap-2').last();
+    await expect(iconsContainer).toBeVisible();
   });
 });
 
@@ -483,7 +496,7 @@ test.describe('Story 3.2: Project Detail Page Access (AC1, AC5)', () => {
 });
 
 test.describe('Story 3.2: Project Header Content (AC4)', () => {
-  test('[P0] project title displayed with pink highlight', async ({ page }) => {
+  test('[P0] project title displayed with lime highlight', async ({ page }) => {
     // Given: User navigates to a project detail page
     await page.goto('/projects/qr-code-platform/');
 
@@ -492,8 +505,8 @@ test.describe('Story 3.2: Project Header Content (AC4)', () => {
     await expect(heading).toBeVisible();
     await expect(heading).toContainText('QR Code');
 
-    // And: First word should have pink highlight (bg-pink-400)
-    const highlight = heading.locator('.bg-pink-400');
+    // And: First word should have lime highlight (bg-lime-400) - aligned with React version
+    const highlight = heading.locator('.bg-lime-400');
     await expect(highlight).toBeVisible();
   });
 
@@ -513,7 +526,7 @@ test.describe('Story 3.2: Project Header Content (AC4)', () => {
     // Then: All technology tags should be visible (not limited to 4 like listing)
     // QR Code Platform has: Python, FastAPI, PostgreSQL, Docker, Prometheus
     // Use exact text match to avoid matching content in body text
-    const tagsContainer = page.locator('.flex.flex-wrap.gap-2');
+    const tagsContainer = page.locator('.flex.flex-wrap.gap-2').first();
     await expect(tagsContainer.getByText('Python', { exact: true })).toBeVisible();
     await expect(tagsContainer.getByText('FastAPI', { exact: true })).toBeVisible();
     await expect(tagsContainer.getByText('PostgreSQL', { exact: true })).toBeVisible();
@@ -531,6 +544,25 @@ test.describe('Story 3.2: Project Header Content (AC4)', () => {
 
     // And: Badge should contain WORK (this is a work project)
     await expect(page.getByText(/WORK/i)).toBeVisible();
+  });
+});
+
+test.describe('Story 3.2: Overview Section', () => {
+  test('[P0] Overview section heading visible', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Overview heading should be visible as h2
+    const overviewHeading = page.getByRole('heading', { name: 'Overview', level: 2 });
+    await expect(overviewHeading).toBeVisible();
+  });
+
+  test('[P1] Overview section contains longDescription content', async ({ page }) => {
+    // Given: User navigates to a project detail page with longDescription
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Overview should contain the longDescription text
+    await expect(page.getByText(/production-grade QR code generation/i)).toBeVisible();
   });
 });
 
@@ -560,6 +592,171 @@ test.describe('Story 3.2: Challenge/Solution/Impact Sections (AC2)', () => {
     // Then: Impact heading should be visible as h2
     const impactHeading = page.getByRole('heading', { name: 'Impact', level: 2 });
     await expect(impactHeading).toBeVisible();
+  });
+
+  test('[P1] Challenge section has red border accent', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Challenge section card should have red left border
+    const challengeCard = page.locator('.border-l-red-400');
+    await expect(challengeCard).toBeVisible();
+  });
+
+  test('[P1] Solution section has blue border accent', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Solution section card should have blue left border
+    const solutionCard = page.locator('.border-l-blue-400');
+    await expect(solutionCard).toBeVisible();
+  });
+
+  test('[P1] Impact section has lime border accent', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Impact section card should have lime left border
+    const impactCard = page.locator('.border-l-lime-400');
+    await expect(impactCard).toBeVisible();
+  });
+});
+
+test.describe('Story 3.2: Key Features Section', () => {
+  test('[P0] Key Features section heading visible', async ({ page }) => {
+    // Given: User navigates to a project with keyFeatures
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Key Features heading should be visible as h2
+    const featuresHeading = page.getByRole('heading', { name: 'Key Features', level: 2 });
+    await expect(featuresHeading).toBeVisible();
+  });
+
+  test('[P1] Key Features section has yellow border accent', async ({ page }) => {
+    // Given: User navigates to a project detail page
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Key Features section card should have yellow left border
+    const featuresCard = page.locator('.border-l-yellow-400');
+    await expect(featuresCard).toBeVisible();
+  });
+
+  test('[P1] Key Features displays as numbered list', async ({ page }) => {
+    // Given: User navigates to a project with keyFeatures
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Features should be in an ordered list
+    const featuresList = page.locator('ol.list-decimal');
+    await expect(featuresList).toBeVisible();
+
+    // And: List should have multiple items
+    const listItems = featuresList.locator('li');
+    expect(await listItems.count()).toBeGreaterThan(2);
+  });
+});
+
+test.describe('Story 3.2: External Links', () => {
+  test('[P1] GitHub link displayed when URL exists', async ({ page }) => {
+    // Given: User navigates to a project with githubUrl
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: GitHub link should be visible
+    const githubLink = page.getByRole('link', { name: /GitHub/i });
+    await expect(githubLink).toBeVisible();
+
+    // And: Link should open in new tab
+    await expect(githubLink).toHaveAttribute('target', '_blank');
+  });
+
+  test('[P1] Live Demo link displayed when URL exists', async ({ page }) => {
+    // Given: User navigates to a project with liveUrl
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: Live Demo link should be visible
+    const liveLink = page.getByRole('link', { name: /Live Demo/i });
+    await expect(liveLink).toBeVisible();
+
+    // And: Link should open in new tab
+    await expect(liveLink).toHaveAttribute('target', '_blank');
+  });
+
+  test('[P1] Documentation link displayed when URL exists', async ({ page }) => {
+    // Given: User navigates to a project with documentationUrl
+    await page.goto('/projects/cloud-infrastructure-platform/');
+
+    // Then: Documentation link should be visible
+    const docsLink = page.getByRole('link', { name: /Documentation/i });
+    await expect(docsLink).toBeVisible();
+  });
+
+  test('[P2] External links not shown when URLs missing', async ({ page }) => {
+    // Given: User navigates to a project without external links
+    // (authentication-gateway has no liveUrl or documentationUrl)
+    await page.goto('/projects/authentication-gateway/');
+
+    // Then: Live Demo link should NOT be visible
+    const liveLink = page.getByRole('link', { name: /Live Demo/i });
+    await expect(liveLink).not.toBeVisible();
+  });
+});
+
+test.describe('Story 3.2: Table of Contents Sidebar', () => {
+  test('[P1] TOC sidebar visible on desktop', async ({ page }) => {
+    // Given: User views project on desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: TOC sidebar should be visible (matching blog layout)
+    const tocNav = page.locator('aside').filter({ hasText: 'TABLE OF CONTENTS' });
+    await expect(tocNav).toBeVisible();
+  });
+
+  test('[P1] TOC sidebar hidden on mobile', async ({ page }) => {
+    // Given: User views project on mobile
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: TOC sidebar should be hidden
+    const tocNav = page.locator('aside').filter({ hasText: 'TABLE OF CONTENTS' });
+    await expect(tocNav).not.toBeVisible();
+  });
+
+  test('[P2] TOC contains buttons for all sections', async ({ page }) => {
+    // Given: User views project on desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: TOC should have buttons for major sections (matching blog)
+    const toc = page.locator('aside').filter({ hasText: 'TABLE OF CONTENTS' });
+    await expect(toc.getByRole('button', { name: 'Overview' })).toBeVisible();
+    await expect(toc.getByRole('button', { name: 'Challenge' })).toBeVisible();
+    await expect(toc.getByRole('button', { name: 'Solution' })).toBeVisible();
+    await expect(toc.getByRole('button', { name: 'Impact' })).toBeVisible();
+  });
+
+  test('[P2] TOC shows scroll progress', async ({ page }) => {
+    // Given: User views project on desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/projects/qr-code-platform/');
+
+    // Then: TOC should show progress indicator
+    const toc = page.locator('aside').filter({ hasText: 'TABLE OF CONTENTS' });
+    await expect(toc.getByText('PROGRESS')).toBeVisible();
+    await expect(toc.locator('#scroll-progress')).toBeVisible();
+  });
+
+  test('[P2] TOC buttons navigate to sections', async ({ page }) => {
+    // Given: User views project on desktop
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/projects/qr-code-platform/');
+
+    // When: User clicks on Challenge button in TOC
+    const toc = page.locator('aside').filter({ hasText: 'TABLE OF CONTENTS' });
+    await toc.getByRole('button', { name: 'Challenge' }).click();
+
+    // Then: Challenge section should be scrolled into view
+    const challengeSection = page.locator('#challenge');
+    await expect(challengeSection).toBeInViewport();
   });
 });
 
@@ -610,38 +807,162 @@ test.describe('Story 3.2: Navigation (AC1)', () => {
 });
 
 test.describe('Story 3.2: Neubrutalist Styling (AC1, AC6)', () => {
-  test('[P1] content card has Neubrutalist styling', async ({ page }) => {
+  test('[P1] section cards have Neubrutalist styling', async ({ page }) => {
     // Given: User views a project detail page
     await page.goto('/projects/qr-code-platform/');
 
-    // Then: Content card (the one containing prose) should have 4px black border
-    const card = page.locator('.border-4.border-black').filter({ has: page.locator('.prose') });
+    // Then: Section cards should have 4px black border
+    const card = page.locator('.border-4.border-black').first();
     await expect(card).toBeVisible();
 
     const borderWidth = await card.evaluate((el) =>
       window.getComputedStyle(el).borderWidth
     );
     expect(borderWidth).toBe('4px');
-
-    // And: Card should have brutal shadow (lg size = 8px)
-    const style = await card.getAttribute('style');
-    expect(style).toContain('8px 8px 0');
   });
 
-  test('[P1] prose styling applied to content', async ({ page }) => {
+  test('[P1] cards have brutal shadow', async ({ page }) => {
     // Given: User views a project detail page
     await page.goto('/projects/qr-code-platform/');
 
-    // Then: Content should have prose class for markdown styling
-    const proseContent = page.locator('.prose');
-    await expect(proseContent).toBeVisible();
+    // Then: Cards should have box shadow (8px per design system)
+    const card = page.locator('[style*="8px 8px 0"]').first();
+    await expect(card).toBeVisible();
+  });
+});
 
-    // And: Headings should be styled (h2 for Challenge/Solution/Impact)
-    const h2 = proseContent.locator('h2').first();
-    const fontWeight = await h2.evaluate((el) =>
-      window.getComputedStyle(el).fontWeight
+/**
+ * Story 3.3: Implement Mermaid Diagram Rendering
+ *
+ * These tests validate the Mermaid diagram rendering implementation.
+ *
+ * Acceptance Criteria:
+ * - AC1: SVG Generation from Frontmatter (build-time, validated via AC3)
+ * - AC2: Mermaid CLI Script (build-time, validated via AC3)
+ * - AC3: Diagram Display on Project Page (img tag with correct src)
+ * - AC4: Responsive SVG Sizing (w-full, h-auto)
+ * - AC5: Accessible Alt Text (meaningful alt attribute)
+ * - AC6: Graceful Absence Without Mermaid (no diagram section)
+ * - AC7: Build Pipeline Order (build-time, validated via AC1/AC3)
+ */
+
+test.describe('Story 3.3: Mermaid Diagram Rendering (AC3)', () => {
+  // Test project that has mermaid diagram (using diagramContent field)
+  const projectWithDiagram = 'qr-code-platform';
+
+  test('[P0] project with diagram shows Architecture heading', async ({ page }) => {
+    // Given: A project with diagramContent in frontmatter
+    await page.goto(`/projects/${projectWithDiagram}/`);
+
+    // Then: Architecture section heading should be visible
+    const architectureHeading = page.getByRole('heading', { name: 'Architecture', level: 2 });
+    await expect(architectureHeading).toBeVisible();
+  });
+
+  test('[P0] diagram image has correct src path', async ({ page }) => {
+    // Given: A project with mermaid diagram
+    await page.goto(`/projects/${projectWithDiagram}/`);
+
+    // Then: Diagram image should reference the pre-rendered SVG
+    const diagramImg = page.locator('img[src*="/diagrams/"]');
+    await expect(diagramImg).toBeVisible();
+    await expect(diagramImg).toHaveAttribute('src', `/diagrams/${projectWithDiagram}.svg`);
+  });
+
+  test('[P0] diagram image has meaningful alt text', async ({ page }) => {
+    // Given: A project with mermaid diagram
+    await page.goto(`/projects/${projectWithDiagram}/`);
+
+    // Then: Diagram image should have accessible alt text
+    const diagramImg = page.locator('img[src*="/diagrams/"]');
+    await expect(diagramImg).toBeVisible();
+
+    // And: Alt text should be meaningful (not empty, at least 10 characters)
+    const altText = await diagramImg.getAttribute('alt');
+    expect(altText).toBeTruthy();
+    expect(altText!.length).toBeGreaterThan(10);
+  });
+});
+
+test.describe('Story 3.3: Diagram Styling (AC4)', () => {
+  const projectWithDiagram = 'qr-code-platform';
+
+  test('[P1] diagram image is responsive', async ({ page }) => {
+    // Given: A project with mermaid diagram
+    await page.goto(`/projects/${projectWithDiagram}/`);
+
+    // Then: Diagram image should have responsive class (w-full)
+    const diagramImg = page.locator('img[src*="/diagrams/"]');
+    await expect(diagramImg).toBeVisible();
+    await expect(diagramImg).toHaveClass(/w-full/);
+  });
+
+  test('[P1] diagram card has Neubrutalist styling', async ({ page }) => {
+    // Given: A project with mermaid diagram
+    await page.goto(`/projects/${projectWithDiagram}/`);
+
+    // Then: Diagram should be wrapped in a card with 4px black border
+    // The structure is: card div > centering div > img, so we need to go up two levels
+    const diagramCard = page.locator('#architecture .border-4.border-black');
+    await expect(diagramCard).toBeVisible();
+
+    const borderWidth = await diagramCard.evaluate((el) =>
+      window.getComputedStyle(el).borderWidth
     );
-    // Font weight 700 = bold, 800+ = extra bold
-    expect(parseInt(fontWeight)).toBeGreaterThanOrEqual(700);
+    expect(borderWidth).toBe('4px');
+
+    // And: Card should have brutal shadow
+    const style = await diagramCard.getAttribute('style');
+    expect(style).toContain('8px 8px 0');
+  });
+});
+
+test.describe('Story 3.3: Graceful Absence (AC6)', () => {
+  // Test project that does NOT have mermaid diagram
+  const projectWithoutDiagram = 'authentication-gateway';
+
+  test('[P0] project without diagram has no Architecture section', async ({ page }) => {
+    // Given: A project without diagramContent field in frontmatter
+    await page.goto(`/projects/${projectWithoutDiagram}/`);
+
+    // Then: Architecture heading should NOT be visible
+    const architectureHeading = page.getByRole('heading', { name: 'Architecture', level: 2 });
+    await expect(architectureHeading).not.toBeVisible();
+  });
+
+  test('[P0] project without diagram has no diagram image', async ({ page }) => {
+    // Given: A project without diagramContent field in frontmatter
+    await page.goto(`/projects/${projectWithoutDiagram}/`);
+
+    // Then: No diagram image should be present
+    const diagramImg = page.locator('img[src*="/diagrams/"]');
+    await expect(diagramImg).not.toBeVisible();
+  });
+});
+
+test.describe('Story 3.3: Diagram Accessibility', () => {
+  const projectWithDiagram = 'qr-code-platform';
+
+  test('[P1] diagram image has loading=lazy for performance', async ({ page }) => {
+    // Given: A project with mermaid diagram
+    await page.goto(`/projects/${projectWithDiagram}/`);
+
+    // Then: Diagram image should use lazy loading
+    const diagramImg = page.locator('img[src*="/diagrams/"]');
+    await expect(diagramImg).toHaveAttribute('loading', 'lazy');
+  });
+
+  test('[P2] diagram alt text is not generic placeholder', async ({ page }) => {
+    // Given: A project with mermaid diagram
+    await page.goto(`/projects/${projectWithDiagram}/`);
+
+    // Then: Alt text should NOT be a generic placeholder
+    const diagramImg = page.locator('img[src*="/diagrams/"]');
+    const altText = await diagramImg.getAttribute('alt');
+
+    // Generic placeholders to avoid
+    expect(altText?.toLowerCase()).not.toContain('image');
+    expect(altText?.toLowerCase()).not.toContain('diagram.svg');
+    expect(altText?.toLowerCase()).not.toContain('placeholder');
   });
 });
