@@ -87,7 +87,7 @@ test.describe('Story 4.3: Profile Data in Templates (ATDD)', () => {
 });
 
 test.describe('Story 4.3: Profile Social Links (ATDD)', () => {
-  test.skip('[P1] profile socialLinks are accessible for contact page', async ({ page }) => {
+  test('[P1] profile socialLinks are accessible for contact page', async ({ page }) => {
     // Given: User navigates to contact page
     // Note: Contact page (Story 4.4) will use profile.socialLinks
     await page.goto('/contact/');
@@ -105,8 +105,8 @@ test.describe('Story 4.3: Profile Social Links (ATDD)', () => {
     await expect(linkedinLink).toBeVisible();
     await expect(linkedinLink).toHaveAttribute('href', /linkedin\.com/);
 
-    // Email link
-    const emailLink = page.getByRole('link', { name: /email|contact/i });
+    // Email link (using exact pattern to avoid matching nav "CONTACT" link)
+    const emailLink = page.getByRole('link', { name: /email/i });
     await expect(emailLink).toBeVisible();
     await expect(emailLink).toHaveAttribute('href', /^mailto:/);
   });
