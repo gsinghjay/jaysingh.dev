@@ -6,6 +6,7 @@ permalink: /resume/
 ---
 
 {% from "components/card.njk" import card %}
+{% from "components/tag.njk" import tag %}
 
 {# Date formatting macro - converts "YYYY-MM" to "MMM YYYY" #}
 {% macro formatDate(dateString) %}
@@ -106,7 +107,11 @@ permalink: /resume/
       {% for cat in skillCategories %}
         <div class="bg-lime-400 border-4 border-black p-6" style="box-shadow: 6px 6px 0 #000;">
           <h3 class="text-xl font-black mb-3">{{ cat.name }}</h3>
-          <p class="text-sm text-neutral-600">{{ skills[cat.key] | join(', ') }}</p>
+          <div class="flex flex-wrap gap-2">
+            {% for skill in skills[cat.key] %}
+              {{ tag(skill) }}
+            {% endfor %}
+          </div>
         </div>
       {% endfor %}
     </div>

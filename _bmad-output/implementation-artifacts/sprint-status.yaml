@@ -70,15 +70,15 @@ development_status:
   3-2-create-project-detail-layout: done
   3-3-implement-mermaid-diagram-rendering: done
   3-4-implement-external-project-links: done
-  3-5-implement-project-filtering: backlog
+  3-5-implement-project-filtering: ready-for-dev
   epic-3-retrospective: optional
 
   # Epic 4: Professional Profile
   # Visitors can view Jay's resume, skills, education, and contact information.
   epic-4: in-progress
   4-1-create-resume-page-with-work-experience: done
-  4-2-add-education-and-skills-sections: backlog
-  4-3-implement-profile-data-files: backlog
+  4-2-add-education-and-skills-sections: done
+  4-3-implement-profile-data-files: ready-for-dev
   4-4-create-contact-page: backlog
   epic-4-retrospective: optional
 

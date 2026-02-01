@@ -1,16 +1,18 @@
 /**
- * Story 4.1: Create Resume Page with Work Experience (ATDD)
+ * Stories 4.1 & 4.2: Resume Page with Work Experience and Skills (ATDD)
  *
  * These tests validate the resume page implementation.
- * TDD RED PHASE: All tests are designed to FAIL until implementation.
  *
- * Acceptance Criteria:
+ * Story 4.1 Acceptance Criteria:
  * - AC1: Resume page accessible at /resume/ with professional formatting
  * - AC2: Work experience displays company, title, dates, responsibilities
  * - AC3: Positions in reverse chronological order (most recent first)
  * - AC4: Desktop layout uses Neubrutalist design system
  * - AC5: Mobile responsive without horizontal scrolling
  * - AC6: Data from _data/resume.json via 11ty data cascade
+ *
+ * Story 4.2 Acceptance Criteria:
+ * - AC4: Skills displayed as tag pills with Neubrutalist styling
  */
 
 import { test, expect } from '../support/fixtures';
@@ -208,11 +210,11 @@ test.describe('Story 4.1: Technical Toolkit Section (AC4)', () => {
     await expect(skillCard.first()).toBeVisible();
   });
 
-  test('[P1] skill cards display comma-separated skills', async ({ page }) => {
+  test('[P1] skill cards display individual skills', async ({ page }) => {
     // Given: User views resume page
     await page.goto('/resume/');
 
-    // Then: Skills should be displayed as comma-separated list
+    // Then: Skills should be displayed (as tag pills per Story 4.2)
     // Frontend includes React, Tailwind CSS, etc.
     await expect(page.getByText(/React/)).toBeVisible();
     await expect(page.getByText(/Tailwind CSS/)).toBeVisible();
@@ -439,6 +441,186 @@ test.describe('Story 4.1: Accessibility (AC1-5)', () => {
 
     const listItems = list.locator('li');
     expect(await listItems.count()).toBeGreaterThan(0);
+  });
+});
+
+test.describe('Story 4.2: Skills as Tag Pills (AC4)', () => {
+  test('[P0] skills displayed as individual tag elements', async ({ page }) => {
+    // Given: User views resume page
+    await page.goto('/resume/');
+
+    // Then: Skills should be rendered as individual span tags, not comma-separated text
+    // Look for tag styling inside skill cards (lime-400 background cards)
+    const skillCard = page.locator('.bg-lime-400').filter({
+      has: page.getByRole('heading', { name: 'FRONTEND', level: 3 }),
+    });
+
+    // Should have multiple span elements with tag styling (border-2)
+    const tagElements = skillCard.locator('span.border-2');
+    await expect(tagElements.first()).toBeVisible();
+
+    // Should have at least 5 tags in frontend category (React, Jinja2, HTML/CSS, Tailwind CSS, etc.)
+    expect(await tagElements.count()).toBeGreaterThanOrEqual(5);
+  });
+
+  test('[P0] all 10 skill categories render tag pills', async ({ page }) => {
+    // Given: User views resume page
+    await page.goto('/resume/');
+
+    // Then: Each skill category card should contain tag pill elements
+    const categories = ['FRONTEND', 'BACKEND', 'DATA', 'INFRA', 'OBSERVABILITY', 'SECURITY', 'TESTING', 'TOOLS', 'ARCHITECTURE', 'CLOUD'];
+
+    for (const category of categories) {
+      const skillCard = page.locator('.bg-lime-400').filter({
+        has: page.getByRole('heading', { name: category, level: 3 }),
+      });
+
+      // Each category should have at least one tag pill (span with border-2)
+      const tagElements = skillCard.locator('span.border-2');
+      await expect(tagElements.first()).toBeVisible();
+    }
+  });
+
+  test('[P1] tag pills have Neubrutalist styling', async ({ page }) => {
+    // Given: User views resume page
+    await page.goto('/resume/');
+
+    // Then: Tag pills should have border-2, uppercase text, and padding
+    const skillCard = page.locator('.bg-lime-400').filter({
+      has: page.getByRole('heading', { level: 3 }),
+    }).first();
+    const tagElement = skillCard.locator('span.border-2').first();
+
+    await expect(tagElement).toBeVisible();
+
+    // Verify border is 2px
+    const borderWidth = await tagElement.evaluate((el) =>
+      window.getComputedStyle(el).borderWidth
+    );
+    expect(borderWidth).toBe('2px');
+
+    // Verify text is uppercase
+    const textTransform = await tagElement.evaluate((el) =>
+      window.getComputedStyle(el).textTransform
+    );
+    expect(textTransform).toBe('uppercase');
+  });
+
+  test('[P1] tag pills use flex-wrap layout', async ({ page }) => {
+    // Given: User views resume page
+    await page.goto('/resume/');
+
+    // Then: Tags should be in a flex container with gap
+    const skillCard = page.locator('.bg-lime-400').filter({
+      has: page.getByRole('heading', { level: 3 }),
+    }).first();
+
+    // Look for flex container wrapping the tags
+    const flexContainer = skillCard.locator('.flex.flex-wrap');
+    await expect(flexContainer).toBeVisible();
+
+    // Verify gap-2 class (8px gap)
+    await expect(flexContainer).toHaveClass(/gap-2/);
+  });
+
+  test('[P1] specific skill names visible as tags', async ({ page }) => {
+    // Given: User views resume page
+    await page.goto('/resume/');
+
+    // Then: Individual skills should be visible as separate tag elements
+    // Check frontend skills exist as individual tags
+    const frontendCard = page.locator('.bg-lime-400').filter({
+      has: page.getByRole('heading', { name: 'FRONTEND', level: 3 }),
+    });
+
+    // Each skill should be its own tag element
+    await expect(frontendCard.locator('span.border-2', { hasText: 'React' })).toBeVisible();
+    await expect(frontendCard.locator('span.border-2', { hasText: 'Tailwind CSS' })).toBeVisible();
+  });
+
+  test('[P1] tags visible on lime-400 background', async ({ page }) => {
+    // Given: User views resume page
+    await page.goto('/resume/');
+
+    // Then: Tag elements should be visible (sufficient contrast on lime-400 bg)
+    const skillCard = page.locator('.bg-lime-400').filter({
+      has: page.getByRole('heading', { level: 3 }),
+    }).first();
+    const tagElement = skillCard.locator('span.border-2').first();
+
+    await expect(tagElement).toBeVisible();
+
+    // Tag should have a background color (not transparent)
+    const bgColor = await tagElement.evaluate((el) =>
+      window.getComputedStyle(el).backgroundColor
+    );
+    expect(bgColor).not.toBe('rgba(0, 0, 0, 0)');
+    expect(bgColor).not.toBe('transparent');
+  });
+
+  test('[P1] skills no longer comma-separated', async ({ page }) => {
+    // Given: User views resume page
+    await page.goto('/resume/');
+
+    // Then: Skills should NOT be displayed as comma-separated text
+    const skillCard = page.locator('.bg-lime-400').filter({
+      has: page.getByRole('heading', { level: 3 }),
+    }).first();
+
+    // The old implementation uses: {{ skills[cat.key] | join(', ') }}
+    // This produces text like "React, Jinja2, HTML/CSS, Tailwind CSS"
+    // After Story 4.2, this pattern should NOT exist
+
+    // Get all text content in the skill card (excluding heading)
+    const cardText = await skillCard.locator('p, div').filter({ hasNot: page.locator('h3') }).textContent() || '';
+
+    // Should NOT contain comma-separated skill lists
+    // (Individual tags won't have commas between them)
+    expect(cardText).not.toContain('React, Jinja2');
+    expect(cardText).not.toContain('React,Jinja2');
+  });
+});
+
+test.describe('Story 4.2: Tag Pills Responsive (AC4)', () => {
+  test.use({ viewport: { width: 375, height: 667 } }); // iPhone SE
+
+  test('[P1] tags wrap correctly on mobile', async ({ page }) => {
+    // Given: User views resume on mobile device
+    await page.goto('/resume/');
+
+    // Then: Tags should wrap to multiple lines (flex-wrap)
+    const skillCard = page.locator('.bg-lime-400').filter({
+      has: page.getByRole('heading', { level: 3 }),
+    }).first();
+    const flexContainer = skillCard.locator('.flex.flex-wrap');
+
+    await expect(flexContainer).toBeVisible();
+
+    // Tags should be visible and not overflow
+    const tagElement = skillCard.locator('span.border-2').first();
+    await expect(tagElement).toBeVisible();
+
+    // Container should not cause horizontal scroll
+    const containerWidth = await flexContainer.evaluate((el) => el.scrollWidth);
+    const viewportWidth = 375;
+    expect(containerWidth).toBeLessThanOrEqual(viewportWidth);
+  });
+
+  test('[P1] tag pills readable on mobile', async ({ page }) => {
+    // Given: User views resume on mobile
+    await page.goto('/resume/');
+
+    // Then: Tag text should be readable (not truncated)
+    const skillCard = page.locator('.bg-lime-400').filter({
+      has: page.getByRole('heading', { level: 3 }),
+    }).first();
+    const tagElement = skillCard.locator('span.border-2').first();
+
+    await expect(tagElement).toBeVisible();
+
+    // Verify tag has text content
+    const tagText = await tagElement.textContent();
+    expect(tagText?.trim().length).toBeGreaterThan(0);
   });
 });
 
