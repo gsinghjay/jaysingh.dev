@@ -75,8 +75,8 @@ development_status:
 
   # Epic 4: Professional Profile
   # Visitors can view Jay's resume, skills, education, and contact information.
-  epic-4: backlog
-  4-1-create-resume-page-with-work-experience: backlog
+  epic-4: in-progress
+  4-1-create-resume-page-with-work-experience: done
   4-2-add-education-and-skills-sections: backlog
   4-3-implement-profile-data-files: backlog
   4-4-create-contact-page: backlog

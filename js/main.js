@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initSocialShare();
   // Initialize diagram viewer functionality
   initDiagramViewer();
+  // Initialize resume print functionality
+  initResumePrint();
   // Mobile menu toggle
   const menuToggle = document.querySelector('[data-mobile-menu-toggle]');
   const mobileMenu = document.querySelector('[data-mobile-menu]');
@@ -412,5 +414,27 @@ function initSocialShare() {
         }
       }
     }
+  });
+}
+
+// Resume print functionality - triggers window.print() for CV download
+function initResumePrint() {
+  const printBtn = document.querySelector('[data-print-resume]');
+  if (!printBtn) return;
+
+  // Click handler for print
+  printBtn.addEventListener('click', () => {
+    window.print();
+  });
+
+  // Press effects for React parity (mousedown/mouseup shadow change)
+  printBtn.addEventListener('mousedown', () => {
+    printBtn.style.boxShadow = '2px 2px 0 #000';
+  });
+  printBtn.addEventListener('mouseup', () => {
+    printBtn.style.boxShadow = '4px 4px 0 #000';
+  });
+  printBtn.addEventListener('mouseleave', () => {
+    printBtn.style.boxShadow = '4px 4px 0 #000';
   });
 }
