@@ -84,8 +84,8 @@ development_status:
 
   # Epic 5: Content Authoring Pipeline
   # Jay can create and preview content via Markdown with Mermaid diagrams.
-  epic-5: backlog
-  5-1-implement-blog-content-pipeline: backlog
+  epic-5: in-progress
+  5-1-implement-blog-content-pipeline: ready-for-dev
   5-2-implement-project-content-pipeline: backlog
   5-3-implement-site-configuration-via-data-files: backlog
   5-4-implement-mermaid-in-markdown-processing: backlog
@@ -101,3 +101,14 @@ development_status:
   6-4-implement-github-actions-deployment: backlog
   6-5-achieve-lighthouse-100-scores: backlog
   epic-6-retrospective: optional
+
+  # Epic 7: Sanity.io CMS Integration
+  # Collaborators can manage all content through Sanity Studio with automatic rebuilds.
+  epic-7: backlog
+  7-1-initialize-sanity-project-and-studio: backlog
+  7-2-define-content-schemas: backlog
+  7-3-implement-11ty-sanity-data-source: backlog
+  7-4-configure-webhook-rebuilds: backlog
+  7-5-deploy-sanity-studio: backlog
+  7-6-validate-end-to-end-content-workflow: backlog
+  epic-7-retrospective: optional

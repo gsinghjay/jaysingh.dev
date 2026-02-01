@@ -194,6 +194,11 @@ This document provides the complete epic and story breakdown for jaysingh.dev, d
 | FR38 | Epic 6 | Direct blog page landing via search |
 | FR39 | Epic 6 | robots.txt for crawlers |
 | FR40 | Epic 6 | Unique meta tags per page |
+| FR41 | Epic 7 | Collaborators create/edit blog posts via Sanity |
+| FR42 | Epic 7 | Collaborators create/edit projects via Sanity |
+| FR43 | Epic 7 | Collaborators update profile/resume/skills via Sanity |
+| FR44 | Epic 7 | Collaborators update site config via Sanity |
+| FR45 | Epic 7 | System rebuilds on Sanity publish |
 
 ## Epic List
 
@@ -226,6 +231,11 @@ Jay can create and preview content via Markdown with Mermaid diagrams.
 Site is deployed to GitHub Pages, SEO-optimized, and achieves Lighthouse 100.
 
 **FRs covered:** FR35, FR36, FR37, FR38, FR39, FR40
+
+### Epic 7: Sanity.io CMS Integration
+Collaborators can manage all content through Sanity Studio, with automatic site rebuilds on publish.
+
+**FRs covered:** FR41, FR42, FR43, FR44, FR45
 
 ---
 
@@ -1326,3 +1336,195 @@ So that **I have an excellent browsing experience**.
 **Given** a blog post with Mermaid diagram
 **When** I run Lighthouse
 **Then** Performance remains 100 (SVG is pre-rendered, no client JS)
+
+---
+
+## Epic 7: Sanity.io CMS Integration
+
+Collaborators can manage all content through Sanity Studio, with automatic site rebuilds on publish.
+
+**FRs covered:** FR41, FR42, FR43, FR44, FR45
+
+### Story 7.1: Initialize Sanity Project and Studio
+
+As a **developer**,
+I want **a configured Sanity project with Studio**,
+So that **collaborators have a CMS interface to manage content**.
+
+**Acceptance Criteria:**
+
+**Given** the jaysingh.dev repository
+**When** I run Sanity CLI init
+**Then** a Sanity project is created with production dataset
+
+**Given** the Sanity project exists
+**When** I run `npm run dev` in the studio directory
+**Then** Sanity Studio runs locally and connects to the project
+
+**Given** the Sanity configuration
+**When** I review the project settings
+**Then** the project ID and dataset are stored in environment variables
+
+**Given** the repository structure
+**When** I review the directories
+**Then** Sanity Studio is in a `studio/` directory at project root
+
+### Story 7.2: Define Content Schemas
+
+As a **developer**,
+I want **Sanity schemas matching existing content structure**,
+So that **CMS content maps cleanly to 11ty templates**.
+
+**Acceptance Criteria:**
+
+**Given** the Sanity Studio
+**When** I review the schema definitions
+**Then** a `post` schema exists with fields: id, title, date, excerpt, tags, readTime, body, relatedProjectIds
+
+**Given** the Sanity Studio
+**When** I review the schema definitions
+**Then** a `project` schema exists with fields: id, title, description, tags, projectType, github, demo, mermaid, challenge, solution, impact
+
+**Given** the Sanity Studio
+**When** I review the schema definitions
+**Then** a `profile` schema exists with fields: name, role, bio, email, github, linkedin
+
+**Given** the Sanity Studio
+**When** I review the schema definitions
+**Then** a `resume` schema exists with fields: experience (array), education (array)
+
+**Given** the Sanity Studio
+**When** I review the schema definitions
+**Then** a `skills` schema exists with categorized skill arrays
+
+**Given** the Sanity Studio
+**When** I review the schema definitions
+**Then** a `siteConfig` schema exists with fields: title, description, baseUrl
+
+**Given** all schemas
+**When** I review field naming
+**Then** all fields use camelCase matching existing frontmatter conventions
+
+### Story 7.3: Implement 11ty Sanity Data Source
+
+As a **developer**,
+I want **11ty to fetch content from Sanity at build time**,
+So that **CMS content appears on the built site**.
+
+**Acceptance Criteria:**
+
+**Given** the project dependencies
+**When** I review package.json
+**Then** @sanity/client is installed
+
+**Given** the `_data/` directory
+**When** I review the data files
+**Then** JavaScript files exist that fetch from Sanity API (e.g., `posts.js`, `projects.js`, `profile.js`)
+
+**Given** the Sanity data files
+**When** 11ty builds the site
+**Then** content from Sanity is available in templates as collections and global data
+
+**Given** environment variables are not set
+**When** 11ty builds the site
+**Then** it falls back to local Markdown files gracefully
+
+**Given** the Sanity fetch
+**When** I review the GROQ queries
+**Then** queries are optimized and fetch only required fields
+
+**Given** a successful build
+**When** I inspect the output
+**Then** content from Sanity renders identically to content from Markdown
+
+### Story 7.4: Configure Webhook Rebuilds
+
+As a **collaborator**,
+I want **the site to rebuild when I publish in Sanity**,
+So that **my content goes live automatically**.
+
+**Acceptance Criteria:**
+
+**Given** the Sanity project settings
+**When** I review webhooks
+**Then** a webhook is configured to call GitHub API on publish
+
+**Given** the GitHub repository
+**When** I review Actions workflows
+**Then** a workflow triggers on `repository_dispatch` event
+
+**Given** content is published in Sanity
+**When** the webhook fires
+**Then** GitHub Actions starts a build within 30 seconds
+
+**Given** the rebuild completes
+**When** I check GitHub Pages
+**Then** the new content is live
+
+**Given** the webhook configuration
+**When** I review security
+**Then** the webhook uses a secret token for authentication
+
+**Given** the rebuild workflow
+**When** I review the steps
+**Then** it runs the same build pipeline as push to main (CSS → Mermaid → 11ty → Deploy)
+
+### Story 7.5: Deploy Sanity Studio
+
+As a **collaborator**,
+I want **to access Sanity Studio from a stable URL**,
+So that **I can manage content from anywhere**.
+
+**Acceptance Criteria:**
+
+**Given** the Sanity Studio
+**When** I run the deploy command
+**Then** Studio is deployed to Sanity's hosting
+
+**Given** the deployed Studio
+**When** I access the URL
+**Then** I can log in and see content
+
+**Given** the Studio deployment
+**When** I review the URL
+**Then** it is accessible at a memorable URL (e.g., jaysingh.sanity.studio)
+
+**Given** the deployed Studio
+**When** a collaborator accesses it
+**Then** they can authenticate with their Sanity account
+
+**Given** the Studio configuration
+**When** I review access settings
+**Then** only authorized collaborators can edit content
+
+### Story 7.6: Validate End-to-End Content Workflow
+
+As a **collaborator**,
+I want **to create content and see it live**,
+So that **I can confirm the workflow works**.
+
+**Acceptance Criteria:**
+
+**Given** access to Sanity Studio
+**When** I create a new blog post with all required fields
+**Then** the post saves successfully
+
+**Given** a saved blog post
+**When** I click Publish
+**Then** the webhook triggers within 30 seconds
+
+**Given** the webhook triggered
+**When** the build completes
+**Then** the new post appears on the live site at `/blog/{id}/`
+
+**Given** the live post
+**When** I compare to the Sanity content
+**Then** all fields render correctly (title, date, body, tags)
+
+**Given** all content types
+**When** I test create/edit/publish for each
+**Then** blog posts, projects, profile, resume, skills, and site config all work
+
+**Given** a content update in Sanity
+**When** I measure time to live
+**Then** changes appear on the live site within 5 minutes of publish

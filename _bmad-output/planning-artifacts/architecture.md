@@ -173,30 +173,48 @@ npm install tailwindcss postcss autoprefixer --save-dev
 - Client-side JavaScript scope
 - GitHub Actions workflow
 
+**MVP Decisions (Sanity.io Integration):**
+- Sanity.io as primary content source for collaborators
+- Webhook-triggered rebuilds on content publish
+- Dual-source architecture (Sanity API + local Markdown fallback)
+
 **Deferred Decisions (Post-MVP):**
-- Sanity.io integration patterns
 - Image optimization pipeline
 - Search functionality
+- Content preview/draft mode
 
 ### Data Architecture
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Content Source | Keep existing `content/` structure | Zero migration needed; 11ty globs from any path |
-| Global Data | `_data/` folder (11ty convention) | Auto-loaded as template variables |
-| CMS Abstraction | Standard 11ty patterns now | Add Sanity as data source later without refactoring |
-| Collections | `blog` and `projects` via `addCollection` | Maps directly to existing content folders |
+| Content Source | Dual-source: Sanity API (primary) + local Markdown (fallback) | Collaborators use CMS, Jay can use Git |
+| Global Data | `_data/` folder with Sanity fetch | Auto-loaded, fetches from Sanity at build time |
+| CMS Integration | Sanity.io with @sanity/client | Build-time fetch, static output, webhook rebuilds |
+| Collections | `blog` and `projects` from Sanity API | Maps to Sanity schemas |
+| Fallback | Local `content/` structure | Zero-dependency local development |
 
 **Content Flow:**
 ```
-content/blog/*.md ──┐
-                    ├──▶ 11ty Collections ──▶ Nunjucks Templates ──▶ _site/
-content/projects/*.md──┘
+Sanity API ─────────────┐
+                        ├──▶ 11ty Collections ──▶ Nunjucks Templates ──▶ _site/
+content/blog/*.md ──────┘ (fallback)
 
-_data/profile.json ──┐
-_data/resume.json  ──┼──▶ Global Data ──▶ Available in all templates
-_data/skills.json  ──┘
+Sanity API ─────────────┐
+                        ├──▶ Global Data ──▶ Available in all templates
+_data/*.json ───────────┘ (fallback)
+
+Webhook: Sanity Publish ──▶ GitHub Actions ──▶ Build & Deploy
 ```
+
+**Sanity.io Configuration:**
+
+| Setting | Value | Purpose |
+|---------|-------|---------|
+| Project | Single project | jaysingh.dev content |
+| Dataset | `production` | Live content |
+| API Version | `2024-01-01` | Stable API |
+| Fetch Method | @sanity/client in `_data/` | Build-time fetch |
+| Webhook | repository_dispatch to GitHub | Trigger rebuilds |
 
 ### Frontend Architecture
 

@@ -69,7 +69,7 @@ workflowType: 'prd'
 
 **Technology Stack:** 11ty + Nunjucks + TailwindCSS + Node.js 24 LTS
 
-**Scope:** MVP focuses on migration parity; Sanity.io CMS integration deferred to Growth phase.
+**Scope:** MVP includes migration parity AND Sanity.io CMS integration for collaborator content authoring.
 
 ## Success Criteria
 
@@ -117,12 +117,14 @@ workflowType: 'prd'
 - Clean file-based URLs
 - GitHub Pages deployment with working CI/CD
 - 100% Lighthouse scores achieved
+- Sanity.io Studio with content schemas (blog, projects, profile, config)
+- Webhook-triggered rebuilds on Sanity publish
+- Collaborator access to CMS for content authoring
 
 ### Growth Features (Post-MVP)
 
-- Sanity.io CMS integration
 - Content preview/draft mode
-- Structured content editing for non-technical updates
+- Structured content editing enhancements
 
 ### Vision (Future)
 
@@ -171,7 +173,7 @@ Jay checks the live site, confirms the Mermaid diagram rendered, and shares the 
 
 **Capabilities revealed:** Git-triggered CI/CD, automated build, GitHub Pages deployment, content pipeline processing
 
-### Journey 4: The CMS Author (Team Member - Content via Sanity) [Growth Phase]
+### Journey 4: The CMS Author (Team Member - Content via Sanity)
 
 **Alex, a content collaborator with Sanity access**
 
@@ -206,7 +208,7 @@ Later, when adding Sanity.io, Jay updates the data fetching layer to pull from S
 | Recruiter | Fast loads, mobile-responsive, project detail pages, resume page |
 | Technical Peer | SEO, code blocks, Mermaid diagrams, social sharing, blog listing |
 | Git Author | Markdown content pipeline, Git-triggered CI/CD, GitHub Pages deployment |
-| CMS Author | Sanity.io Studio, webhooks, structured content, rebuild triggers |
+| CMS Author | Sanity.io Studio, webhooks, structured content, rebuild triggers (MVP) |
 | Maintainer | Local dev environment, Lighthouse testing, modular data layer |
 
 ## Web App Specific Requirements
@@ -350,8 +352,7 @@ This is a **technical migration** project, not a new product launch. The MVP phi
 | **Deployment** | GitHub Pages | GitHub Actions workflow |
 
 **Explicitly Deferred (Not in MVP):**
-- Sanity.io CMS integration
-- Content preview/draft mode
+- Content preview/draft mode (advanced Sanity feature)
 - Search functionality
 - Related content algorithms
 - Analytics integration
@@ -462,6 +463,14 @@ This is a **technical migration** project, not a new product launch. The MVP phi
 - **FR38:** Visitors arriving via search engines can land directly on blog post pages
 - **FR39:** Search engines can crawl all public pages via robots.txt allowance
 - **FR40:** Each page can have unique meta tags (title, description, Open Graph)
+
+### Content Authoring (CMS Workflow)
+
+- **FR41:** Collaborators can create and edit blog posts via Sanity Studio
+- **FR42:** Collaborators can create and edit projects via Sanity Studio
+- **FR43:** Collaborators can update profile, resume, and skills data via Sanity Studio
+- **FR44:** Collaborators can update site configuration via Sanity Studio
+- **FR45:** System rebuilds and deploys automatically when content is published in Sanity
 
 ## Non-Functional Requirements
 
