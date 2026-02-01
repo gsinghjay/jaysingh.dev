@@ -1,5 +1,5 @@
 import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
-import { readingTime, findProjectsByIds, validateBlogPost } from './lib/filters.js';
+import { readingTime, findProjectsByIds, validateBlogPost, validateProject } from './lib/filters.js';
 import fs from 'fs';
 
 export default function(eleventyConfig) {
@@ -193,8 +193,19 @@ export default function(eleventyConfig) {
   });
 
   // Projects collection (using _content directory for 11ty-compatible content)
+  // Includes frontmatter validation per Story 5.2 AC2/AC3
   eleventyConfig.addCollection("projects", collection => {
-    return collection.getFilteredByGlob("_content/projects/*.md");
+    const projects = collection.getFilteredByGlob("_content/projects/*.md");
+
+    // Validate each project's frontmatter
+    for (const project of projects) {
+      const result = validateProject(project.data, project.inputPath);
+      if (!result.valid) {
+        throw new Error(`Project validation failed:\n${result.errors.join('\n')}`);
+      }
+    }
+
+    return projects;
   });
 
   return {
