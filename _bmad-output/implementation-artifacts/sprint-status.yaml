@@ -85,7 +85,7 @@ development_status:
   # Epic 5: Content Authoring Pipeline
   # Jay can create and preview content via Markdown with Mermaid diagrams.
   epic-5: in-progress
-  5-1-implement-blog-content-pipeline: ready-for-dev
+  5-1-implement-blog-content-pipeline: done
   5-2-implement-project-content-pipeline: backlog
   5-3-implement-site-configuration-via-data-files: backlog
   5-4-implement-mermaid-in-markdown-processing: backlog

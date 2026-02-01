@@ -1,5 +1,5 @@
 import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
-import { readingTime, findProjectsByIds } from './lib/filters.js';
+import { readingTime, findProjectsByIds, validateBlogPost } from './lib/filters.js';
 import fs from 'fs';
 
 export default function(eleventyConfig) {
@@ -177,8 +177,19 @@ export default function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("js");
 
   // Blog posts collection (using _content directory for 11ty-compatible content)
+  // Includes frontmatter validation per Story 5.1 AC6
   eleventyConfig.addCollection("posts", collection => {
-    return collection.getFilteredByGlob("_content/blog/*.md");
+    const posts = collection.getFilteredByGlob("_content/blog/*.md");
+
+    // Validate each post's frontmatter
+    for (const post of posts) {
+      const result = validateBlogPost(post.data, post.inputPath);
+      if (!result.valid) {
+        throw new Error(`Blog post validation failed:\n${result.errors.join('\n')}`);
+      }
+    }
+
+    return posts;
   });
 
   // Projects collection (using _content directory for 11ty-compatible content)
