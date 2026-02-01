@@ -134,7 +134,7 @@ test.describe('Story 1.3: Footer Content (ATDD)', () => {
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
     await expect(footer.getByText(/© 2026/)).toBeVisible();
-    await expect(footer.getByText(/JAYSINGH\.DEV/i)).toBeVisible();
+    await expect(footer.getByText(/JAY SINGH/i)).toBeVisible();
   });
 
   test('[P1] footer displays tagline', async ({ page }) => {
