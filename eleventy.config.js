@@ -3,6 +3,9 @@ import { readingTime, findProjectsByIds, validateBlogPost, validateProject } fro
 import fs from 'fs';
 
 export default function(eleventyConfig) {
+  // Global data for templates
+  eleventyConfig.addGlobalData("currentYear", new Date().getFullYear());
+
   // Ignore non-content directories
   eleventyConfig.ignores.add("_bmad/**");
   eleventyConfig.ignores.add("_bmad-output/**");

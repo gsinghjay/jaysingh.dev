@@ -1,15 +1,21 @@
 {# Meta tags partial - extracted per Architecture spec #}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="{{ description | default(profile.name + ' - ' + profile.role) }}">
-<link rel="canonical" href="https://jaysingh.dev{{ page.url }}">
+<meta name="description" content="{{ metaDescription or description or site.description }}">
+<link rel="canonical" href="{{ site.baseUrl }}{{ page.url }}">
 
 {# Open Graph Tags #}
-<meta property="og:title" content="{% if title %}{{ title }} | {% endif %}{{ profile.name }}">
-<meta property="og:description" content="{{ description | default(profile.name + ' - ' + profile.role) }}">
-<meta property="og:url" content="https://jaysingh.dev{{ page.url }}">
+<meta property="og:title" content="{% if title %}{{ title }} | {% endif %}{{ site.shortTitle }}">
+<meta property="og:description" content="{{ metaDescription or description or site.description }}">
+<meta property="og:url" content="{{ site.baseUrl }}{{ page.url }}">
 <meta property="og:type" content="{{ og_type | default('website') }}">
-<meta property="og:image" content="{{ og_image | default('https://jaysingh.dev/images/og-default.png') }}">
+<meta property="og:site_name" content="{{ site.shortTitle }}">
+{# og:image - only render if page-specific or site default image is configured #}
+{% if og_image %}
+<meta property="og:image" content="{{ og_image }}">
+{% elif site.socialImage %}
+<meta property="og:image" content="{{ site.baseUrl }}{{ site.socialImage }}">
+{% endif %}
 
 {# Theme color for mobile browsers #}
-<meta name="theme-color" content="#FFFBEB">
+<meta name="theme-color" content="{{ site.themeColor }}">

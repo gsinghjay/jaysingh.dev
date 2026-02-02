@@ -87,7 +87,11 @@ permalink: /resume/
 
   {# Technical Toolkit Section #}
   {# Skill categories mapping: display name → skills.json key #}
+  {# NOTE: When adding a new category to _data/skills.json, also add it here #}
+  {# to display on the resume page. Categories are manually mapped for custom #}
+  {# display names (e.g., "INFRA" displays devops skills). #}
   {% set skillCategories = [
+    {name: 'LANGUAGES', key: 'languages'},
     {name: 'FRONTEND', key: 'frontend'},
     {name: 'BACKEND', key: 'backend'},
     {name: 'DATA', key: 'database'},
