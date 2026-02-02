@@ -121,8 +121,8 @@ async function processProjects(manifest) {
     fs.writeFileSync(tempInput, data.diagramContent);
 
     try {
-      // Generate SVG using mmdc with transparent background
-      execSync(`npx mmdc -i "${tempInput}" -o "${outputSvg}" -b transparent`, {
+      // Generate SVG using mmdc with transparent background and Neubrutalist theme
+      execSync(`npx mmdc -i "${tempInput}" -o "${outputSvg}" -b transparent -c mermaid-config.json`, {
         stdio: 'pipe'
       });
       console.log(`✅ Generated: ${outputSvg}`);
@@ -192,8 +192,8 @@ async function processInlineContent(manifest, contentDir, prefix) {
       fs.writeFileSync(tempInput, mermaidCode);
 
       try {
-        // Generate SVG using mmdc with transparent background
-        execSync(`npx mmdc -i "${tempInput}" -o "${outputSvg}" -b transparent`, {
+        // Generate SVG using mmdc with transparent background and Neubrutalist theme
+        execSync(`npx mmdc -i "${tempInput}" -o "${outputSvg}" -b transparent -c mermaid-config.json`, {
           stdio: 'pipe'
         });
         console.log(`✅ Generated: ${outputSvg}`);

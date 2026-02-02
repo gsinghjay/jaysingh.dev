@@ -72,21 +72,20 @@ layout: layouts/base.njk
               <span class="w-2 h-8 bg-purple-400"></span>
               Architecture
             </h2>
-            <div class="relative" data-diagram-viewer>
-              <div class="bg-white border-4 border-black p-6" style="box-shadow: 8px 8px 0 #000;">
-                <div class="flex justify-center">
-                  <img
-                    src="/diagrams/{{ id }}.svg"
-                    alt="{{ diagramLabel | default('Architecture diagram for ' + title) }}"
-                    class="w-full h-auto max-w-md"
-                    loading="lazy"
-                  >
-                </div>
+            {# Button wrapper provides keyboard accessibility (focusable, Enter/Space to activate) #}
+            <div class="my-8 relative" data-diagram-viewer>
+              <button type="button" class="w-full text-left bg-white border-4 border-black p-6 flex flex-col items-center cursor-pointer hover:shadow-lg transition-shadow" style="box-shadow: 8px 8px 0 #000;" aria-label="Expand diagram">
+                <img
+                  src="/diagrams/{{ id }}.svg"
+                  alt="{{ diagramLabel | default('Architecture diagram for ' + title) }}"
+                  class="max-w-full h-auto"
+                  loading="lazy"
+                >
                 {% if diagramLabel %}
                   <p class="text-sm text-neutral-500 mt-4 text-center">{{ diagramLabel }}</p>
                 {% endif %}
-              </div>
-              <span class="diagram-expand-hint">Click to expand</span>
+              </button>
+              <span class="diagram-expand-hint absolute bottom-2 right-2 text-xs text-gray-500 pointer-events-none">Click to expand</span>
             </div>
           </section>
         {% endif %}
