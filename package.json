@@ -3,7 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
+    "start": "npm run dev",
     "dev": "concurrently \"npm:dev:11ty\" \"npm:dev:css\"",
     "dev:11ty": "eleventy --serve",
     "dev:css": "tailwindcss -i ./css/input.css -o ./_site/css/styles.css --watch",

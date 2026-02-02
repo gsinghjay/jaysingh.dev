@@ -89,7 +89,7 @@ development_status:
   5-2-implement-project-content-pipeline: done
   5-3-implement-site-configuration-via-data-files: done
   5-4-implement-mermaid-in-markdown-processing: done
-  5-5-implement-local-development-workflow: ready-for-dev
+  5-5-implement-local-development-workflow: done
   epic-5-retrospective: optional
 
   # Epic 6: Production Deployment & SEO

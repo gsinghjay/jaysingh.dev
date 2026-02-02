@@ -4,9 +4,10 @@ export default {
     // React SPA (existing)
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
-    // 11ty templates (new)
+    // 11ty templates
     './_includes/**/*.njk',
-    './content/**/*.{njk,md}',
+    './_content/**/*.njk',
+    './_content/**/*.md',
     './*.njk',
   ],
   theme: {
