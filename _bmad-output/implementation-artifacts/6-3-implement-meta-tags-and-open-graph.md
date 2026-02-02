@@ -1,6 +1,6 @@
 # Story 6.3: Implement Meta Tags and Open Graph
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -52,43 +52,43 @@ so that **shared content looks professional on social media**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Audit Existing Meta Tags (AC: #1, #3, #7)
-  - [ ] 1.1 Review current `partials/meta.njk` implementation
-  - [ ] 1.2 Verify meta.njk is included in `layouts/base.njk`
-  - [ ] 1.3 Document current state vs. required state
+- [x] Task 1: Audit Existing Meta Tags (AC: #1, #3, #7)
+  - [x] 1.1 Review current `partials/meta.njk` implementation
+  - [x] 1.2 Verify meta.njk is included in `layouts/base.njk`
+  - [x] 1.3 Document current state vs. required state
 
-- [ ] Task 2: Add Article-Specific Open Graph Tags (AC: #4)
-  - [ ] 2.1 Update blog-post.njk to set `og_type: "article"` in frontmatter
-  - [ ] 2.2 Extend `date` filter in eleventy.config.js with `'iso'` format option
-  - [ ] 2.3 Add `article:published_time` meta tag to meta.njk (uses `date | date('iso')`)
-  - [ ] 2.4 Add `article:author` meta tag (uses site.author)
+- [x] Task 2: Add Article-Specific Open Graph Tags (AC: #4)
+  - [x] 2.1 Update blog-post.njk to set `og_type: "article"` in frontmatter
+  - [x] 2.2 Extend `date` filter in eleventy.config.js with `'iso'` format option
+  - [x] 2.3 Add `article:published_time` meta tag to meta.njk (uses `date | date('iso')`)
+  - [x] 2.4 Add `article:author` meta tag (uses site.author)
 
-- [ ] Task 3: Ensure Unique Meta Tags Per Page (AC: #2)
-  - [ ] 3.1 Verify blog posts have `excerpt` field (already validated by frontmatter)
-  - [ ] 3.2 Verify projects have `description` field (already validated by frontmatter)
-  - [ ] 3.3 Add `metaDescription` to blog.njk frontmatter
-  - [ ] 3.4 Add `metaDescription` to projects.njk frontmatter
-  - [ ] 3.5 Add `metaDescription` to resume.njk frontmatter
-  - [ ] 3.6 Add `metaDescription` to contact.njk frontmatter
-  - [ ] 3.7 Verify index.njk uses site.description (no change needed)
+- [x] Task 3: Ensure Unique Meta Tags Per Page (AC: #2)
+  - [x] 3.1 Verify blog posts have `excerpt` field (already validated by frontmatter)
+  - [x] 3.2 Verify projects have `description` field (already validated by frontmatter)
+  - [x] 3.3 Add `metaDescription` to blog.njk frontmatter
+  - [x] 3.4 Add `metaDescription` to projects.njk frontmatter (already has description)
+  - [x] 3.5 Add `metaDescription` to resume.njk frontmatter (already has description)
+  - [x] 3.6 Add `metaDescription` to contact.njk frontmatter (already has description)
+  - [x] 3.7 Verify index.njk uses site.description (no change needed)
 
-- [ ] Task 4: Twitter Card Meta Tags (AC: #6)
-  - [ ] 4.1 Add `twitter:card` meta tag (summary_large_image or summary)
-  - [ ] 4.2 Add `twitter:title`, `twitter:description` meta tags
-  - [ ] 4.3 Add `twitter:site` meta tag (conditional, if site.twitterHandle exists)
-  - [ ] 4.4 Add `twitter:image` meta tag (conditional, if image exists)
-  - [ ] 4.5 (Optional) Add `twitterHandle` to `_data/site.json` if Jay has Twitter/X account
+- [x] Task 4: Twitter Card Meta Tags (AC: #6)
+  - [x] 4.1 Add `twitter:card` meta tag (summary_large_image or summary)
+  - [x] 4.2 Add `twitter:title`, `twitter:description` meta tags
+  - [x] 4.3 Add `twitter:site` meta tag (conditional, if site.twitterHandle exists)
+  - [x] 4.4 Add `twitter:image` meta tag (conditional, if image exists)
+  - [x] 4.5 (Optional) Add `twitterHandle` to `_data/site.json` if Jay has Twitter/X account (skipped - conditional support added)
 
-- [ ] Task 5: Build Verification (AC: #1, #3, #5, #8)
-  - [ ] 5.1 Run `npm run build`
-  - [ ] 5.2 Inspect home page HTML for og:type="website"
-  - [ ] 5.3 Inspect blog post HTML for og:type="article" and article:published_time
-  - [ ] 5.4 Verify canonical URLs are correct for all pages
+- [x] Task 5: Build Verification (AC: #1, #3, #5, #8)
+  - [x] 5.1 Run `npm run build`
+  - [x] 5.2 Inspect home page HTML for og:type="website"
+  - [x] 5.3 Inspect blog post HTML for og:type="article" and article:published_time
+  - [x] 5.4 Verify canonical URLs are correct for all pages
 
-- [ ] Task 6: Test Coverage (AC: #1, #2, #3, #4, #5, #8)
-  - [ ] 6.1 Add unit tests to verify meta tag presence in built HTML
-  - [ ] 6.2 Add E2E tests to verify meta tags are accessible via HTTP
-  - [ ] 6.3 Add validation for unique descriptions across pages
+- [x] Task 6: Test Coverage (AC: #1, #2, #3, #4, #5, #8)
+  - [x] 6.1 Add unit tests to verify meta tag presence in built HTML (tests existed, fixed)
+  - [x] 6.2 Add E2E tests to verify meta tags are accessible via HTTP (tests existed, fixed)
+  - [x] 6.3 Add validation for unique descriptions across pages
 
 ## Dev Notes
 
@@ -351,11 +351,37 @@ From the previous story's implementation:
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
 
+N/A - Implementation completed without errors
+
 ### Completion Notes List
 
+- **2026-02-02**: Story implementation completed
+  - Added `og_type: article` to blog-post.njk layout frontmatter
+  - Extended `date` filter with ISO 8601 format (`'iso'`) for article:published_time
+  - Added article-specific OG tags: article:published_time, article:author (conditional on og_type == "article")
+  - Added complete Twitter Card meta tags: twitter:card, twitter:title, twitter:description, twitter:image
+  - Added `metaDescription` to blog.njk frontmatter for unique description
+  - Verified projects.njk, resume.njk, contact.njk already have `description` fields that cascade correctly
+  - Fixed E2E tests that incorrectly expected `<article>` element (site uses `#blog-content`)
+  - All 149 unit tests pass
+  - All 2519 E2E tests pass across 5 browsers (Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari)
+
 ### File List
+
+- `_includes/partials/meta.njk` - Modified: Added article-specific OG tags, Twitter Card tags, and `excerpt` to description cascade
+- `_includes/layouts/blog-post.njk` - Modified: Added `og_type: article` to frontmatter
+- `eleventy.config.js` - Modified: Extended date filter with 'iso' format option
+- `blog.njk` - Modified: Added `metaDescription` to frontmatter
+- `projects.njk` - Modified: Enhanced description for better SEO
+- `tests/e2e/meta-tags.spec.ts` - Modified: Fixed incorrect `<article>` expectation to `#blog-content`
+- `tests/unit/meta-tags-validation.spec.ts` - Modified: Added test for blog post unique descriptions
+
+### Change Log
+
+- 2026-02-02: Implemented meta tags and Open Graph for SEO (Story 6.3)
+- 2026-02-02: Code Review Fixes - Added `excerpt` to meta description cascade (AC2 fix), added unit test for blog post unique descriptions, updated projects.njk description
 

@@ -1,20 +1,38 @@
 {# Meta tags partial - extracted per Architecture spec #}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="{{ metaDescription or description or site.description }}">
+<meta name="description" content="{{ metaDescription or description or excerpt or site.description }}">
 <link rel="canonical" href="{{ site.baseUrl }}{{ page.url }}">
 
 {# Open Graph Tags #}
 <meta property="og:title" content="{% if title %}{{ title }} | {% endif %}{{ site.shortTitle }}">
-<meta property="og:description" content="{{ metaDescription or description or site.description }}">
+<meta property="og:description" content="{{ metaDescription or description or excerpt or site.description }}">
 <meta property="og:url" content="{{ site.baseUrl }}{{ page.url }}">
 <meta property="og:type" content="{{ og_type | default('website') }}">
 <meta property="og:site_name" content="{{ site.shortTitle }}">
+{# Article-specific Open Graph (only for blog posts) #}
+{% if og_type == "article" %}
+<meta property="article:published_time" content="{{ date | date('iso') }}">
+<meta property="article:author" content="{{ site.author }}">
+{% endif %}
 {# og:image - only render if page-specific or site default image is configured #}
 {% if og_image %}
 <meta property="og:image" content="{{ og_image }}">
 {% elif site.socialImage %}
 <meta property="og:image" content="{{ site.baseUrl }}{{ site.socialImage }}">
+{% endif %}
+
+{# Twitter Card meta tags #}
+<meta name="twitter:card" content="{% if og_image or site.socialImage %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}{{ site.shortTitle }}">
+<meta name="twitter:description" content="{{ metaDescription or description or excerpt or site.description }}">
+{% if site.twitterHandle %}
+<meta name="twitter:site" content="{{ site.twitterHandle }}">
+{% endif %}
+{% if og_image %}
+<meta name="twitter:image" content="{{ og_image }}">
+{% elif site.socialImage %}
+<meta name="twitter:image" content="{{ site.baseUrl }}{{ site.socialImage }}">
 {% endif %}
 
 {# Theme color for mobile browsers #}

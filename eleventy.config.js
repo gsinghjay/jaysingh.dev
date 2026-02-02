@@ -46,6 +46,10 @@ export default function(eleventyConfig) {
   eleventyConfig.addFilter("date", (dateObj, format) => {
     if (!dateObj) return '';
     const date = new Date(dateObj);
+    // ISO 8601 format for article:published_time meta tag
+    if (format === 'iso') {
+      return date.toISOString();
+    }
     if (format === '%Y-%m-%d') {
       return date.toISOString().split('T')[0];
     }
