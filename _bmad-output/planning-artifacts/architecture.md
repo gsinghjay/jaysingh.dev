@@ -2,6 +2,7 @@
 stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
 status: complete
 completedAt: '2026-01-29'
+lastValidated: '2026-02-01'
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - docs/index.md
@@ -136,19 +137,22 @@ npm install tailwindcss postcss autoprefixer --save-dev
 
 **Code Organization:**
 ```
-├── _data/           # Global data (profile, resume, skills)
+├── _data/           # Global data (profile, resume, skills, site)
 ├── _includes/
-│   ├── layouts/     # base.njk, blog.njk, project.njk
-│   └── components/  # header.njk, footer.njk, card.njk, etc.
-├── content/
-│   ├── blog/        # Markdown blog posts (existing)
-│   └── projects/    # Markdown projects (existing)
+│   ├── layouts/     # base.njk, blog-post.njk, project.njk
+│   ├── components/  # card.njk, button.njk, tag.njk, external-links.njk
+│   └── partials/    # header.njk, footer.njk, meta.njk, etc.
+├── _content/
+│   ├── blog/        # Markdown blog posts (5 posts)
+│   └── projects/    # Markdown projects (9 projects)
 ├── css/
-│   └── styles.css   # TailwindCSS entry point
+│   └── input.css    # TailwindCSS entry point
 ├── js/
-│   └── main.js      # Minimal client JS (copy, menu, share)
+│   └── main.js      # Minimal client JS (menu, copy, share, diagrams)
+├── lib/
+│   └── filters.js   # Custom 11ty filters (testable)
 ├── eleventy.config.js
-├── tailwind.config.js  # Ported from existing
+├── tailwind.config.js
 └── package.json
 ```
 
@@ -164,7 +168,7 @@ npm install tailwindcss postcss autoprefixer --save-dev
 ### Decision Priority Analysis
 
 **Critical Decisions (Block Implementation):**
-- Content source strategy (keep existing `content/` structure)
+- Content source strategy (`_content/` directory with underscore prefix per 11ty convention)
 - Build pipeline (11ty + TailwindCSS + Mermaid pre-render)
 - URL structure (clean URLs without dates)
 
@@ -190,18 +194,24 @@ npm install tailwindcss postcss autoprefixer --save-dev
 | Content Source | Dual-source: Sanity API (primary) + local Markdown (fallback) | Collaborators use CMS, Jay can use Git |
 | Global Data | `_data/` folder with Sanity fetch | Auto-loaded, fetches from Sanity at build time |
 | CMS Integration | Sanity.io with @sanity/client | Build-time fetch, static output, webhook rebuilds |
-| Collections | `blog` and `projects` from Sanity API | Maps to Sanity schemas |
-| Fallback | Local `content/` structure | Zero-dependency local development |
+| Collections | `posts` and `projects` from glob patterns | `_content/blog/*.md`, `_content/projects/*.md` |
+| Fallback | Local `_content/` structure | Zero-dependency local development |
 
-**Content Flow:**
+**Content Flow (Current - Local Markdown):**
+```
+_content/blog/*.md ──────▶ 11ty Collections ──▶ Nunjucks Templates ──▶ _site/
+_content/projects/*.md ──▶ (with validation)
+
+_data/*.json ────────────▶ Global Data ──▶ Available in all templates
+
+git push main ───────────▶ GitHub Actions ──▶ Build & Deploy (Epic 6)
+```
+
+**Content Flow (Future - Sanity.io Integration, Epic 7):**
 ```
 Sanity API ─────────────┐
                         ├──▶ 11ty Collections ──▶ Nunjucks Templates ──▶ _site/
-content/blog/*.md ──────┘ (fallback)
-
-Sanity API ─────────────┐
-                        ├──▶ Global Data ──▶ Available in all templates
-_data/*.json ───────────┘ (fallback)
+_content/*.md ──────────┘ (fallback)
 
 Webhook: Sanity Publish ──▶ GitHub Actions ──▶ Build & Deploy
 ```
@@ -232,30 +242,34 @@ Webhook: Sanity Publish ──▶ GitHub Actions ──▶ Build & Deploy
 ```
 _includes/
 ├── layouts/
-│   ├── base.njk           # HTML shell
-│   ├── blog-post.njk      # Blog detail
-│   └── project.njk        # Project detail
+│   ├── base.njk           # HTML shell, head, meta, header/footer
+│   ├── blog-post.njk      # Blog detail with related projects
+│   └── project.njk        # Project detail with diagram support
 ├── components/
 │   ├── card.njk           # Macro: reusable card
 │   ├── button.njk         # Macro: action button
 │   ├── tag.njk            # Macro: technology tag
-│   └── callout.njk        # Macro: info/warning box
+│   └── external-links.njk # Macro: GitHub/live site links
 └── partials/
-    ├── header.njk         # Site header/nav
+    ├── header.njk         # Site header/nav with mobile menu
     ├── footer.njk         # Site footer
-    ├── social-share.njk   # Share buttons
-    └── reading-progress.njk # Scroll progress
+    ├── meta.njk           # SEO meta tags, Open Graph
+    ├── skip-link.njk      # Accessibility skip link
+    ├── social-share.njk   # Share buttons (Web Share API)
+    └── related-projects.njk # Related projects section
 ```
 
 **Client-Side JavaScript (Minimal):**
 
 | Feature | Implementation | Size |
 |---------|----------------|------|
-| Mobile menu | Vanilla JS toggle | ~15 lines |
-| Code copy | Event delegation on code blocks | ~20 lines |
-| Social share | Web Share API with fallback | ~25 lines |
+| Mobile menu | Vanilla JS toggle with ARIA | ~30 lines |
+| Code copy | Event delegation on code blocks | ~40 lines |
+| Social share | Web Share API with clipboard fallback | ~50 lines |
+| Diagram viewer | Modal expansion for Mermaid SVGs | ~80 lines |
+| Keyboard navigation | Focus management, escape handlers | ~40 lines |
 
-**No client JS for:** Navigation, Mermaid diagrams, syntax highlighting, content rendering.
+**No client JS for:** Navigation routing, Mermaid rendering (build-time), syntax highlighting (11ty plugin), content rendering.
 
 ### URL Structure
 
@@ -539,13 +553,13 @@ All interactive elements must have visible focus states using the Neubrutalist s
 jaysingh.dev/
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml              # GitHub Actions: build + deploy
+│       └── deploy.yml              # GitHub Actions: build + deploy (Epic 6)
 │
 ├── _data/                          # Global data (11ty auto-loads)
 │   ├── profile.json                # Name, role, bio, social links
 │   ├── resume.json                 # Work experience, education
 │   ├── skills.json                 # Technical skills
-│   └── site.json                   # Site metadata
+│   └── site.json                   # Site metadata, nav config
 │
 ├── _includes/
 │   ├── layouts/                    # Page layouts
@@ -556,18 +570,18 @@ jaysingh.dev/
 │   │   ├── card.njk
 │   │   ├── button.njk
 │   │   ├── tag.njk
-│   │   ├── callout.njk
-│   │   └── social-share.njk
+│   │   └── external-links.njk
 │   └── partials/                   # Static includes
 │       ├── header.njk
 │       ├── footer.njk
 │       ├── meta.njk
 │       ├── skip-link.njk
-│       └── reading-progress.njk
+│       ├── social-share.njk
+│       └── related-projects.njk
 │
-├── content/
-│   ├── blog/                       # Blog posts (5 existing)
-│   └── projects/                   # Projects (9 existing)
+├── _content/                       # 11ty content (underscore = convention)
+│   ├── blog/                       # Blog posts (5 posts)
+│   └── projects/                   # Projects (9 projects)
 │
 ├── css/
 │   └── input.css                   # TailwindCSS entry
@@ -575,27 +589,36 @@ jaysingh.dev/
 ├── js/
 │   └── main.js                     # Minimal client JS
 │
-├── public/                         # Static assets
+├── lib/
+│   └── filters.js                  # Custom 11ty filters (testable)
+│
+├── public/                         # Static assets (passthrough copy)
 │   ├── favicon.ico
 │   ├── robots.txt
-│   └── diagrams/
+│   └── diagrams/                   # Pre-rendered Mermaid SVGs
 │
 ├── scripts/
 │   └── render-mermaid.js           # Mermaid SVG generator
+│
+├── tests/
+│   ├── e2e/                        # Playwright E2E tests
+│   └── unit/                       # Vitest unit tests
 │
 ├── index.njk                       # Home
 ├── blog.njk                        # Blog listing
 ├── projects.njk                    # Projects listing
 ├── resume.njk                      # Resume
 ├── contact.njk                     # Contact
-├── 404.njk                         # Error page
+├── 404.njk                         # Error page (Epic 6)
 │
 ├── eleventy.config.js
 ├── tailwind.config.js
-├── postcss.config.js
+├── playwright.config.ts
 ├── package.json
 └── README.md
 ```
+
+**Note:** `404.njk` planned for Epic 6 (Production Deployment). GitHub Actions workflow also in Epic 6 scope.
 
 ### Architectural Boundaries
 
@@ -614,8 +637,10 @@ jaysingh.dev/
 |--------|-------------|-------------------|
 | `_data/profile.json` | Auto-loaded | `{{ profile.name }}` |
 | `_data/resume.json` | Auto-loaded | `{{ resume.experience }}` |
-| `content/blog/*.md` | Collection | `{{ collections.posts }}` |
-| `content/projects/*.md` | Collection | `{{ collections.projects }}` |
+| `_data/site.json` | Auto-loaded | `{{ site.title }}`, `{{ site.navigation }}` |
+| `_data/skills.json` | Auto-loaded | `{{ skills }}` |
+| `_content/blog/*.md` | Collection | `{{ collections.posts }}` |
+| `_content/projects/*.md` | Collection | `{{ collections.projects }}` |
 | Frontmatter | Page data | `{{ title }}`, `{{ date }}` |
 
 **Build Pipeline:**
@@ -624,7 +649,7 @@ jaysingh.dev/
 |------|---------|-------|--------|
 | 1. CSS | `build:css` | `css/input.css` | `_site/css/styles.css` |
 | 2. Diagrams | `build:mermaid` | Frontmatter | `_site/diagrams/*.svg` |
-| 3. HTML | `eleventy` | `*.njk`, `content/*.md` | `_site/**/*.html` |
+| 3. HTML | `eleventy` | `*.njk`, `_content/*.md` | `_site/**/*.html` |
 | 4. Assets | Passthrough | `public/*` | `_site/*` |
 
 ### Requirements to Structure Mapping
@@ -635,8 +660,8 @@ jaysingh.dev/
 |----------|--------------|---------------|
 | Navigation | FR1-FR5 | `partials/header.njk`, `layouts/base.njk` |
 | Content Display | FR6-FR11 | `components/*.njk`, `css/input.css` |
-| Blog | FR12-FR16 | `blog.njk`, `layouts/blog-post.njk`, `content/blog/` |
-| Projects | FR17-FR21 | `projects.njk`, `layouts/project.njk`, `content/projects/` |
+| Blog | FR12-FR16 | `blog.njk`, `layouts/blog-post.njk`, `_content/blog/` |
+| Projects | FR17-FR21 | `projects.njk`, `layouts/project.njk`, `_content/projects/` |
 | Resume/Contact | FR22-FR27 | `resume.njk`, `contact.njk`, `_data/resume.json` |
 | Build/Deploy | FR33-FR37 | `eleventy.config.js`, `.github/workflows/deploy.yml` |
 | SEO | FR38-FR40 | `partials/meta.njk`, sitemap plugin config |
@@ -686,12 +711,15 @@ Project structure follows 11ty conventions (`_includes/`, `_data/`, `content/`) 
 
 **Critical Gaps:** None
 
-**Important Gaps:**
-- Mermaid rendering script (`scripts/render-mermaid.js`) needs implementation as first story
+**Important Gaps (Epic 6 Scope):**
+- GitHub Actions deployment workflow (`.github/workflows/deploy.yml`)
+- 404 error page (`404.njk`)
+- Legacy React dependencies cleanup in `package.json`
 
 **Nice-to-Have (Post-MVP):**
 - Image optimization (11ty Image plugin)
-- Testing strategy (visual regression)
+- Visual regression testing
+- Search functionality (Pagefind)
 
 ### Architecture Completeness Checklist
 
@@ -719,6 +747,13 @@ Project structure follows 11ty conventions (`_includes/`, `_data/`, `content/`) 
 - [x] Data flow documented
 - [x] Requirements mapped to files
 
+### Validation History
+
+| Date | Validation Type | Findings | Actions Taken |
+|------|-----------------|----------|---------------|
+| 2026-01-29 | Initial creation | N/A | Architecture document created |
+| 2026-02-01 | Post-implementation validation | 3 drift items, 2 missing items | Updated content dir `content/` → `_content/`, updated component list to match implementation, added `lib/filters.js` and `tests/` to structure, removed unimplemented `callout.njk` and `reading-progress.njk`, added implemented `external-links.njk` and `related-projects.njk` |
+
 ### Architecture Readiness Assessment
 
 **Overall Status:** READY FOR IMPLEMENTATION
@@ -744,11 +779,14 @@ Project structure follows 11ty conventions (`_includes/`, `_data/`, `content/`) 
 3. Respect project structure and boundaries
 4. Refer to this document for all architectural questions
 
-**First Implementation Priority:**
-Initialize 11ty project with TailwindCSS pipeline using:
-```bash
-npm init -y
-npm install @11ty/eleventy @11ty/eleventy-plugin-syntaxhighlight --save-dev
-npm install tailwindcss postcss autoprefixer concurrently --save-dev
-```
+**Current Implementation Status (as of 2026-02-01):**
+- ✅ Epics 1-5 complete (Foundation, Blog, Projects, Profile, Content Pipeline)
+- 🔄 Epic 3 Story 3-5 (Project Filtering) ready for implementation
+- ⏳ Epic 6 (Production Deployment) in backlog
+- ⏳ Epic 7 (Sanity.io CMS) in backlog
+
+**Next Implementation Priorities:**
+1. Complete Epic 3 Story 3-5: Project filtering by type
+2. Epic 6: GitHub Actions deployment workflow, 404 page, SEO optimization
+3. Epic 7: Sanity.io CMS integration
 
