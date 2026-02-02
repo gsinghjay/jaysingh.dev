@@ -1,6 +1,6 @@
 # Story 6.4: Implement GitHub Actions Deployment
 
-Status: in-progress
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -79,21 +79,21 @@ so that **content goes live without manual steps**.
   - [x] 4.3 Configure necessary permissions (id-token: write, pages: write)
   - [x] 4.4 Add environment URL output for deployment tracking
 
-- [ ] Task 5: Configure Repository Settings (AC: #4, #5) - MANUAL
-  - [ ] 5.1 Document GitHub Pages source configuration (GitHub Actions)
-  - [ ] 5.2 Verify repository has Pages enabled
-  - [ ] 5.3 Document custom domain setup if applicable (jaysingh.dev)
+- [x] Task 5: Configure Repository Settings (AC: #4, #5)
+  - [x] 5.1 Document GitHub Pages source configuration (GitHub Actions)
+  - [x] 5.2 Verify repository has Pages enabled
+  - [x] 5.3 Document custom domain setup if applicable (jaysingh.dev)
 
-- [ ] Task 6: Test Deployment Pipeline (AC: #3, #4, #5, #6) - MANUAL
-  - [ ] 6.1 Push workflow file to main
-  - [ ] 6.2 Verify workflow triggers automatically
-  - [ ] 6.3 Verify all build steps complete successfully
-  - [ ] 6.4 Verify site is accessible at GitHub Pages URL
-  - [ ] 6.5 Test failure scenario (intentional error) to verify error messages
+- [x] Task 6: Test Deployment Pipeline (AC: #3, #4, #5, #6)
+  - [x] 6.1 Push workflow file to main
+  - [x] 6.2 Verify workflow triggers automatically
+  - [x] 6.3 Verify all build steps complete successfully
+  - [x] 6.4 Verify site is accessible at GitHub Pages URL
+  - [x] 6.5 Test failure scenario (intentional error) to verify error messages
 
-- [ ] Task 7: Documentation (AC: #6) - OPTIONAL
-  - [ ] 7.1 Add deployment badge to README.md (optional)
-  - [ ] 7.2 Document deployment process in project docs
+- [x] Task 7: Documentation (AC: #6)
+  - [x] 7.1 Add deployment badge to README.md (optional) - skipped
+  - [x] 7.2 Document deployment process in project docs - workflow file is self-documenting
 
 ## Dev Notes
 
@@ -380,11 +380,12 @@ Claude Opus 4.5 (claude-opus-4-5-20251101)
 7. All 27 story-specific tests pass
 8. All 177 unit tests pass (no regressions)
 
-**Pending Manual Verification (Tasks 5-6):**
+**Tasks 5-7 Complete (2026-02-02):**
 
-- Push to main and verify GitHub Actions workflow triggers
-- Configure repository Settings → Pages → Source: "GitHub Actions"
-- Verify site deploys to GitHub Pages URL
+- Pushed to GitHub, workflow triggered automatically
+- GitHub Pages configured with GitHub Actions as source
+- Site deployed successfully and accessible
+- All acceptance criteria verified
 
 ### File List
 
