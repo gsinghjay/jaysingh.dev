@@ -1,3 +1,10 @@
+# [1.0.0-rc.2](https://github.com/gsinghjay/jaysingh.dev/compare/v1.0.0-rc.1...v1.0.0-rc.2) (2026-02-02)
+
+
+### Bug Fixes
+
+* **deploy:** add .nojekyll for GitHub Pages ([b0b1f1e](https://github.com/gsinghjay/jaysingh.dev/commit/b0b1f1ed8f9db47f679673d24ac536f3ad4b5d45))
+
 # 1.0.0-rc.1 (2026-02-02)
 
 
