@@ -1,15 +1,25 @@
 # Development Guide
 
-**Generated:** 2026-01-29
+**Generated:** 2026-02-01
 **Project:** jaysingh.dev
+**Framework:** 11ty + Nunjucks
+
+---
 
 ## Prerequisites
 
 | Requirement | Version | Notes |
 |-------------|---------|-------|
-| Node.js | 18+ (→ 24 LTS target) | Required for build tools |
-| npm | 9+ | Comes with Node.js |
+| Node.js | >=24.0.0 | LTS version, enforced in package.json |
+| npm | 10+ | Comes with Node.js 24 |
 | Git | 2.x | Version control |
+
+Check Node.js version:
+```bash
+node --version  # Should be v24.x.x
+```
+
+---
 
 ## Quick Start
 
@@ -21,154 +31,286 @@ cd jaysingh.dev
 # Install dependencies
 npm install
 
-# Build content and start dev server
+# Start development server
 npm run dev
 ```
 
-The development server will be available at `http://localhost:5173`.
+The development server runs at `http://localhost:8080` with hot reload.
+
+---
 
 ## NPM Scripts
 
+### Development
+
 | Script | Command | Description |
 |--------|---------|-------------|
-| `dev` | `npm run build:content && vite` | Build content + start dev server |
-| `build` | `npm run build:content && vite build` | Production build to `dist/` |
-| `build:content` | `node scripts/build-content.js` | Process markdown to JSON |
-| `preview` | `vite preview` | Preview production build |
-| `lint` | `eslint .` | Run ESLint |
-| `typecheck` | `tsc --noEmit -p tsconfig.app.json` | Type check without emit |
+| `start` | `npm run dev` | Alias for dev |
+| `dev` | `concurrently "npm:dev:11ty" "npm:dev:css"` | Dev server + CSS watch |
+| `dev:11ty` | `eleventy --serve` | 11ty with hot reload |
+| `dev:css` | `tailwindcss -i ./css/input.css -o ./_site/css/styles.css --watch` | Tailwind watch |
+
+### Build
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| `build` | `build:css && build:mermaid && eleventy` | Full production build |
+| `build:css` | `tailwindcss ... --minify` | Minified CSS |
+| `build:mermaid` | `node scripts/render-mermaid.js` | Pre-render Mermaid diagrams |
+| `clean` | `rm -rf _site` | Remove build output |
+
+### Testing
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| `test:e2e` | `playwright test` | Run E2E tests |
+| `test:e2e:ui` | `playwright test --ui` | Playwright UI mode |
+| `test:e2e:headed` | `playwright test --headed` | See browser |
+| `test:e2e:debug` | `playwright test --debug` | Debug mode |
+| `test:unit` | `vitest run tests/unit` | Unit tests |
+| `test:unit:watch` | `vitest tests/unit` | Unit tests watch |
+
+### Quality
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| `lint` | `eslint .` | JavaScript linting |
+| `typecheck` | `tsc --noEmit -p tsconfig.app.json` | TypeScript check |
+
+---
 
 ## Development Workflow
 
 ### 1. Content Changes
 
-Edit files in `content/`:
-```bash
-# Edit a blog post
-vim content/blog/my-new-post.md
+Edit files in `_content/`:
 
-# Rebuild content (dev server auto-reloads)
-npm run build:content
+```bash
+# Create/edit a blog post
+vim _content/blog/my-new-post.md
+
+# Create/edit a project
+vim _content/projects/my-project.md
 ```
 
-### 2. Component Changes
+11ty automatically rebuilds on save. No manual rebuild needed.
 
-Edit files in `src/components/`:
+### 2. Template Changes
+
+Edit files in `_includes/`:
+
 ```bash
-# Edit a component
-vim src/components/Card.tsx
+# Edit a layout
+vim _includes/layouts/blog-post.njk
 
-# Dev server hot-reloads automatically
+# Edit a component macro
+vim _includes/components/card.njk
+
+# Edit a partial
+vim _includes/partials/header.njk
 ```
+
+11ty hot reloads automatically.
 
 ### 3. Style Changes
 
-Edit TailwindCSS in components or `src/index.css`:
+Edit `css/input.css` for global styles:
+
 ```bash
-# Add custom styles
-vim src/index.css
-
-# Dev server hot-reloads automatically
+vim css/input.css
 ```
 
-## Project Configuration
+TailwindCSS recompiles automatically in dev mode.
 
-### Vite (`vite.config.ts`)
+### 4. Data Changes
 
-```typescript
-export default defineConfig({
-  plugins: [react()],
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-  },
-  assetsInclude: ['**/*.md', '**/*.yaml', '**/*.yml'],
-});
+Edit files in `_data/`:
+
+```bash
+# Site metadata
+vim _data/site.json
+
+# Author profile
+vim _data/profile.json
+
+# Resume data
+vim _data/resume.json
+
+# Skills
+vim _data/skills.json
 ```
 
-### TypeScript (`tsconfig.app.json`)
+11ty rebuilds automatically.
 
-- Target: ES2020
-- Module: ESNext
-- JSX: react-jsx
-- Strict mode enabled
-
-### Tailwind (`tailwind.config.js`)
-
-Custom extensions:
-- Color: `cream: #FFFBEB`
-- Shadows: `brutal-sm`, `brutal`, `brutal-md`, `brutal-lg`
-- Border radius: All set to 0 (brutalist style)
-
-### ESLint (`eslint.config.js`)
-
-- React hooks rules
-- React refresh rules
-- TypeScript-ESLint integration
+---
 
 ## Adding Content
 
 ### New Blog Post
 
-1. Create file: `content/blog/my-post.md`
-2. Add frontmatter:
+1. Create file: `_content/blog/my-post.md`
+2. Add required frontmatter:
+
 ```yaml
 ---
 id: my-post
-title: MY POST TITLE
-date: 2026-01-29
+title: My Post Title
+date: 2026-02-01
 excerpt: Short description for previews.
 tags:
   - tag1
   - tag2
+  - technical
 readTime: 5 min
-featured: false
+permalink: /blog/my-post/
+layout: layouts/blog-post.njk
 ---
+
+Your markdown content here...
+
+## Section Heading
+
+More content with code blocks:
+
+```python
+def hello():
+    print("Hello, world!")
 ```
-3. Write markdown content
-4. Run `npm run build:content`
+
+And Mermaid diagrams:
+
+```mermaid
+graph LR
+    A --> B --> C
+```
+```
 
 ### New Project
 
-1. Create file: `content/projects/my-project.md`
-2. Add frontmatter:
+1. Create file: `_content/projects/my-project.md`
+2. Add required frontmatter:
+
 ```yaml
 ---
 id: my-project
-title: MY PROJECT TITLE
+title: My Project Title
 description: Short description for cards.
 technologies:
-  - Tech1
-  - Tech2
-liveUrl: null
-githubUrl: https://github.com/...
-imageAlt: Alt text
+  - Python
+  - FastAPI
+  - Docker
+projectType: personal  # or 'work'
+permalink: /projects/my-project/
 featured: false
-projectType: personal
+challenge: "The problem being solved..."
+solution: "How we solved it..."
+impact: "Results achieved..."
+keyFeatures:
+  - "Feature 1"
+  - "Feature 2"
+githubUrl: "https://github.com/..."
 ---
 ```
-3. Add sections: intro, `## Challenge`, `## Solution`, `## Impact`
-4. Run `npm run build:content`
 
-## Adding Components
+### Adding Mermaid Diagrams
 
-1. Create file: `src/components/MyComponent.tsx`
-2. Define props interface:
-```typescript
-interface MyComponentProps {
-  // props
-}
+For projects with architecture diagrams, add `diagramContent`:
+
+```yaml
+diagramType: mermaid
+diagramLabel: System Architecture
+diagramContent: |
+  graph TB
+      A[Client] --> B[API Gateway]
+      B --> C[Service]
 ```
-3. Export default function component
-4. Follow brutalist design patterns (see component-inventory.md)
-5. Import and use in pages
+
+Run `npm run build:mermaid` to generate SVG, or it runs automatically during `npm run build`.
+
+---
+
+## Project Configuration
+
+### 11ty (eleventy.config.js)
+
+Key configuration:
+- Collections: `posts`, `projects`
+- Custom filters: `readingTime`, `date`, `findProjectsByIds`, etc.
+- Transforms: `mermaid-to-svg` (replaces code blocks with SVGs)
+- Ignores: `_bmad*`, `src/`, `content/`, `node_modules/`
+
+### TailwindCSS (tailwind.config.js)
+
+Custom design tokens:
+- Color: `cream: #FFFBEB`
+- Shadows: `brutal-sm`, `brutal`, `brutal-md`, `brutal-lg`
+- Border radius: All set to 0
+
+Content sources:
+```javascript
+content: [
+  './_includes/**/*.njk',
+  './_content/**/*.md',
+  './*.njk',
+]
+```
+
+### Playwright (playwright.config.ts)
+
+- Base URL: `http://localhost:8080`
+- Auto-starts dev server
+- 5 browser projects (desktop + mobile)
+- Artifacts on failure
+
+---
 
 ## Testing
 
-Currently no automated tests are configured.
+### E2E Tests
 
-**Recommended for migration:**
-- Unit tests: Vitest (Vite-native)
-- E2E tests: Playwright or Cypress
+```bash
+# Run all tests
+npm run test:e2e
+
+# Run specific test file
+npx playwright test tests/e2e/blog.spec.ts
+
+# Run with UI mode (debugging)
+npm run test:e2e:ui
+
+# Run in headed mode
+npm run test:e2e:headed
+```
+
+### Unit Tests
+
+```bash
+# Run once
+npm run test:unit
+
+# Watch mode
+npm run test:unit:watch
+```
+
+### Test Structure
+
+```
+tests/
+├── e2e/                    # Playwright E2E tests
+│   ├── smoke.spec.ts
+│   ├── blog.spec.ts
+│   ├── projects.spec.ts
+│   └── ...
+├── unit/                   # Vitest unit tests
+│   ├── filters.test.js
+│   └── ...
+└── support/
+    ├── fixtures/           # Test fixtures
+    ├── helpers/            # Utility functions
+    └── page-objects/       # Page object models
+```
+
+---
 
 ## Building for Production
 
@@ -176,50 +318,108 @@ Currently no automated tests are configured.
 # Full production build
 npm run build
 
-# Output in dist/
-ls dist/
+# Output in _site/
+ls _site/
 ```
 
 Production build includes:
-- Minified JavaScript bundles
-- Optimized CSS with Tailwind purging
-- Static assets copied from `public/`
+- Minified CSS (TailwindCSS purged)
+- Pre-rendered Mermaid SVGs
+- Static HTML pages
+- Passthrough static assets
+
+---
 
 ## Environment Variables
 
-| Variable | Purpose | Default |
-|----------|---------|---------|
-| (none currently used) | - | - |
+| Variable | File | Purpose |
+|----------|------|---------|
+| `BASE_URL` | `.env` | Override test base URL |
 
-The `.env` file exists but is empty. Supabase integration (if any) has been deprecated.
+The `.env.example` shows available variables. Copy to `.env`:
+```bash
+cp .env.example .env
+```
+
+---
 
 ## Troubleshooting
 
 ### Content not updating
 
 ```bash
-# Force rebuild content
-npm run build:content
-
 # Restart dev server
 npm run dev
 ```
 
-### Type errors
+11ty should auto-reload, but sometimes a restart helps.
+
+### CSS not updating
 
 ```bash
-# Check types without building
-npm run typecheck
-
-# Fix any TypeScript errors in src/
+# Check Tailwind is watching
+# Look for "Rebuilding..." in console
 ```
 
-### Lint errors
+If not, restart dev with `npm run dev`.
+
+### Frontmatter validation errors
+
+The build will fail with clear error messages:
+```
+Blog post validation failed:
+Missing required field 'excerpt' in _content/blog/my-post.md
+```
+
+Fix the missing field and rebuild.
+
+### Mermaid diagrams not rendering
 
 ```bash
-# Run linter
-npm run lint
+# Manually render diagrams
+npm run build:mermaid
 
-# Auto-fix where possible
-npx eslint . --fix
+# Check for errors in output
 ```
+
+Ensure `diagramContent` is valid Mermaid syntax.
+
+### Playwright tests failing
+
+```bash
+# Update browsers
+npx playwright install --with-deps
+
+# Run with debug
+npm run test:e2e:debug
+```
+
+### Node version issues
+
+```bash
+# Check version
+node --version
+
+# Use correct version (nvm)
+nvm use
+```
+
+The `.nvmrc` file specifies `24`.
+
+---
+
+## Key Files Reference
+
+| File | Purpose |
+|------|---------|
+| `eleventy.config.js` | 11ty configuration |
+| `tailwind.config.js` | TailwindCSS configuration |
+| `playwright.config.ts` | Playwright test configuration |
+| `vitest.config.ts` | Vitest configuration |
+| `package.json` | Dependencies and scripts |
+| `lib/filters.js` | Custom 11ty filters |
+| `scripts/render-mermaid.js` | Mermaid SVG generator |
+
+---
+
+*Generated by BMAD document-project workflow*

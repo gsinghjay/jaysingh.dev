@@ -12,9 +12,59 @@ permalink: /projects/
   <span class="bg-pink-400 px-2">PROJECTS</span> & CASE STUDIES
 </h1>
 
-<p class="text-lg text-neutral-600 mb-12 max-w-2xl">
+<p class="text-lg text-neutral-600 mb-8 max-w-2xl">
   A collection of software engineering projects showcasing infrastructure, security, and platform work.
 </p>
+
+{# Filter controls - hidden without JS (progressive enhancement) #}
+<div class="filter-controls hidden mb-8" data-filter-controls>
+  {# Type filters (exclusive - radio button style) #}
+  <div class="flex flex-wrap gap-2 mb-4 items-center">
+    <span class="font-bold mr-2">Type:</span>
+    <button data-filter-type="all"
+            class="px-4 py-2 border-2 border-black font-bold bg-lime-400 focus:outline focus:outline-4 focus:outline-black focus:outline-offset-2"
+            style="box-shadow: 2px 2px 0 #000;"
+            aria-pressed="true"
+            aria-label="Show all projects">All</button>
+    <button data-filter-type="work"
+            class="px-4 py-2 border-2 border-black font-bold bg-white hover:bg-lime-50 focus:outline focus:outline-4 focus:outline-black focus:outline-offset-2"
+            aria-pressed="false"
+            aria-label="Show only work projects">Work</button>
+    <button data-filter-type="personal"
+            class="px-4 py-2 border-2 border-black font-bold bg-white hover:bg-lime-50 focus:outline focus:outline-4 focus:outline-black focus:outline-offset-2"
+            aria-pressed="false"
+            aria-label="Show only personal projects">Personal</button>
+  </div>
+
+  {# Resource filters (checkboxes - multiple allowed) #}
+  <div class="flex flex-wrap gap-4 mb-4 items-center">
+    <span class="font-bold mr-2">Show only:</span>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" data-filter-resource="github" class="w-5 h-5 border-2 border-black accent-lime-400 cursor-pointer">
+      <span>Has GitHub</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" data-filter-resource="demo" class="w-5 h-5 border-2 border-black accent-lime-400 cursor-pointer">
+      <span>Has Demo</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" data-filter-resource="diagram" class="w-5 h-5 border-2 border-black accent-lime-400 cursor-pointer">
+      <span>Has Diagram</span>
+    </label>
+  </div>
+
+  {# Clear all button #}
+  <button data-filter-clear class="text-sm underline font-bold hover:text-pink-600 focus:outline focus:outline-4 focus:outline-black focus:outline-offset-2">Clear all filters</button>
+
+  {# Results count announcement for screen readers #}
+  <span class="sr-only" data-filter-results aria-live="polite" aria-atomic="true"></span>
+</div>
+
+{# Empty state - hidden by default, aria-live for screen reader announcement #}
+<div class="empty-state hidden text-center py-12" data-filter-empty aria-live="polite">
+  <p class="text-lg text-neutral-600 mb-4">No projects match your filters.</p>
+  <button data-filter-clear class="font-bold underline hover:text-pink-600 focus:outline focus:outline-4 focus:outline-black focus:outline-offset-2">Clear filters</button>
+</div>
 
 {# Project grid - 2 columns on md+ #}
 {% if collections.projects.length == 0 %}
@@ -24,7 +74,11 @@ permalink: /projects/
   {% for project in collections.projects %}
     {# Card with relative positioning for stretched link #}
     <div class="bg-white border-4 border-black p-6 relative group hover:bg-lime-50 active:translate-y-1 transition-all duration-150"
-         style="box-shadow: 6px 6px 0 #000;">
+         style="box-shadow: 6px 6px 0 #000;"
+         data-project-type="{{ project.data.projectType | default('work') }}"
+         data-has-github="{{ 'true' if project.data.githubUrl else 'false' }}"
+         data-has-demo="{{ 'true' if project.data.liveUrl else 'false' }}"
+         data-has-diagram="{{ 'true' if project.data.diagramContent else 'false' }}">
       {# Project type badge and feature icons row #}
       <div class="flex justify-between items-center mb-4">
         {% if project.data.projectType %}

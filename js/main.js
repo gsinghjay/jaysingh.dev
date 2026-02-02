@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initDiagramViewer();
   // Initialize resume print functionality
   initResumePrint();
+  // Initialize project filters functionality
+  initProjectFilters();
   // Mobile menu toggle
   const menuToggle = document.querySelector('[data-mobile-menu-toggle]');
   const mobileMenu = document.querySelector('[data-mobile-menu]');
@@ -437,4 +439,111 @@ function initResumePrint() {
   printBtn.addEventListener('mouseleave', () => {
     printBtn.style.boxShadow = '4px 4px 0 #000';
   });
+}
+
+// Project filters functionality - client-side filtering with progressive enhancement
+function initProjectFilters() {
+  const controls = document.querySelector('[data-filter-controls]');
+  if (!controls) return;
+
+  // Show filter controls (progressive enhancement - hidden by default in HTML)
+  controls.classList.remove('hidden');
+
+  // State
+  let activeType = 'all';
+  const activeResources = new Set();
+
+  // Get all project cards, empty state, and results announcement
+  const cards = document.querySelectorAll('[data-project-type]');
+  const emptyState = document.querySelector('[data-filter-empty]');
+  const resultsAnnouncement = document.querySelector('[data-filter-results]');
+
+  // Type filter buttons - exclusive (only one active at a time)
+  controls.querySelectorAll('[data-filter-type]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeType = btn.dataset.filterType;
+      updateTypeButtons();
+      applyFilters();
+    });
+  });
+
+  // Resource filter checkboxes - multiple can be active
+  controls.querySelectorAll('[data-filter-resource]').forEach((checkbox) => {
+    checkbox.addEventListener('change', () => {
+      const resource = checkbox.dataset.filterResource;
+      if (checkbox.checked) {
+        activeResources.add(resource);
+      } else {
+        activeResources.delete(resource);
+      }
+      applyFilters();
+    });
+  });
+
+  // Clear filters - reset all filters to default state
+  document.querySelectorAll('[data-filter-clear]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeType = 'all';
+      activeResources.clear();
+      updateTypeButtons();
+      controls.querySelectorAll('[data-filter-resource]').forEach((cb) => {
+        cb.checked = false;
+      });
+      applyFilters();
+    });
+  });
+
+  // Update type button visual states
+  function updateTypeButtons() {
+    controls.querySelectorAll('[data-filter-type]').forEach((btn) => {
+      const isActive = btn.dataset.filterType === activeType;
+      btn.classList.toggle('bg-lime-400', isActive);
+      btn.classList.toggle('bg-white', !isActive);
+      btn.setAttribute('aria-pressed', isActive.toString());
+      // Add/remove shadow for active state
+      btn.style.boxShadow = isActive ? '2px 2px 0 #000' : 'none';
+    });
+  }
+
+  // Apply all active filters to cards (AND logic)
+  function applyFilters() {
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const type = card.dataset.projectType;
+      const hasGithub = card.dataset.hasGithub === 'true';
+      const hasDemo = card.dataset.hasDemo === 'true';
+      const hasDiagram = card.dataset.hasDiagram === 'true';
+
+      // Type filter: 'all' matches everything, otherwise must match exactly
+      const typeMatch = activeType === 'all' || type === activeType;
+
+      // Resource filters: all selected resources must be present (AND logic)
+      const resourceMatch =
+        (!activeResources.has('github') || hasGithub) &&
+        (!activeResources.has('demo') || hasDemo) &&
+        (!activeResources.has('diagram') || hasDiagram);
+
+      const isVisible = typeMatch && resourceMatch;
+      card.classList.toggle('hidden', !isVisible);
+
+      if (isVisible) visibleCount++;
+    });
+
+    // Show/hide empty state based on visible count
+    if (emptyState) {
+      emptyState.classList.toggle('hidden', visibleCount > 0);
+    }
+
+    // Announce results count for screen readers
+    if (resultsAnnouncement) {
+      if (visibleCount === 0) {
+        resultsAnnouncement.textContent = 'No projects match your filters';
+      } else if (visibleCount === cards.length) {
+        resultsAnnouncement.textContent = `Showing all ${visibleCount} projects`;
+      } else {
+        resultsAnnouncement.textContent = `${visibleCount} project${visibleCount === 1 ? '' : 's'} found`;
+      }
+    }
+  }
 }

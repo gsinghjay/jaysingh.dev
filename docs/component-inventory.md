@@ -1,185 +1,294 @@
 # UI Component Inventory
 
-**Generated:** 2026-01-29
+**Generated:** 2026-02-01
 **Project:** jaysingh.dev
-**Total Components:** 22
-
-## Component Categories
-
-### Layout Components (2)
-
-| Component | File | Props | Purpose |
-|-----------|------|-------|---------|
-| **Header** | `src/components/Header.tsx` | `currentPage`, `onNavigate` | Sticky navigation bar with mobile menu |
-| **Footer** | `src/components/Footer.tsx` | None | Site footer with copyright |
-
-### Page Components (5)
-
-| Component | File | Props | Purpose |
-|-----------|------|-------|---------|
-| **Home** | `src/pages/Home.tsx` | `featuredPosts`, `featuredProjects`, `onNavigate` | Landing page with hero and featured content |
-| **Blog** | `src/pages/Blog.tsx` | `posts`, `projects`, `selectedPostId`, `onNavigate` | Blog listing and detail router |
-| **Projects** | `src/pages/Projects.tsx` | `projects`, `selectedProjectId`, `onNavigate` | Project listing with filters |
-| **Resume** | `src/pages/Resume.tsx` | None | Work history and skills display |
-| **Contact** | `src/pages/Contact.tsx` | None | Contact form and links |
-
-### Detail Views (2)
-
-| Component | File | Props | Purpose |
-|-----------|------|-------|---------|
-| **BlogDetail** | `src/components/BlogDetail.tsx` | `post`, `projects`, `onBack`, `onNavigate` | Full blog post with TOC sidebar |
-| **ProjectDetail** | `src/components/ProjectDetail.tsx` | `project`, `onBack`, `onNavigate` | Project case study with sections |
-
-### Primitive UI Components (7)
-
-| Component | File | Props | Purpose | Migration Notes |
-|-----------|------|-------|---------|-----------------|
-| **Card** | `src/components/Card.tsx` | `children`, `className`, `onClick`, `size` | Brutalist card container | → Nunjucks macro |
-| **Button** | `src/components/Button.tsx` | `variant`, `children`, `...HTMLButtonAttributes` | Action button with variants | → Nunjucks macro |
-| **Tag** | `src/components/Tag.tsx` | `children`, `onClick`, `variant` | Technology/category tag | → Nunjucks macro |
-| **Input** | `src/components/Input.tsx` | `label`, `focusColor`, `...HTMLInputAttributes` | Form text input | → HTML + CSS |
-| **Textarea** | `src/components/Textarea.tsx` | `label`, `focusColor`, `...HTMLTextareaAttributes` | Form textarea | → HTML + CSS |
-| **Section** | `src/components/Section.tsx` | `children`, `className`, `bordered` | Content section wrapper | → Nunjucks macro |
-| **CalloutBox** | `src/components/CalloutBox.tsx` | `content`, `type` | Info/warning/tip callout | → Shortcode |
-
-### Content Rendering Components (5)
-
-| Component | File | Props | Purpose | Migration Notes |
-|-----------|------|-------|---------|-----------------|
-| **ContentBlock** | `src/components/ContentBlock.tsx` | `block`, `index` | Renders content by type | → Markdown pipeline |
-| **CodeBlock** | `src/components/CodeBlock.tsx` | `code`, `language` | Syntax-highlighted code with copy | → Highlight.js plugin |
-| **MermaidDiagram** | `src/components/MermaidDiagram.tsx` | `content`, `label` | Mermaid diagram with fullscreen | → Client-side JS |
-| **DiagramImage** | `src/components/DiagramImage.tsx` | `src`, `alt`, `label` | Image diagram with zoom | → HTML + JS |
-| **DocumentDownload** | `src/components/DocumentDownload.tsx` | `url`, `filename` | Download link button | → HTML |
-
-### Utility/Enhancement Components (4)
-
-| Component | File | Props | Purpose | Migration Notes |
-|-----------|------|-------|---------|-----------------|
-| **ReadingProgress** | `src/components/ReadingProgress.tsx` | None | Scroll progress bar | → Vanilla JS |
-| **SocialShare** | `src/components/SocialShare.tsx` | `title`, `url` | Twitter/LinkedIn/Copy share | → Nunjucks partial |
-| **RelatedProjects** | `src/components/RelatedProjects.tsx` | `projects`, `onNavigate` | Related project cards | → Nunjucks loop |
+**Framework:** 11ty + Nunjucks
+**Status:** Migration Complete
 
 ---
 
-## Component Design Patterns
+## Component Overview
 
-### Brutalist Box Shadow Pattern
+The project uses Nunjucks templates with macros and partials for reusable components.
 
-All interactive components use consistent shadow behavior:
-```typescript
-const shadowStyles = {
-  sm: '4px 4px 0 #000',
-  default: '6px 6px 0 #000',
-  lg: '8px 8px 0 #000',
-};
-
-// On mouse down: reduce shadow
-// On mouse up/leave: restore shadow
-```
-
-### Color Variants (Button, Tag)
-
-```typescript
-// Button variants
-const variantClasses = {
-  lime: 'bg-lime-400 text-black',
-  pink: 'bg-pink-400 text-black',
-  yellow: 'bg-yellow-400 text-black',
-  blue: 'bg-blue-400 text-black',
-  secondary: 'bg-white text-black hover:bg-yellow-400',
-};
-
-// Tag color logic
-const getTechColor = (tech: string): string => {
-  if (tech.includes('react') || tech.includes('vue')) return 'bg-pink-400';
-  if (tech.includes('python') || tech.includes('go')) return 'bg-blue-400';
-  if (tech.includes('postgres') || tech.includes('sql')) return 'bg-green-400';
-  if (tech.includes('node') || tech.includes('typescript')) return 'bg-lime-400';
-  return 'bg-neutral-100';
-};
-```
-
-### Size Variants (Card)
-
-```typescript
-const paddingClasses = {
-  sm: 'p-4',
-  default: 'p-6',
-  lg: 'p-8',
-};
-```
+| Category | Count | Location |
+|----------|-------|----------|
+| **Layouts** | 3 | `_includes/layouts/` |
+| **Components** | 4 | `_includes/components/` |
+| **Partials** | 6 | `_includes/partials/` |
+| **Client JS** | 4 functions | `js/main.js` |
 
 ---
 
-## Component Dependency Tree
+## Layouts
+
+### base.njk
+Base HTML layout with global structure.
 
 ```
-App.tsx
-├── Header (layout)
-│   └── lucide-react: Menu, X
-├── Footer (layout)
-├── Home (page)
-│   ├── Card
-│   ├── Button
-│   └── Tag
-├── Blog (page)
-│   ├── Card
-│   ├── Tag
-│   └── BlogDetail
-│       ├── Card
-│       ├── Tag
-│       ├── ContentBlock
-│       │   ├── CodeBlock (lucide: Copy, Check)
-│       │   ├── MermaidDiagram (lucide: Maximize2, Copy, Check, ZoomIn, ZoomOut, RotateCcw)
-│       │   └── CalloutBox (lucide: Info, AlertTriangle, Lightbulb, AlertCircle)
-│       ├── ReadingProgress
-│       ├── SocialShare (lucide: Share2, Check)
-│       └── RelatedProjects (lucide: ExternalLink)
-├── Projects (page)
-│   ├── Card
-│   ├── Tag
-│   └── ProjectDetail
-│       ├── Card
-│       ├── Tag
-│       ├── MermaidDiagram
-│       ├── DiagramImage (lucide: Maximize2, ZoomIn, ZoomOut)
-│       └── DocumentDownload (lucide: FileText, Download)
-├── Resume (page)
-│   ├── Card
-│   └── lucide-react: Download
-└── Contact (page)
-    ├── Card
-    ├── Input
-    ├── Textarea
-    ├── Button
-    └── lucide-react: Send, CheckCircle
+<!DOCTYPE html> → Meta → Title → Styles → Body
+  ├── Skip Link (accessibility)
+  ├── Header (sticky)
+  ├── Main Content (slot)
+  ├── Footer
+  └── JavaScript
 ```
+
+**Variables:**
+- `title` - Page title (optional, prefixed to site title)
+- `content` - Page content (Nunjucks slot)
+
+### blog-post.njk
+Blog post detail layout with TOC sidebar.
+
+**Extends:** `layouts/base.njk`
+
+**Features:**
+- Back button navigation
+- Category tag from tags
+- Title with first word highlighted
+- Author byline (optional)
+- Technology tags
+- Prose content rendering
+- Social share buttons
+- Related projects
+- Table of Contents (JS-powered)
+- Scroll progress indicator
+
+**Variables:**
+- `title`, `date`, `lastUpdated`, `tags`, `author`, `relatedProjectIds`
+
+### project.njk
+Project case study layout with structured sections.
+
+**Extends:** `layouts/base.njk`
+
+**Features:**
+- Project type badge
+- Title with first word highlighted (lime)
+- Description and technologies
+- External links (GitHub, Live, Docs)
+- Collapsible sections: Overview, Architecture, Challenge, Solution, Impact, Key Features
+- Table of Contents sidebar
+- Diagram viewer integration
+
+**Variables:**
+- `title`, `description`, `longDescription`, `technologies`, `projectType`
+- `challenge`, `solution`, `impact`, `keyFeatures`
+- `githubUrl`, `liveUrl`, `documentationUrl`
+- `diagramContent`, `diagramLabel`
 
 ---
 
-## Lucide Icons Used
+## Components (Macros)
 
-| Icon | Component(s) | Context |
-|------|--------------|---------|
-| `Menu` | Header | Mobile menu open |
-| `X` | Header | Mobile menu close |
-| `ArrowLeft` | BlogDetail, ProjectDetail | Back navigation |
-| `Copy` | CodeBlock, MermaidDiagram | Copy to clipboard |
-| `Check` | CodeBlock, MermaidDiagram, SocialShare | Copy success |
-| `Maximize2` | MermaidDiagram, DiagramImage | Fullscreen toggle |
-| `ZoomIn` | MermaidDiagram, DiagramImage | Zoom in |
-| `ZoomOut` | MermaidDiagram, DiagramImage | Zoom out |
-| `RotateCcw` | MermaidDiagram | Reset zoom/pan |
-| `Info` | CalloutBox | Info callout |
-| `AlertTriangle` | CalloutBox | Warning callout |
-| `Lightbulb` | CalloutBox | Tip callout |
-| `AlertCircle` | CalloutBox | Important callout |
-| `Share2` | SocialShare | Share header |
-| `ExternalLink` | RelatedProjects, ProjectDetail | External links |
-| `Github` | Projects, ProjectDetail | GitHub links |
-| `FileText` | Projects, DocumentDownload | Documentation |
-| `Network` | Projects | Architecture diagram indicator |
-| `Download` | Resume, DocumentDownload | Download action |
-| `Send` | Contact | Send message |
-| `CheckCircle` | Contact | Success message |
+### card.njk
+Neubrutalist card container macro.
+
+```nunjucks
+{% from "components/card.njk" import card %}
+{% call card("lg") %}
+  Content here
+{% endcall %}
+```
+
+**Parameters:**
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `size` | string | `"default"` | `sm`, `default`, `lg` |
+| `clickable` | boolean | `false` | Add hover/active states |
+
+**Styling:**
+- White background
+- 4px black border
+- Shadow based on size (4px/6px/8px)
+
+### tag.njk
+Technology/category tag component.
+
+```nunjucks
+{% from "components/tag.njk" import tag %}
+{{ tag("Python", "tech") }}
+{{ tag("TECHNICAL", "category") }}
+```
+
+**Parameters:**
+| Param | Type | Description |
+|-------|------|-------------|
+| `text` | string | Tag text |
+| `variant` | string | `tech` or `category` |
+
+**Color Logic:**
+- Category tags: Pink background
+- Tech tags: Color varies by technology keyword
+
+### button.njk
+Neubrutalist action button macro.
+
+```nunjucks
+{% from "components/button.njk" import button %}
+{{ button("Submit", "lime", "submit") }}
+```
+
+**Parameters:**
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `text` | string | required | Button label |
+| `variant` | string | `"lime"` | Color variant |
+| `type` | string | `"button"` | HTML button type |
+
+**Variants:** `lime`, `pink`, `yellow`, `blue`, `secondary`
+
+### external-links.njk
+External link buttons for projects.
+
+```nunjucks
+{% from "components/external-links.njk" import externalLinks %}
+{{ externalLinks(githubUrl, liveUrl, documentationUrl) }}
+```
+
+**Features:**
+- GitHub link with icon
+- Live demo link with icon
+- Documentation link with icon
+- Conditional rendering (only if URL provided)
+
+---
+
+## Partials
+
+### header.njk
+Site header with navigation.
+
+**Features:**
+- Logo button (JAY SINGH)
+- Desktop nav (horizontal links)
+- Mobile menu button (hamburger/X toggle)
+- Mobile nav (vertical links, hidden by default)
+- Active page highlighting (`aria-current`)
+
+**Navigation Items:**
+```javascript
+[
+  { url: '/', text: 'HOME' },
+  { url: '/blog/', text: 'BLOG' },
+  { url: '/projects/', text: 'PROJECTS' },
+  { url: '/resume/', text: 'RESUME' },
+  { url: '/contact/', text: 'CONTACT' }
+]
+```
+
+### footer.njk
+Site footer with social links and copyright.
+
+**Data Source:** `_data/profile.json`
+
+### meta.njk
+HTML meta tags for SEO and social sharing.
+
+**Features:**
+- Charset, viewport
+- Description, author
+- Open Graph tags
+- Theme color
+- Canonical URL
+
+**Data Source:** `_data/site.json`
+
+### skip-link.njk
+Accessibility skip link for keyboard navigation.
+
+```html
+<a href="#main-content" class="skip-link">Skip to main content</a>
+```
+
+Visible only on focus (screen reader accessible).
+
+### social-share.njk
+Social sharing buttons for blog posts.
+
+**Features:**
+- Twitter share (popup)
+- LinkedIn share (popup)
+- Native share (Web Share API, progressive)
+
+### related-projects.njk
+Related projects section for blog posts.
+
+**Features:**
+- Uses `findProjectsByIds` filter
+- Renders project cards with links
+- Only shown if `relatedProjectIds` exists
+
+---
+
+## Client-Side JavaScript
+
+### main.js Functions
+
+| Function | Purpose |
+|----------|---------|
+| `initCodeCopy()` | Wrap code blocks, add copy buttons |
+| `initSocialShare()` | Handle share button clicks |
+| `initDiagramViewer()` | Fullscreen modal with zoom/pan |
+| `initResumePrint()` | Print button for resume |
+| Mobile menu toggle | Hamburger menu behavior |
+
+### Progressive Enhancement
+
+All content works without JavaScript:
+- Code is readable without copy button
+- Diagrams are viewable without modal
+- Navigation links work natively
+- Share URLs are in data attributes
+
+JavaScript enhances:
+- Copy to clipboard
+- Share popups
+- Diagram zoom/pan
+- Mobile menu animation
+
+---
+
+## Design System Tokens
+
+### Colors
+| Token | Value | Usage |
+|-------|-------|-------|
+| `cream` | `#FFFBEB` | Background |
+| `lime-400` | Tailwind | Primary accent |
+| `pink-400` | Tailwind | Secondary accent |
+| `yellow-400` | Tailwind | Active states |
+| `blue-400` | Tailwind | Info elements |
+
+### Shadows
+```css
+--shadow-brutal-sm: 3px 3px 0 #000;
+--shadow-brutal: 4px 4px 0 #000;
+--shadow-brutal-md: 6px 6px 0 #000;
+--shadow-brutal-lg: 8px 8px 0 #000;
+```
+
+### Typography
+- Font: `ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace`
+- Headings: `font-weight: 900`
+- Body: `line-height: 1.6`
+
+---
+
+## Legacy React Components
+
+The `src/` directory contains the original React components (22 total) that served as the reference implementation. These are ignored by 11ty and retained for documentation purposes only.
+
+| Category | Count | Status |
+|----------|-------|--------|
+| Layout | 2 | Migrated to partials |
+| Pages | 5 | Migrated to .njk files |
+| Detail Views | 2 | Migrated to layouts |
+| Primitives | 7 | Migrated to macros |
+| Content Rendering | 5 | Migrated to filters/transforms |
+| Utilities | 4 | Migrated to JS/CSS |
+
+---
+
+*Generated by BMAD document-project workflow*

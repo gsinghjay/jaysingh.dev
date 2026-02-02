@@ -966,3 +966,611 @@ test.describe('Story 3.3: Diagram Accessibility', () => {
     expect(altText?.toLowerCase()).not.toContain('placeholder');
   });
 });
+
+/**
+ * Story 3.5: Implement Project Filtering (ATDD)
+ *
+ * These tests validate the project filtering implementation.
+ *
+ * Acceptance Criteria:
+ * - AC1: Filter controls display (type + resources)
+ * - AC2: Work/Personal type filter works
+ * - AC3: Resource filters work (GitHub, Demo, Diagram)
+ * - AC4: Multiple filters use AND logic
+ * - AC5: Empty state when no projects match
+ * - AC6: Clear filters restores all projects
+ * - AC7: Vanilla JS with data-* attributes
+ * - AC8: Progressive enhancement (graceful degradation)
+ *
+ * Project counts (based on actual content):
+ * - Total: 9 projects
+ * - Work: 8 | Personal: 1
+ * - Has GitHub: 7 | Has Demo: 2 | Has Diagram: 1
+ */
+
+test.describe('Story 3.5: Filter Controls Display (AC1)', () => {
+  test('[P0] filter controls are visible on projects page', async ({ page }) => {
+    // Given: User navigates to projects page
+    await page.goto('/projects/');
+
+    // Then: Filter controls container should be visible
+    const filterControls = page.locator('[data-filter-controls]');
+    await expect(filterControls).toBeVisible();
+  });
+
+  test('[P0] type filter buttons are present', async ({ page }) => {
+    // Given: User views projects page with filter controls
+    await page.goto('/projects/');
+
+    // Then: Type filter buttons should be visible
+    await expect(page.locator('[data-filter-type="all"]')).toBeVisible();
+    await expect(page.locator('[data-filter-type="work"]')).toBeVisible();
+    await expect(page.locator('[data-filter-type="personal"]')).toBeVisible();
+  });
+
+  test('[P0] resource filter checkboxes are present', async ({ page }) => {
+    // Given: User views projects page with filter controls
+    await page.goto('/projects/');
+
+    // Then: Resource filter checkboxes should be visible
+    await expect(page.locator('[data-filter-resource="github"]')).toBeAttached();
+    await expect(page.locator('[data-filter-resource="demo"]')).toBeAttached();
+    await expect(page.locator('[data-filter-resource="diagram"]')).toBeAttached();
+  });
+
+  test('[P1] All filter is active by default', async ({ page }) => {
+    // Given: User navigates to projects page
+    await page.goto('/projects/');
+
+    // Then: All button should be active (pressed state)
+    const allButton = page.locator('[data-filter-type="all"]');
+    await expect(allButton).toHaveAttribute('aria-pressed', 'true');
+
+    // And: All button should have active styling (bg-lime-400)
+    await expect(allButton).toHaveClass(/bg-lime-400/);
+  });
+});
+
+test.describe('Story 3.5: Type Filtering (AC2)', () => {
+  test('[P0] Work filter shows only work projects', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User clicks Work filter
+    await page.locator('[data-filter-type="work"]').click();
+
+    // Then: Only work projects should be visible (8 projects)
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(8);
+
+    // And: All visible projects should be work type
+    const projectTypes = await visibleCards.evaluateAll((cards) =>
+      cards.map((c) => (c as HTMLElement).dataset.projectType)
+    );
+    expect(projectTypes.every((t) => t === 'work')).toBe(true);
+  });
+
+  test('[P0] Personal filter shows only personal projects', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User clicks Personal filter
+    await page.locator('[data-filter-type="personal"]').click();
+
+    // Then: Only personal projects should be visible (1 project)
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(1);
+
+    // And: All visible projects should be personal type
+    const projectTypes = await visibleCards.evaluateAll((cards) =>
+      cards.map((c) => (c as HTMLElement).dataset.projectType)
+    );
+    expect(projectTypes.every((t) => t === 'personal')).toBe(true);
+  });
+
+  test('[P0] All filter shows all projects', async ({ page }) => {
+    // Given: User has filtered by Work
+    await page.goto('/projects/');
+    await page.locator('[data-filter-type="work"]').click();
+
+    // When: User clicks All filter
+    await page.locator('[data-filter-type="all"]').click();
+
+    // Then: All 9 projects should be visible
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(9);
+  });
+
+  test('[P1] Work button shows pressed state when active', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User clicks Work filter
+    await page.locator('[data-filter-type="work"]').click();
+
+    // Then: Work button should have pressed state
+    const workButton = page.locator('[data-filter-type="work"]');
+    await expect(workButton).toHaveAttribute('aria-pressed', 'true');
+
+    // And: All button should NOT have pressed state
+    const allButton = page.locator('[data-filter-type="all"]');
+    await expect(allButton).toHaveAttribute('aria-pressed', 'false');
+  });
+});
+
+test.describe('Story 3.5: Resource Filtering (AC3)', () => {
+  test('[P0] Has GitHub filter shows only projects with GitHub URL', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User checks "Has GitHub" filter
+    await page.locator('[data-filter-resource="github"]').check();
+
+    // Then: Only projects with GitHub should be visible (7 projects)
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(7);
+
+    // And: All visible projects should have github=true
+    const hasGithub = await visibleCards.evaluateAll((cards) =>
+      cards.map((c) => (c as HTMLElement).dataset.hasGithub)
+    );
+    expect(hasGithub.every((g) => g === 'true')).toBe(true);
+  });
+
+  test('[P1] Has Demo filter shows only projects with live URL', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User checks "Has Demo" filter
+    await page.locator('[data-filter-resource="demo"]').check();
+
+    // Then: Only projects with demo should be visible (2 projects)
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(2);
+  });
+
+  test('[P1] Has Diagram filter shows only projects with diagram', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User checks "Has Diagram" filter
+    await page.locator('[data-filter-resource="diagram"]').check();
+
+    // Then: Only projects with diagram should be visible (1 project)
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(1);
+  });
+
+  test('[P1] unchecking resource filter restores projects', async ({ page }) => {
+    // Given: User has checked Has Diagram filter (1 result)
+    await page.goto('/projects/');
+    await page.locator('[data-filter-resource="diagram"]').check();
+    await expect(page.locator('[data-project-type]:not(.hidden)')).toHaveCount(1);
+
+    // When: User unchecks the filter
+    await page.locator('[data-filter-resource="diagram"]').uncheck();
+
+    // Then: All 9 projects should be visible again
+    await expect(page.locator('[data-project-type]:not(.hidden)')).toHaveCount(9);
+  });
+});
+
+test.describe('Story 3.5: Multiple Filters AND Logic (AC4)', () => {
+  test('[P0] Work + Has GitHub combined filter', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User selects Work type AND Has GitHub resource
+    await page.locator('[data-filter-type="work"]').click();
+    await page.locator('[data-filter-resource="github"]').check();
+
+    // Then: Only work projects with GitHub should be visible
+    // Work projects: 8, with GitHub: all except jamf-pro-deployment
+    // So: 8 - 1 = 7 work projects with GitHub
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(7);
+
+    // And: All should be work type with github
+    const data = await visibleCards.evaluateAll((cards) =>
+      cards.map((c) => ({
+        type: (c as HTMLElement).dataset.projectType,
+        github: (c as HTMLElement).dataset.hasGithub,
+      }))
+    );
+    expect(data.every((d) => d.type === 'work' && d.github === 'true')).toBe(true);
+  });
+
+  test('[P0] Work + Has Diagram shows only qr-code-platform', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User selects Work type AND Has Diagram resource
+    await page.locator('[data-filter-type="work"]').click();
+    await page.locator('[data-filter-resource="diagram"]').check();
+
+    // Then: Only qr-code-platform should be visible (work + diagram)
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(1);
+  });
+
+  test('[P0] Personal + Has Diagram shows empty state', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User selects Personal type AND Has Diagram resource
+    await page.locator('[data-filter-type="personal"]').click();
+    await page.locator('[data-filter-resource="diagram"]').check();
+
+    // Then: No projects should match (personal projects have no diagrams)
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(0);
+
+    // And: Empty state should be visible
+    await expect(page.locator('[data-filter-empty]')).toBeVisible();
+  });
+
+  test('[P1] multiple resource filters combine with AND', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User checks both Has GitHub AND Has Demo
+    await page.locator('[data-filter-resource="github"]').check();
+    await page.locator('[data-filter-resource="demo"]').check();
+
+    // Then: Only projects with BOTH github AND demo (1: qr-code-platform only)
+    // covid-dashboard has demo but NO github
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(1);
+  });
+
+  test('[P1] Demo + Diagram filters show only matching projects', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User checks both Has Demo AND Has Diagram
+    await page.locator('[data-filter-resource="demo"]').check();
+    await page.locator('[data-filter-resource="diagram"]').check();
+
+    // Then: Only projects with BOTH demo AND diagram (1: qr-code-platform)
+    const visibleCards = page.locator('[data-project-type]:not(.hidden)');
+    await expect(visibleCards).toHaveCount(1);
+
+    // And: Should be qr-code-platform specifically
+    const data = await visibleCards.evaluateAll((cards) =>
+      cards.map((c) => ({
+        demo: (c as HTMLElement).dataset.hasDemo,
+        diagram: (c as HTMLElement).dataset.hasDiagram,
+      }))
+    );
+    expect(data.every((d) => d.demo === 'true' && d.diagram === 'true')).toBe(true);
+  });
+});
+
+test.describe('Story 3.5: Empty State (AC5)', () => {
+  test('[P0] empty state shows when no projects match filters', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User applies filters that match no projects
+    await page.locator('[data-filter-type="personal"]').click();
+    await page.locator('[data-filter-resource="diagram"]').check();
+
+    // Then: Empty state message should be visible
+    const emptyState = page.locator('[data-filter-empty]');
+    await expect(emptyState).toBeVisible();
+    await expect(emptyState.getByText(/no projects match/i)).toBeVisible();
+  });
+
+  test('[P0] empty state has clear filters button', async ({ page }) => {
+    // Given: Empty state is showing
+    await page.goto('/projects/');
+    await page.locator('[data-filter-type="personal"]').click();
+    await page.locator('[data-filter-resource="diagram"]').check();
+
+    // Then: Empty state should have clear filters button
+    const emptyState = page.locator('[data-filter-empty]');
+    const clearButton = emptyState.locator('[data-filter-clear]');
+    await expect(clearButton).toBeVisible();
+  });
+
+  test('[P1] clicking clear in empty state restores all projects', async ({ page }) => {
+    // Given: Empty state is showing
+    await page.goto('/projects/');
+    await page.locator('[data-filter-type="personal"]').click();
+    await page.locator('[data-filter-resource="diagram"]').check();
+
+    // When: User clicks clear filters in empty state
+    await page.locator('[data-filter-empty] [data-filter-clear]').click();
+
+    // Then: All 9 projects should be visible
+    await expect(page.locator('[data-project-type]:not(.hidden)')).toHaveCount(9);
+
+    // And: Empty state should be hidden
+    await expect(page.locator('[data-filter-empty]')).not.toBeVisible();
+  });
+});
+
+test.describe('Story 3.5: Clear Filters (AC6)', () => {
+  test('[P0] clear filters button restores all projects', async ({ page }) => {
+    // Given: User has applied filters
+    await page.goto('/projects/');
+    await page.locator('[data-filter-type="work"]').click();
+    await page.locator('[data-filter-resource="github"]').check();
+
+    // When: User clicks clear all filters
+    await page.locator('[data-filter-controls] [data-filter-clear]').click();
+
+    // Then: All 9 projects should be visible
+    await expect(page.locator('[data-project-type]:not(.hidden)')).toHaveCount(9);
+  });
+
+  test('[P0] clear filters resets type to All', async ({ page }) => {
+    // Given: User has Work filter active
+    await page.goto('/projects/');
+    await page.locator('[data-filter-type="work"]').click();
+
+    // When: User clicks clear all filters
+    await page.locator('[data-filter-controls] [data-filter-clear]').click();
+
+    // Then: All button should be active again
+    await expect(page.locator('[data-filter-type="all"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('[data-filter-type="work"]')).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('[P1] clear filters unchecks resource checkboxes', async ({ page }) => {
+    // Given: User has resource filters checked
+    await page.goto('/projects/');
+    await page.locator('[data-filter-resource="github"]').check();
+    await page.locator('[data-filter-resource="demo"]').check();
+
+    // When: User clicks clear all filters
+    await page.locator('[data-filter-controls] [data-filter-clear]').click();
+
+    // Then: Resource checkboxes should be unchecked
+    await expect(page.locator('[data-filter-resource="github"]')).not.toBeChecked();
+    await expect(page.locator('[data-filter-resource="demo"]')).not.toBeChecked();
+    await expect(page.locator('[data-filter-resource="diagram"]')).not.toBeChecked();
+  });
+});
+
+test.describe('Story 3.5: Data Attributes Implementation (AC7)', () => {
+  test('[P1] project cards have data-project-type attribute', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // Then: All project cards should have data-project-type
+    const cards = page.locator('[data-project-type]');
+    await expect(cards).toHaveCount(9);
+
+    // And: Values should be "work" or "personal"
+    const types = await cards.evaluateAll((els) =>
+      els.map((el) => (el as HTMLElement).dataset.projectType)
+    );
+    expect(types.every((t) => t === 'work' || t === 'personal')).toBe(true);
+  });
+
+  test('[P1] project cards have data-has-github attribute', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // Then: All project cards should have data-has-github
+    const cards = page.locator('[data-project-type]');
+    const githubValues = await cards.evaluateAll((els) =>
+      els.map((el) => (el as HTMLElement).dataset.hasGithub)
+    );
+    expect(githubValues.every((g) => g === 'true' || g === 'false')).toBe(true);
+  });
+
+  test('[P1] project cards have data-has-demo attribute', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // Then: All project cards should have data-has-demo
+    const cards = page.locator('[data-project-type]');
+    const demoValues = await cards.evaluateAll((els) =>
+      els.map((el) => (el as HTMLElement).dataset.hasDemo)
+    );
+    expect(demoValues.every((d) => d === 'true' || d === 'false')).toBe(true);
+  });
+
+  test('[P1] project cards have data-has-diagram attribute', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // Then: All project cards should have data-has-diagram
+    const cards = page.locator('[data-project-type]');
+    const diagramValues = await cards.evaluateAll((els) =>
+      els.map((el) => (el as HTMLElement).dataset.hasDiagram)
+    );
+    expect(diagramValues.every((d) => d === 'true' || d === 'false')).toBe(true);
+  });
+});
+
+test.describe('Story 3.5: Progressive Enhancement (AC8)', () => {
+  test('[P1] all projects visible when filter controls not initialized', async ({ page }) => {
+    // Given: JavaScript is disabled or filter controls not initialized
+    // We can simulate by checking initial DOM state before JS runs
+    await page.goto('/projects/');
+
+    // Then: All 9 project cards should be visible in DOM (not hidden by CSS)
+    const allCards = page.locator('[data-project-type]');
+    await expect(allCards).toHaveCount(9);
+
+    // And: No cards should have hidden class initially in HTML source
+    // (JS adds hidden class dynamically when filtering)
+  });
+
+  test('[P1] filter controls have hidden class in HTML source', async ({ request }) => {
+    // Given: We fetch the raw HTML source
+    const response = await request.get('/projects/');
+    const html = await response.text();
+
+    // Then: Filter controls should have "hidden" class (removed by JS)
+    expect(html).toContain('data-filter-controls');
+    // Class attribute comes before data attribute in HTML: class="...hidden..." data-filter-controls
+    expect(html).toMatch(/class="[^"]*hidden[^"]*"[^>]*data-filter-controls/);
+  });
+});
+
+test.describe('Story 3.5: Screen Reader Accessibility', () => {
+  test('[P1] empty state has aria-live for announcements', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // Then: Empty state should have aria-live attribute
+    const emptyState = page.locator('[data-filter-empty]');
+    await expect(emptyState).toHaveAttribute('aria-live', 'polite');
+  });
+
+  test('[P1] filter results are announced to screen readers', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User applies a filter
+    await page.locator('[data-filter-type="work"]').click();
+
+    // Then: Results announcement should exist with aria-live
+    const announcement = page.locator('[data-filter-results]');
+    await expect(announcement).toHaveAttribute('aria-live', 'polite');
+
+    // And: Should contain result count text
+    const text = await announcement.textContent();
+    expect(text).toMatch(/\d+ project/);
+  });
+
+  test('[P1] type filter buttons have aria-labels', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // Then: Type filter buttons should have descriptive aria-labels
+    await expect(page.locator('[data-filter-type="all"]')).toHaveAttribute('aria-label', 'Show all projects');
+    await expect(page.locator('[data-filter-type="work"]')).toHaveAttribute('aria-label', 'Show only work projects');
+    await expect(page.locator('[data-filter-type="personal"]')).toHaveAttribute('aria-label', 'Show only personal projects');
+  });
+});
+
+test.describe('Story 3.5: Keyboard Accessibility', () => {
+  test('[P1] type filter buttons are keyboard focusable', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User tabs to filter buttons
+    const workButton = page.locator('[data-filter-type="work"]');
+    await workButton.focus();
+
+    // Then: Button should be focused
+    await expect(workButton).toBeFocused();
+  });
+
+  test('[P1] Enter key activates type filter button', async ({ page }) => {
+    // Given: User has focused Work filter button
+    await page.goto('/projects/');
+    const workButton = page.locator('[data-filter-type="work"]');
+    await workButton.focus();
+
+    // When: User presses Enter
+    await page.keyboard.press('Enter');
+
+    // Then: Work filter should be active
+    await expect(workButton).toHaveAttribute('aria-pressed', 'true');
+
+    // And: Only work projects visible (8 work projects)
+    await expect(page.locator('[data-project-type]:not(.hidden)')).toHaveCount(8);
+  });
+
+  test('[P1] Space key toggles resource checkbox', async ({ page }) => {
+    // Given: User has focused a resource checkbox
+    await page.goto('/projects/');
+    const githubCheckbox = page.locator('[data-filter-resource="github"]');
+    await githubCheckbox.focus();
+
+    // When: User presses Space
+    await page.keyboard.press('Space');
+
+    // Then: Checkbox should be checked
+    await expect(githubCheckbox).toBeChecked();
+  });
+
+  test('[P2] focus indicator visible on filter buttons', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // When: User focuses a filter button
+    const workButton = page.locator('[data-filter-type="work"]');
+    await workButton.focus();
+
+    // Then: Focus outline should be visible
+    const outlineWidth = await workButton.evaluate((el) =>
+      window.getComputedStyle(el).outlineWidth
+    );
+    expect(outlineWidth).not.toBe('0px');
+  });
+});
+
+test.describe('Story 3.5: Neubrutalist Styling', () => {
+  test('[P2] type filter buttons have Neubrutalist border', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // Then: Type filter buttons should have 2px black border
+    const workButton = page.locator('[data-filter-type="work"]');
+    const borderWidth = await workButton.evaluate((el) =>
+      window.getComputedStyle(el).borderWidth
+    );
+    expect(borderWidth).toBe('2px');
+
+    const borderColor = await workButton.evaluate((el) =>
+      window.getComputedStyle(el).borderColor
+    );
+    expect(borderColor).toBe('rgb(0, 0, 0)');
+  });
+
+  test('[P2] active filter button has lime background', async ({ page }) => {
+    // Given: User is on projects page with All filter active
+    await page.goto('/projects/');
+
+    // Then: All button should have lime background
+    const allButton = page.locator('[data-filter-type="all"]');
+    await expect(allButton).toHaveClass(/bg-lime-400/);
+  });
+
+  test('[P2] active filter button has brutal shadow', async ({ page }) => {
+    // Given: User is on projects page
+    await page.goto('/projects/');
+
+    // Then: Active filter button should have box shadow
+    const allButton = page.locator('[data-filter-type="all"]');
+    const boxShadow = await allButton.evaluate((el) =>
+      window.getComputedStyle(el).boxShadow
+    );
+    expect(boxShadow).not.toBe('none');
+  });
+});
+
+test.describe('Story 3.5: Mobile Responsive', () => {
+  test.use({ viewport: { width: 375, height: 667 } }); // iPhone SE
+
+  test('[P2] filter controls wrap on mobile', async ({ page }) => {
+    // Given: User views projects on mobile
+    await page.goto('/projects/');
+
+    // Then: Filter controls should be visible
+    await expect(page.locator('[data-filter-controls]')).toBeVisible();
+
+    // And: Filter controls should fit within viewport
+    const controls = page.locator('[data-filter-controls]');
+    const box = await controls.boundingBox();
+    expect(box?.width).toBeLessThanOrEqual(375);
+  });
+
+  test('[P2] filter buttons usable on touch devices', async ({ page }) => {
+    // Given: User views projects on mobile
+    await page.goto('/projects/');
+
+    // When: User taps/clicks Work filter (click works for touch simulation)
+    await page.locator('[data-filter-type="work"]').click();
+
+    // Then: Filter should be applied (8 work projects)
+    await expect(page.locator('[data-project-type]:not(.hidden)')).toHaveCount(8);
+  });
+});

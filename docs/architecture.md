@@ -1,21 +1,22 @@
 # Architecture Document
 
-**Generated:** 2026-01-29
+**Generated:** 2026-02-01
 **Project:** jaysingh.dev
-**Version:** 1.0.0
+**Framework:** 11ty + Nunjucks
+**Status:** Migration Complete
 
 ---
 
 ## Executive Summary
 
-jaysingh.dev is a personal portfolio and blog website built as a React Single Page Application (SPA) with a file-based content management approach. The site features a distinctive Neubrutalist design system and processes Markdown content at build time for runtime consumption.
+jaysingh.dev is a personal portfolio and blog website built as a static site using 11ty (Eleventy) with Nunjucks templating. The site features a Neubrutalist design system and pre-renders all content at build time for optimal performance and SEO.
 
 **Key Characteristics:**
-- Static content, dynamic rendering
-- Component-based UI architecture
-- Build-time content processing
-- No backend server required
-- Planned migration to 11ty + Nunjucks
+- Pre-rendered static HTML pages
+- File-based routing with clean URLs
+- Build-time content processing with validation
+- Zero client-side JavaScript by default (progressive enhancement)
+- Mermaid diagrams pre-rendered to SVG at build time
 
 ---
 
@@ -23,57 +24,67 @@ jaysingh.dev is a personal portfolio and blog website built as a React Single Pa
 
 | Layer | Technology | Version |
 |-------|------------|---------|
-| Runtime | Node.js | 18+ → 24 LTS |
-| Language | TypeScript | 5.5.3 |
-| Framework | React | 18.3.1 |
-| Build Tool | Vite | 5.4.2 |
+| Runtime | Node.js | >=24.0.0 |
+| Framework | 11ty (Eleventy) | 3.1.2 |
+| Templating | Nunjucks | Built-in |
 | Styling | TailwindCSS | 3.4.1 |
-| Content | Markdown + YAML | - |
-| Icons | Lucide React | 0.344.0 |
-| Diagrams | Mermaid | 11.12.2 |
+| CSS Processing | PostCSS | 8.4.35 |
+| Diagrams | Mermaid CLI | 11.12.0 |
+| E2E Testing | Playwright | 1.50.0 |
+| Unit Testing | Vitest | 4.0.18 |
 
 ---
 
 ## Architecture Pattern
 
-### Component-Based SPA with File-Based CMS
+### Static Site Generator (SSG)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         BUILD TIME                               │
+│                         BUILD TIME                              │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  content/          scripts/              public/                 │
-│  ├── blog/*.md     build-content.js      ├── blog-posts.json    │
-│  ├── projects/*.md ──────────────────▶   └── projects.json      │
-│  └── config/*.yaml                                               │
-│                                                                  │
-│  gray-matter: Parse frontmatter                                  │
-│  Custom parser: Convert markdown to ContentBlock[]               │
-│                                                                  │
+│                                                                 │
+│  _content/           _data/              _includes/             │
+│  ├── blog/*.md       ├── site.json       ├── layouts/           │
+│  └── projects/*.md   ├── profile.json    │   ├── base.njk       │
+│         │            ├── resume.json     │   ├── blog-post.njk  │
+│         │            └── skills.json     │   └── project.njk    │
+│         │                   │            ├── components/        │
+│         └───────────────────┴────────────┴── partials/          │
+│                             │                                   │
+│                             ▼                                   │
+│                      eleventy.config.js                         │
+│                             │                                   │
+│         ┌───────────────────┼───────────────────┐               │
+│         ▼                   ▼                   ▼               │
+│    Collections          Filters            Transforms           │
+│    - posts              - readingTime      - mermaid-to-svg     │
+│    - projects           - date             (replace code blocks │
+│                         - findProjectsByIds  with pre-rendered  │
+│                         - getCategoryFromTags  SVG images)      │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                         RUNTIME (CLIENT)                         │
+│                      OUTPUT (_site/)                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  index.html ──▶ main.tsx ──▶ App.tsx                            │
-│                                    │                             │
-│                    ┌───────────────┼───────────────┐             │
-│                    ▼               ▼               ▼             │
-│               [Header]        [Page]          [Footer]           │
-│                                    │                             │
-│        ┌──────┬──────┬─────┬──────┼──────┐                      │
-│        ▼      ▼      ▼     ▼      ▼      ▼                      │
-│      Home   Blog  Projects Resume Contact                        │
-│              │       │                                           │
-│              ▼       ▼                                           │
-│        BlogDetail  ProjectDetail                                 │
-│              │                                                   │
-│              ▼                                                   │
-│        ContentBlock ──▶ CodeBlock, MermaidDiagram, etc.         │
-│                                                                  │
+│                                                                 │
+│  _site/                                                         │
+│  ├── index.html                                                 │
+│  ├── blog/                                                      │
+│  │   ├── index.html              (listing page)                 │
+│  │   └── {post-slug}/index.html  (detail pages)                 │
+│  ├── projects/                                                  │
+│  │   ├── index.html              (listing page)                 │
+│  │   └── {project-slug}/index.html (detail pages)               │
+│  ├── resume/index.html                                          │
+│  ├── contact/index.html                                         │
+│  ├── css/styles.css              (minified TailwindCSS)         │
+│  ├── js/main.js                  (progressive enhancement)      │
+│  ├── diagrams/*.svg              (pre-rendered Mermaid)         │
+│  └── public/                     (passthrough static assets)    │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -81,226 +92,173 @@ jaysingh.dev is a personal portfolio and blog website built as a React Single Pa
 
 ## Data Flow
 
-### Content Loading
+### Build Pipeline
 
 ```
-1. App.tsx mounts
-2. useEffect triggers loadContent()
-3. fetch('/blog-posts.json') + fetch('/projects.json')
-4. setBlogPosts() + setProjects()
-5. Components receive data via props
+1. npm run build
+   ├── build:css      → TailwindCSS compiles and minifies
+   ├── build:mermaid  → Mermaid CLI renders diagrams to SVG
+   └── eleventy       → 11ty builds HTML pages
+       ├── Load _data/*.json (global data)
+       ├── Process collections (posts, projects)
+       │   └── Validate frontmatter (throws on error)
+       ├── Render templates (Nunjucks)
+       ├── Apply transforms (mermaid-to-svg)
+       └── Write to _site/
 ```
 
-### Navigation
+### Request Flow (Production)
 
 ```
-1. User clicks navigation link
-2. handleNavigate(page, id?) called
-3. window.location.hash updated
-4. hashchange event fires
-5. State updated: currentPage, selectedItemId
-6. React re-renders appropriate page component
+1. User requests /blog/my-post/
+2. CDN/server serves _site/blog/my-post/index.html
+3. Browser renders pre-built HTML immediately
+4. CSS loads from /css/styles.css
+5. JS loads from /js/main.js (optional enhancements)
+   ├── Code copy buttons
+   ├── Diagram fullscreen viewer
+   ├── Social share buttons
+   └── Mobile menu toggle
 ```
 
 ### URL Structure
 
-| URL Hash | State | Component |
-|----------|-------|-----------|
-| `#home` | `currentPage: 'home'` | Home |
-| `#blog` | `currentPage: 'blog'` | Blog (listing) |
-| `#blog/docker-observability` | `currentPage: 'blog', selectedItemId: '...'` | BlogDetail |
-| `#projects` | `currentPage: 'projects'` | Projects (listing) |
-| `#projects/qr-code-platform` | `currentPage: 'projects', selectedItemId: '...'` | ProjectDetail |
-| `#resume` | `currentPage: 'resume'` | Resume |
-| `#contact` | `currentPage: 'contact'` | Contact |
+| URL | Template | Content Source |
+|-----|----------|----------------|
+| `/` | `index.njk` | Featured posts/projects from collections |
+| `/blog/` | `blog.njk` | `collections.posts` |
+| `/blog/{slug}/` | `layouts/blog-post.njk` | `_content/blog/{slug}.md` |
+| `/projects/` | `projects.njk` | `collections.projects` |
+| `/projects/{slug}/` | `layouts/project.njk` | `_content/projects/{slug}.md` |
+| `/resume/` | `resume.njk` | `_data/resume.json` |
+| `/contact/` | `contact.njk` | Static form |
 
 ---
 
 ## Component Architecture
 
-### Hierarchy
+### Template Hierarchy
 
 ```
-App
-├── Header (sticky navigation)
-├── main
-│   └── [Page Component]
-│       └── [Detail Component]
-│           └── [Content Components]
-└── Footer
+layouts/base.njk
+├── partials/meta.njk      (SEO meta tags)
+├── partials/skip-link.njk (accessibility)
+├── partials/header.njk    (navigation)
+├── {{ content }}          (page slot)
+├── partials/footer.njk    (footer)
+└── js/main.js             (enhancements)
+
+layouts/blog-post.njk extends base.njk
+├── components/tag.njk     (category, tech tags)
+├── components/card.njk    (content wrapper)
+├── partials/social-share.njk
+├── partials/related-projects.njk
+└── Inline TOC script
+
+layouts/project.njk extends base.njk
+├── components/tag.njk
+├── components/card.njk
+├── components/external-links.njk
+└── Inline TOC script
 ```
 
-### Design System Tokens
+### Component Patterns
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `cream` | `#FFFBEB` | Background |
-| `brutal-sm` | `3px 3px 0 #000` | Small shadow |
-| `brutal` | `4px 4px 0 #000` | Default shadow |
-| `brutal-md` | `6px 6px 0 #000` | Medium shadow |
-| `brutal-lg` | `8px 8px 0 #000` | Large shadow |
-| Border | `4px solid #000` | All elements |
-| Border radius | `0` | Brutalist style |
-| Font | `ui-monospace` | Monospace stack |
-
-### Component Categories
-
-| Category | Count | Purpose |
-|----------|-------|---------|
-| Layout | 2 | Header, Footer |
-| Pages | 5 | Route-level views |
-| Detail Views | 2 | BlogDetail, ProjectDetail |
-| Primitives | 7 | Card, Button, Tag, Input, etc. |
-| Content | 5 | CodeBlock, MermaidDiagram, etc. |
-| Utility | 4 | ReadingProgress, SocialShare, etc. |
+| Component | Type | Description |
+|-----------|------|-------------|
+| `card.njk` | Macro | Callable with size parameter |
+| `tag.njk` | Macro | Tech/category badge |
+| `button.njk` | Macro | Action button with variants |
+| `header.njk` | Partial | Included once per page |
+| `footer.njk` | Partial | Included once per page |
+| `social-share.njk` | Partial | Blog posts only |
 
 ---
 
 ## Content Architecture
 
-### Source Files
+### Collections
 
-| Location | Format | Purpose |
-|----------|--------|---------|
-| `content/blog/*.md` | Markdown + YAML frontmatter | Blog posts |
-| `content/projects/*.md` | Markdown + YAML frontmatter | Projects |
-| `content/config/*.yaml` | YAML | Configuration |
+| Collection | Source | Validation |
+|------------|--------|------------|
+| `posts` | `_content/blog/*.md` | `validateBlogPost()` |
+| `projects` | `_content/projects/*.md` | `validateProject()` |
 
-### Processing Pipeline
+### Global Data
 
-```
-Markdown File
-    │
-    ▼
-gray-matter (parse frontmatter)
-    │
-    ▼
-convertMarkdownToContentBlocks()
-    │
-    ├── ```mermaid ──▶ { type: 'diagram', ... }
-    ├── ```{lang}  ──▶ { type: 'code', ... }
-    ├── ![...]     ──▶ { type: 'image', ... }
-    ├── > ...      ──▶ { type: 'callout', ... }
-    └── text       ──▶ { type: 'text', ... }
-    │
-    ▼
-JSON Output (blog-posts.json, projects.json)
-```
+| File | Purpose | Access |
+|------|---------|--------|
+| `site.json` | Site metadata | `{{ site.title }}` |
+| `profile.json` | Author info | `{{ profile.name }}` |
+| `resume.json` | Experience/education | `{{ resume.experience }}` |
+| `skills.json` | Technical skills | `{{ skills.languages }}` |
 
-### ContentBlock Types
+### Frontmatter Validation
 
-| Type | Source | Rendered By |
-|------|--------|-------------|
-| `text` | Plain paragraphs | `<p>` |
-| `heading` | `## `, `### `, `#### ` | `<h2>`, `<h3>`, `<h4>` |
-| `code` | ` ```language ` | CodeBlock.tsx |
-| `diagram` | ` ```mermaid ` | MermaidDiagram.tsx |
-| `image` | `![alt](url)` | `<img>` |
-| `callout` | `> text` | CalloutBox.tsx |
+Build fails fast if required fields are missing:
+- Blog: `id`, `title`, `date`, `excerpt`, `tags`, `readTime`
+- Projects: `id`, `title`, `description`, `projectType`, `technologies|tags`
 
 ---
 
 ## Build Configuration
 
-### Vite
+### 11ty (eleventy.config.js)
 
-- React plugin enabled
-- Lucide React excluded from optimization (large icon library)
-- Markdown and YAML included as assets
+- **Input:** `.` (project root)
+- **Output:** `_site`
+- **Includes:** `_includes`
+- **Data:** `_data`
+- **Template formats:** `njk`, `md`, `html`
+- **Ignored:** `_bmad*`, `src/`, `node_modules/`, `docs/`, `content/`
 
-### TypeScript
+### TailwindCSS (tailwind.config.js)
 
-- Strict mode enabled
-- ES2020 target
-- React JSX transform
+- Custom `cream` color
+- Brutal shadows (`brutal-sm`, `brutal`, `brutal-md`, `brutal-lg`)
+- Zero border-radius (brutalist)
+- Content sources: `_includes/**/*.njk`, `_content/**/*.md`, `*.njk`
 
-### Tailwind
+### Playwright (playwright.config.ts)
 
-- Custom colors and shadows for brutalist design
-- All border-radius overridden to 0
-- Monospace font family
+- **Base URL:** `http://localhost:8080`
+- **Projects:** Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari
+- **Web Server:** Auto-starts `npm run dev:11ty`
 
 ---
 
 ## Deployment Architecture
 
-### Current (Development)
+### Production Build
 
 ```
 npm run build
     │
     ▼
-dist/
+_site/
 ├── index.html
-├── assets/
-│   ├── index-[hash].js
-│   └── index-[hash].css
-├── blog-posts.json
-├── projects.json
-└── [static assets]
+├── blog/
+│   ├── index.html
+│   └── */index.html
+├── projects/
+│   ├── index.html
+│   └── */index.html
+├── resume/index.html
+├── contact/index.html
+├── css/styles.css (minified)
+├── js/main.js
+├── diagrams/*.svg
+└── public/
+    └── images/, fonts/, etc.
 ```
 
-### Target (Production)
+### Deployment Target
 
-Static file hosting (Vercel, Netlify, GitHub Pages, etc.)
-- No server-side processing required
-- CDN-friendly static assets
-- Client-side routing via hash
-
----
-
-## Migration Plan (11ty + Nunjucks)
-
-### Architecture Changes
-
-| Current | Target |
-|---------|--------|
-| Client-side rendering | Pre-rendered HTML |
-| Hash routing (`#page`) | Clean URLs (`/page/`) |
-| Runtime JSON fetch | Build-time data cascade |
-| React components | Nunjucks templates/macros |
-| Vite build | 11ty build |
-
-### Preserved Elements
-
-- TailwindCSS styling
-- Neubrutalist design tokens
-- Content structure (frontmatter schema)
-- Mermaid diagrams (client-side)
-- Lucide icons (static SVGs)
-
-### New Structure
-
-```
-jaysingh.dev/
-├── _data/                  # Global data
-│   ├── profile.json
-│   ├── skills.json
-│   └── resume.json
-├── _includes/
-│   ├── layouts/
-│   │   ├── base.njk
-│   │   ├── blog.njk
-│   │   └── project.njk
-│   └── components/
-│       ├── header.njk
-│       ├── footer.njk
-│       ├── card.njk
-│       └── tag.njk
-├── content/
-│   ├── blog/               # Same markdown files
-│   └── projects/           # Same markdown files
-├── css/
-│   └── styles.css          # Tailwind entry
-├── js/
-│   └── main.js             # Mermaid, interactions
-├── index.njk
-├── blog.njk
-├── projects.njk
-├── resume.njk
-├── contact.njk
-└── .eleventy.js            # 11ty config
-```
+GitHub Pages (Epic 6):
+- Static file hosting
+- CDN-friendly
+- Clean URLs via directory indexes
+- No server-side processing
 
 ---
 
@@ -308,24 +266,38 @@ jaysingh.dev/
 
 - No backend or database (static site)
 - No authentication required
-- No user data collection (contact form is non-functional)
+- No user data collection (contact form uses FormSubmit/similar)
 - Content is public by design
-- No sensitive configuration (Supabase removed)
+- All dependencies audited via `npm audit`
 
 ---
 
 ## Performance Characteristics
 
-| Metric | Current | Notes |
-|--------|---------|-------|
-| Bundle Size | ~200KB gzipped | React + dependencies |
-| First Paint | Fast | Vite optimized |
-| TTI | Depends on JSON fetch | Content loading |
-| Lighthouse | Expected 90+ | Static content |
+| Metric | Value | Notes |
+|--------|-------|-------|
+| First Contentful Paint | <1s | Pre-rendered HTML |
+| Time to Interactive | <1s | No JS hydration |
+| Total Blocking Time | 0ms | No main thread blocking |
+| Lighthouse Score | Target 100 | All categories |
 
-### Optimization Opportunities
+### Optimizations
 
-- Pre-render with 11ty (eliminates JS hydration)
-- Image optimization (not currently implemented)
-- Font subsetting
-- Lazy load Mermaid diagrams
+- Pre-rendered HTML (no client-side rendering)
+- CSS minified and purged (TailwindCSS)
+- Mermaid diagrams pre-rendered (no runtime JS)
+- Progressive enhancement (JS optional)
+- Clean URLs for SEO
+
+---
+
+## Legacy Code
+
+The `src/` and `content/` directories contain the original React implementation:
+- **Status:** Ignored by 11ty
+- **Purpose:** Reference during migration
+- **Future:** Can be removed after full validation
+
+---
+
+*Generated by BMAD document-project workflow*

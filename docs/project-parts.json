@@ -1,50 +1,63 @@
 {
+  "generated": "2026-02-01",
+  "workflow_version": "1.2.0",
   "repository_type": "monolith",
-  "project_name": "jaysingh.dev",
-  "scan_date": "2026-01-29",
-  "scan_level": "exhaustive",
   "parts": [
     {
       "part_id": "main",
       "display_name": "jaysingh.dev",
       "project_type_id": "web",
-      "root_path": "/home/jay/github/jaysingh.dev",
-      "primary_language": "TypeScript",
-      "framework": "React",
-      "framework_version": "18.3.1",
-      "build_tool": "Vite",
-      "styling": "TailwindCSS",
-      "entry_point": "src/main.tsx",
+      "root_path": "/",
+      "description": "Personal portfolio and technical blog - static site built with 11ty",
+      "technology": {
+        "framework": "11ty (Eleventy) 3.1.2",
+        "language": "JavaScript + Nunjucks",
+        "styling": "TailwindCSS 3.4.1",
+        "build": "11ty + PostCSS + Mermaid CLI",
+        "testing": "Playwright + Vitest",
+        "node": ">=24.0.0"
+      },
+      "entry_points": [
+        "eleventy.config.js",
+        "index.njk",
+        "css/input.css"
+      ],
       "critical_directories": [
-        "src/",
-        "src/components/",
-        "src/pages/",
-        "src/types/",
-        "src/utils/",
-        "src/data/",
-        "content/",
-        "public/",
-        "scripts/"
-      ]
+        "_content",
+        "_data",
+        "_includes",
+        "css",
+        "js",
+        "lib",
+        "public",
+        "scripts",
+        "tests"
+      ],
+      "content_summary": {
+        "blog_posts": 5,
+        "projects": 9,
+        "data_files": 4,
+        "layouts": 3,
+        "components": 4,
+        "partials": 6
+      }
     }
   ],
-  "documentation_requirements": {
-    "requires_api_scan": false,
-    "requires_data_models": false,
-    "requires_state_management": true,
-    "requires_ui_components": true,
-    "requires_deployment_config": true,
-    "requires_hardware_docs": false,
-    "requires_asset_inventory": false
+  "integration_points": [],
+  "legacy_code": {
+    "react_components": "src/",
+    "react_content": "content/",
+    "status": "ignored_by_eleventy",
+    "notes": "Retained for reference during migration, can be removed after validation"
   },
-  "technology_stack": {
-    "languages": ["TypeScript", "JavaScript", "CSS"],
-    "frameworks": ["React 18.3.1"],
-    "build_tools": ["Vite 5.4.2", "PostCSS 8.4.35"],
-    "styling": ["TailwindCSS 3.4.1", "Autoprefixer"],
-    "content_processing": ["gray-matter", "remark", "rehype", "js-yaml", "mermaid"],
-    "icons": ["Lucide React"],
-    "linting": ["ESLint 9.9.1", "typescript-eslint"]
-  },
-  "integration_points": []
+  "migration_status": {
+    "from": "React 18.3.1 + Vite 5.4.2",
+    "to": "11ty 3.1.2 + PostCSS",
+    "completed": true,
+    "remaining_stories": [
+      "3-5 Project Filtering (ready-for-dev)",
+      "Epic 6: Production Deployment & SEO",
+      "Epic 7: Sanity.io CMS Integration"
+    ]
+  }
 }

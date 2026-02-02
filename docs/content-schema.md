@@ -1,337 +1,351 @@
 # Content Schema Reference
 
-**Generated:** 2026-01-29
+**Generated:** 2026-02-01
 **Project:** jaysingh.dev
+**Framework:** 11ty + Nunjucks
+**Status:** Migration Complete
+
+---
 
 ## Overview
 
-Content is authored in Markdown with YAML frontmatter. The build script (`scripts/build-content.js`) processes these files and outputs JSON for runtime consumption.
+Content is authored in Markdown with YAML frontmatter. 11ty processes these files directly using its data cascade and collection system. Frontmatter is validated at build time via custom validators in `lib/filters.js`.
 
 ---
 
 ## Blog Post Schema
 
-**Location:** `content/blog/*.md`
-**Output:** `public/blog-posts.json`
+**Location:** `_content/blog/*.md`
+**Collection:** `posts`
+**Layout:** `layouts/blog-post.njk`
+**Validation:** `validateBlogPost()` in `lib/filters.js`
 
 ### Frontmatter Fields
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `id` | string | ✓ | Unique identifier (URL slug) |
-| `title` | string | ✓ | Post title (displayed as-is, often uppercase) |
-| `date` | string | ✓ | Publication date (YYYY-MM-DD) |
+| `title` | string | ✓ | Post title |
+| `date` | date | ✓ | Publication date (YYYY-MM-DD) |
 | `excerpt` | string | ✓ | Short description for previews |
-| `tags` | string[] | ✓ | Technology/category tags |
-| `readTime` | string | ✓ | Estimated read time (e.g., "10 min") |
+| `tags` | string[] | ✓ | Technology/category tags (min 1) |
+| `readTime` | string | ✓ | Estimated read time (e.g., "9 min") |
 | `featured` | boolean | | Show on homepage (default: false) |
 | `relatedProjectIds` | string[] | | IDs of related projects |
-| `author` | object | | Author information (optional) |
-| `lastUpdated` | string | | Last update date (YYYY-MM-DD) |
-| `coverImage` | string | | Cover image URL |
+| `author` | object | | Author information |
+| `lastUpdated` | date | | Last update date |
+| `permalink` | string | ✓ | URL path (e.g., `/blog/post-slug/`) |
+| `layout` | string | ✓ | Layout template path |
 
 ### Example
 
 ```yaml
 ---
-id: docker-observability
-title: COMPREHENSIVE OBSERVABILITY FOR DOCKER MICROSERVICES
-date: 2024-09-22
-excerpt: Building a complete monitoring stack with Prometheus, Grafana, Loki, and OpenTelemetry.
+id: ci-cd-best-practices
+title: CI/CD BEST PRACTICES WITH GITHUB ACTIONS
+date: 2024-07-18
+excerpt: Building reliable deployment pipelines with automated testing.
 tags:
-  - docker
-  - prometheus
-  - grafana
-  - observability
-readTime: 10 min
+  - cicd
+  - github-actions
+  - devops
+  - technical
+readTime: 9 min
 featured: true
 relatedProjectIds:
-  - observability-infrastructure
+  - cicd-pipeline
+permalink: /blog/ci-cd-best-practices/
+layout: layouts/blog-post.njk
 ---
+
+Content with Mermaid diagrams, code blocks, etc.
 ```
 
-### TypeScript Interface
+### Inline Mermaid Diagrams
 
-```typescript
-interface BlogPost {
-  id: string;
-  title: string;
-  date: string;
-  excerpt: string;
-  content?: string;
-  contentBlocks?: ContentBlock[];
-  tags: string[];
-  readTime: string;
-  featured: boolean;
-  relatedProjectIds?: string[];
-  author?: {
-    name: string;
-    avatar?: string;
-    bio?: string;
-  };
-  lastUpdated?: string;
-  coverImage?: string;
-}
+Blog posts can include inline Mermaid diagrams using fenced code blocks:
+
+````markdown
+```mermaid
+graph LR
+    A[Push Code] --> B[GitHub Actions]
+    B --> C[Run Tests]
+```
+````
+
+These are converted to pre-rendered SVGs at build time by `scripts/render-mermaid.js`.
+
+### Nunjucks Escaping
+
+For GitHub Actions syntax in code blocks, use `{% raw %}...{% endraw %}`:
+
+```yaml
+username: {% raw %}${{ github.actor }}{% endraw %}
 ```
 
 ---
 
 ## Project Schema
 
-**Location:** `content/projects/*.md`
-**Output:** `public/projects.json`
+**Location:** `_content/projects/*.md`
+**Collection:** `projects`
+**Layout:** `layouts/project.njk`
+**Validation:** `validateProject()` in `lib/filters.js`
 
 ### Frontmatter Fields
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `id` | string | ✓ | Unique identifier (URL slug) |
-| `title` | string | ✓ | Project title (often uppercase) |
+| `id` | string | ✓ | Unique identifier |
+| `title` | string | ✓ | Project title |
 | `description` | string | ✓ | Short description for cards |
-| `technologies` | string[] | ✓ | Technology tags |
-| `liveUrl` | string\|null | | Live demo URL |
-| `githubUrl` | string\|null | | GitHub repository URL |
-| `imageAlt` | string | ✓ | Alt text for project image |
-| `featured` | boolean | | Show on homepage (default: false) |
-| `projectType` | string | | 'personal' or 'work' (default: 'personal') |
-| `diagramType` | string | | 'mermaid' or 'image' |
-| `diagramLabel` | string | | Diagram section title |
-| `diagramContent` | string | | Mermaid diagram code |
-| `diagramImageUrl` | string | | Image diagram URL |
-| `keyFeatures` | string[] | | List of key features |
-| `documentationUrl` | string | | Link to external docs |
+| `projectType` | enum | ✓ | `work` or `personal` |
+| `technologies` | string[] | ✓* | Technology tags |
+| `tags` | string[] | ✓* | Alternative to technologies |
+| `featured` | boolean | | Show on homepage |
+| `permalink` | string | ✓ | URL path |
+| `longDescription` | string | | Extended overview |
+| `challenge` | string | | Problem statement |
+| `solution` | string | | How problem was solved |
+| `impact` | string | | Results and metrics |
+| `keyFeatures` | string[] | | Feature list |
+| `githubUrl` | URL | | GitHub repository |
+| `liveUrl` | URL | | Live demo |
+| `documentationUrl` | URL | | External docs |
+| `diagramType` | string | | `mermaid` (future: `image`) |
+| `diagramContent` | string | | Mermaid code for diagram |
+| `diagramLabel` | string | | Caption for diagram |
 
-### Markdown Body Sections
-
-The markdown body is parsed into sections by `## ` headings:
-
-| Section | Description |
-|---------|-------------|
-| (intro) | Long description paragraph(s) |
-| `## Challenge` | Problem statement |
-| `## Solution` | How the problem was solved |
-| `## Impact` | Results and metrics |
+*Either `technologies` or `tags` is required.
 
 ### Example
 
 ```yaml
 ---
-id: qr-code-platform
-title: QR CODE GENERATION PLATFORM
-description: High-performance QR code generation and analytics platform.
+id: authentication-gateway
+title: "Zero-Trust Authentication Gateway"
+description: "Distributed authentication gateway serving 5,181+ users."
+longDescription: "Enterprise-grade authentication implementing zero-trust..."
 technologies:
-  - Python
-  - FastAPI
-  - PostgreSQL
+  - OAuth2-Proxy
+  - Traefik
+  - Keycloak
   - Docker
-  - Prometheus
-  - Grafana
-liveUrl: null
-githubUrl: https://github.com/gsinghjay/qr-platform
-imageAlt: QR code analytics dashboard
-featured: true
 projectType: work
-diagramType: mermaid
-diagramLabel: System Architecture
-diagramContent: |
-  graph TB
-      A[User Browser] -->|HTTPS| B[Traefik Reverse Proxy]
-      B --> C[FastAPI Application]
-      ...
+featured: true
+permalink: /projects/authentication-gateway/
+challenge: "The university's legacy authentication was fragmented..."
+solution: "Designed a distributed gateway architecture..."
+impact: "Successfully secured 5,181+ active user accounts..."
 keyFeatures:
-  - Real-time analytics dashboard
-  - Advanced bot detection
-  - Mobile-optimized interface
+  - "Zero-trust architecture"
+  - "Granular RBAC policies"
+  - "Seamless SSO integration"
+githubUrl: "https://github.com/example/auth-gateway"
 ---
-
-Introduction paragraph here...
-
-## Challenge
-
-Problem statement...
-
-## Solution
-
-How we solved it...
-
-## Impact
-
-Results and metrics...
 ```
 
-### TypeScript Interface
+### Frontmatter Diagrams
 
-```typescript
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  technologies: string[];
-  liveUrl: string | null;
-  githubUrl: string | null;
-  imageAlt: string;
-  featured: boolean;
-  longDescription?: string;
-  challenge?: string;
-  solution?: string;
-  impact?: string;
-  keyFeatures?: string[];
-  projectType?: 'personal' | 'work';
-  documentationUrl?: string;
-  diagramType?: 'mermaid' | 'image';
-  diagramContent?: string;
-  diagramImageUrl?: string;
-  diagramLabel?: string;
+Projects with `diagramContent` in frontmatter are processed by `scripts/render-mermaid.js` to generate SVGs at `/diagrams/{id}.svg`.
+
+---
+
+## Data Files
+
+**Location:** `_data/*.json`
+**Access:** Global data available in all templates
+
+### site.json
+
+Site-wide metadata for SEO and branding.
+
+```json
+{
+  "title": "Jay Singh - Software Engineer",
+  "shortTitle": "Jay Singh",
+  "description": "Personal portfolio and technical blog...",
+  "baseUrl": "https://jaysingh.dev",
+  "author": "Jay Singh",
+  "language": "en",
+  "themeColor": "#bef264",
+  "socialImage": "/images/og-default.svg"
 }
 ```
 
----
+**Usage:** `{{ site.title }}`, `{{ site.baseUrl }}`
 
-## Profile Schema
+### profile.json
 
-**Location:** `content/config/profile.yaml`
-**Output:** `src/data/profile.json`
+Author profile information.
 
-### Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Display name |
-| `role` | string | Job title |
-| `tagline` | string | Short tagline |
-| `bio` | string | Extended biography |
-| `location` | string | Location |
-| `availability` | string | Availability status |
-| `email` | string | Contact email |
-| `phone` | string | Phone number |
-| `github` | string | GitHub profile URL |
-| `linkedin` | string | LinkedIn profile URL |
-| `twitter` | string\|null | Twitter handle/URL |
-
----
-
-## Skills Schema
-
-**Location:** `content/config/skills.yaml`
-**Output:** `src/data/skills.json`
-
-### Fields
-
-All fields are string arrays:
-
-| Field | Description |
-|-------|-------------|
-| `languages` | Programming languages |
-| `frontend` | Frontend technologies |
-| `backend` | Backend technologies |
-| `database` | Database technologies |
-| `devops` | DevOps tools |
-| `observability` | Monitoring tools |
-| `security` | Security practices |
-| `testing` | Testing tools |
-| `tools` | Development tools |
-| `architecture` | Architecture patterns |
-| `cloud` | Cloud platforms |
-
----
-
-## Resume Schema
-
-**Location:** `content/config/resume.yaml`
-**Output:** `src/data/resume.json`
-
-### Experience Entry
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Unique identifier |
-| `company` | string | Company name |
-| `position` | string | Job title |
-| `location` | string | Work location |
-| `startDate` | string | Start date (YYYY-MM) |
-| `endDate` | string\|null | End date or null if current |
-| `current` | boolean | Currently employed |
-| `responsibilities` | string[] | List of responsibilities |
-
-### Education Entry
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Unique identifier |
-| `institution` | string | School name |
-| `degree` | string | Degree title |
-| `location` | string | Location |
-| `startDate` | string | Start date (YYYY-MM) |
-| `endDate` | string | End date (YYYY-MM) |
-| `gpa` | string | Grade point average |
-| `details` | string | Additional details |
-
----
-
-## ContentBlock Schema (Runtime)
-
-The build script converts markdown to structured content blocks:
-
-### Block Types
-
-| Type | Description | Metadata |
-|------|-------------|----------|
-| `text` | Paragraph text | None |
-| `heading` | Section heading | `level: 2|3|4` |
-| `code` | Code block | `language: string` |
-| `diagram` | Mermaid diagram | `diagramType: 'mermaid'` |
-| `image` | Image | `imageUrl`, `imageAlt`, `caption` |
-| `callout` | Blockquote callout | `calloutType: 'info'|'warning'|'tip'|'important'` |
-| `divider` | Horizontal rule | None |
-
-### TypeScript Interface
-
-```typescript
-interface ContentBlock {
-  type: 'text' | 'heading' | 'code' | 'diagram' | 'image' | 'callout' | 'divider';
-  content: string;
-  metadata?: {
-    language?: string;
-    diagramType?: 'mermaid';
-    level?: 2 | 3 | 4;
-    calloutType?: 'info' | 'warning' | 'tip' | 'important';
-    imageUrl?: string;
-    imageAlt?: string;
-    caption?: string;
-  };
+```json
+{
+  "name": "Jay Singh",
+  "role": "Software Engineer",
+  "bio": "Full-stack developer specializing in...",
+  "location": "New Jersey, USA",
+  "socialLinks": {
+    "github": "https://github.com/jaysingh",
+    "linkedin": "https://linkedin.com/in/jaysingh",
+    "email": "mailto:jay@jaysingh.dev"
+  }
 }
 ```
 
+**Usage:** `{{ profile.name }}`, `{{ profile.socialLinks.github }}`
+
+### resume.json
+
+Work experience and education.
+
+```json
+{
+  "experience": [
+    {
+      "id": "exp-1",
+      "company": "HUDSON COUNTY COMMUNITY COLLEGE",
+      "position": "WEB DEVELOPER",
+      "location": "JERSEY CITY, NJ",
+      "startDate": "2023-07",
+      "endDate": null,
+      "current": true,
+      "responsibilities": [...]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-1",
+      "institution": "NEW JERSEY INSTITUTE OF TECHNOLOGY",
+      "degree": "BS IN INFORMATION TECHNOLOGY",
+      "location": "NEWARK, NJ",
+      "startDate": "2022-09",
+      "endDate": "2026-05",
+      "gpa": "3.63",
+      "details": "Expected graduation May 2026..."
+    }
+  ],
+  "certifications": []
+}
+```
+
+**Usage:** `{% for exp in resume.experience %}...{% endfor %}`
+
+### skills.json
+
+Technical skills by category.
+
+```json
+{
+  "languages": ["Python", "JavaScript", "TypeScript", ...],
+  "frameworks": ["FastAPI", "React", "11ty", ...],
+  "databases": ["PostgreSQL", "Redis", ...],
+  "devops": ["Docker", "GitHub Actions", ...]
+}
+```
+
+**Usage:** `{% for skill in skills.languages %}...{% endfor %}`
+
 ---
 
-## Migration Notes for 11ty
+## 11ty Collections
 
-### Frontmatter Compatibility
+### posts
 
-11ty natively supports YAML frontmatter. The existing content files can be used directly with minimal changes.
+All blog posts from `_content/blog/*.md`.
 
-### Data Files
-
-Move YAML configs to 11ty's data cascade:
-- `content/config/*.yaml` → `_data/*.json` or `_data/*.yaml`
-
-### Collections
-
-11ty collections replace the JSON output:
 ```javascript
-// .eleventy.js
 eleventyConfig.addCollection("posts", collection => {
-  return collection.getFilteredByGlob("content/blog/*.md");
-});
-
-eleventyConfig.addCollection("projects", collection => {
-  return collection.getFilteredByGlob("content/projects/*.md");
+  return collection.getFilteredByGlob("_content/blog/*.md");
 });
 ```
 
-### Markdown Processing
+**Includes validation:** Build fails if frontmatter is invalid.
 
-Replace custom ContentBlock processing with 11ty plugins:
-- Mermaid: Use `eleventy-plugin-mermaid` or client-side rendering
-- Code highlighting: Use `@11ty/eleventy-plugin-syntaxhighlight`
-- Callouts: Create custom markdown-it plugin or shortcodes
+### projects
+
+All projects from `_content/projects/*.md`.
+
+```javascript
+eleventyConfig.addCollection("projects", collection => {
+  return collection.getFilteredByGlob("_content/projects/*.md");
+});
+```
+
+**Includes validation:** Build fails if frontmatter is invalid.
+
+---
+
+## Custom Filters
+
+### readingTime
+
+Calculate estimated read time from HTML content.
+
+```nunjucks
+{{ content | readingTime }}  {# "5 min read" #}
+```
+
+### findProjectsByIds
+
+Lookup projects by ID array for related projects.
+
+```nunjucks
+{% set related = relatedProjectIds | findProjectsByIds(collections.projects) %}
+```
+
+### date
+
+Format dates with UTC handling.
+
+```nunjucks
+{{ date | date }}           {# "Jan 15, 2026" #}
+{{ date | date('%Y-%m-%d') }}  {# "2026-01-15" #}
+{{ date | date('%B %d, %Y') }}  {# "January 15, 2026" #}
+```
+
+### getCategoryFromTags
+
+Extract category from tags array.
+
+```nunjucks
+{{ tags | getCategoryFromTags }}  {# "TECHNICAL" #}
+```
+
+### where / take
+
+Filter and limit arrays.
+
+```nunjucks
+{% set featured = collections.posts | where('data.featured') | take(3) %}
+```
+
+---
+
+## Validation Rules
+
+### Blog Posts (validateBlogPost)
+
+| Field | Rule |
+|-------|------|
+| `id` | Required, non-empty string |
+| `title` | Required, non-empty string |
+| `date` | Required, valid date (Date object or YYYY-MM-DD) |
+| `excerpt` | Required, non-empty string |
+| `tags` | Required, array with min 1 item |
+| `readTime` | Required, non-empty string |
+
+### Projects (validateProject)
+
+| Field | Rule |
+|-------|------|
+| `id` | Required, non-empty string |
+| `title` | Required, non-empty string |
+| `description` | Required, non-empty string |
+| `projectType` | Required, `work` or `personal` |
+| `technologies` or `tags` | At least one required, array with min 1 item |
+| `githubUrl`, `liveUrl` | If present, must be valid URL |
+
+---
+
+*Generated by BMAD document-project workflow*
