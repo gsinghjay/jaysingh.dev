@@ -95,7 +95,7 @@ development_status:
   # Epic 6: Production Deployment & SEO
   # Site is deployed to GitHub Pages, SEO-optimized, and achieves Lighthouse 100.
   epic-6: in-progress
-  6-1-implement-sitemap-generation: ready-for-dev
+  6-1-implement-sitemap-generation: done
   6-2-implement-robots-txt: backlog
   6-3-implement-meta-tags-and-open-graph: backlog
   6-4-implement-github-actions-deployment: backlog

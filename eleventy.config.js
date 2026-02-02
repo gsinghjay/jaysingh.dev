@@ -177,7 +177,8 @@ export default function(eleventyConfig) {
   });
 
   // Passthrough copy for static assets
-  eleventyConfig.addPassthroughCopy("public");
+  // Copy public folder contents to site root (not _site/public/)
+  eleventyConfig.addPassthroughCopy({ "public": "." });
   eleventyConfig.addPassthroughCopy("js");
 
   // Blog posts collection (using _content directory for 11ty-compatible content)
