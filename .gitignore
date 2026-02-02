@@ -30,3 +30,6 @@ test-results/
 playwright-report/
 playwright/.cache/
 .playwright-mcp/
+
+# AI agent instructions (local only)
+CLAUDE.md
