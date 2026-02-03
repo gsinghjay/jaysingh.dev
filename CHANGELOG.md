@@ -1,3 +1,10 @@
+# [1.1.0-rc.2](https://github.com/gsinghjay/jaysingh.dev/compare/v1.1.0-rc.1...v1.1.0-rc.2) (2026-02-03)
+
+
+### Bug Fixes
+
+* **perf:** lower Lighthouse score threshold to 95% ([63c5cc5](https://github.com/gsinghjay/jaysingh.dev/commit/63c5cc5983355ef106def8fc06b46f8c2a91f194))
+
 # [1.1.0-rc.1](https://github.com/gsinghjay/jaysingh.dev/compare/v1.0.1-rc.1...v1.1.0-rc.1) (2026-02-03)
 
 
