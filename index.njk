@@ -14,10 +14,17 @@ description: Jay Singh - Software Engineer specializing in web development
   {% call card("lg") %}
     <div class="flex flex-col md:flex-row items-start gap-8">
       {# Avatar #}
-      <div class="w-32 h-32 bg-lime-400 border-4 border-black flex items-center justify-center text-6xl flex-shrink-0"
-           style="box-shadow: 4px 4px 0 #000;">
-        👋
-      </div>
+      <img src="/images/avatar.jpg"
+           srcset="/images/avatar.jpg 1x, /images/avatar@2x.jpg 2x"
+           alt="Jay Singh - Software Engineer"
+           width="128"
+           height="128"
+           loading="eager"
+           decoding="async"
+           fetchpriority="high"
+           class="w-32 h-32 border-4 border-lime-400 object-cover flex-shrink-0"
+           style="box-shadow: 4px 4px 0 #000;"
+           onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=\'w-32 h-32 bg-lime-400 border-4 border-black flex items-center justify-center text-6xl flex-shrink-0\' style=\'box-shadow: 4px 4px 0 #000;\'>👋</div>');">
 
       {# Content #}
       <div class="flex-1">
