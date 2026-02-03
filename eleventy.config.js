@@ -165,11 +165,13 @@ export default function(eleventyConfig) {
       // Return an img tag wrapped in a clickable container with diagram viewer
       // Button element provides keyboard accessibility (focusable, Enter/Space to activate)
       // width/height/aspect-ratio prevent CLS (Cumulative Layout Shift) per AC9
+      // Note: Default 2:1 aspect ratio works for most diagrams; object-fit:contain handles variations
+      const altText = `Diagram ${diagramIndex} for ${contentId.replace(/-/g, ' ')}`;
       return `<div class="my-8 relative" data-diagram-viewer>
         <button type="button" class="w-full text-left bg-white border-4 border-black p-6 flex justify-center cursor-pointer hover:shadow-lg transition-shadow" style="box-shadow: 8px 8px 0 #000;" aria-label="Expand diagram">
           <img
             src="${diagram.svgPath}"
-            alt="Architecture diagram"
+            alt="${altText}"
             class="max-w-full h-auto"
             loading="lazy"
             width="800"

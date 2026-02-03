@@ -53,13 +53,17 @@ describe('Story 6.5: Lighthouse CI Configuration', () => {
       expect(config.ci.collect.staticDistDir).toBe('./_site');
     });
 
-    it('tests required pages', () => {
+    it('tests required pages including detail pages with diagrams (AC10)', () => {
       const urls = config.ci.collect.url;
+      // Listing pages
       expect(urls).toContain('http://localhost/');
       expect(urls).toContain('http://localhost/blog/');
       expect(urls).toContain('http://localhost/projects/');
       expect(urls).toContain('http://localhost/resume/');
       expect(urls).toContain('http://localhost/contact/');
+      // Detail pages with Mermaid diagrams (AC10)
+      expect(urls.some((url: string) => url.includes('/blog/') && url !== 'http://localhost/blog/')).toBe(true);
+      expect(urls.some((url: string) => url.includes('/projects/') && url !== 'http://localhost/projects/')).toBe(true);
     });
 
     it('runs multiple times for consistency', () => {
