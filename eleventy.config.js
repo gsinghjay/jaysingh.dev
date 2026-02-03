@@ -9,22 +9,12 @@ export default function(eleventyConfig) {
   // Ignore non-content directories
   eleventyConfig.ignores.add("_bmad/**");
   eleventyConfig.ignores.add("_bmad-output/**");
-  eleventyConfig.ignores.add("src/**");
   eleventyConfig.ignores.add("node_modules/**");
   eleventyConfig.ignores.add("docs/**");
   eleventyConfig.ignores.add("scripts/**");
 
-  // React-era content (has Prometheus/Jinja2 syntax that conflicts with Nunjucks)
-  // Will be migrated in future story with proper escaping
-  eleventyConfig.ignores.add("content/blog/**");
-  eleventyConfig.ignores.add("content/projects/**");
-  eleventyConfig.ignores.add("content/config/**");
-
   // Ignore public directory templates (passthrough copy only)
   eleventyConfig.ignores.add("public/**");
-
-  // Ignore React SPA entry point
-  eleventyConfig.ignores.add("index.html");
 
   // Ignore Claude Code configuration
   eleventyConfig.ignores.add(".claude/**");

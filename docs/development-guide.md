@@ -75,7 +75,6 @@ The development server runs at `http://localhost:8080` with hot reload.
 | Script | Command | Description |
 |--------|---------|-------------|
 | `lint` | `eslint .` | JavaScript linting |
-| `typecheck` | `tsc --noEmit -p tsconfig.app.json` | TypeScript check |
 
 ---
 
@@ -237,7 +236,7 @@ Key configuration:
 - Collections: `posts`, `projects`
 - Custom filters: `readingTime`, `date`, `findProjectsByIds`, etc.
 - Transforms: `mermaid-to-svg` (replaces code blocks with SVGs)
-- Ignores: `_bmad*`, `src/`, `content/`, `node_modules/`
+- Ignores: `_bmad*`, `docs/`, `scripts/`, `node_modules/`
 
 ### TailwindCSS (tailwind.config.js)
 
@@ -250,8 +249,10 @@ Content sources:
 ```javascript
 content: [
   './_includes/**/*.njk',
+  './_content/**/*.njk',
   './_content/**/*.md',
   './*.njk',
+  './js/**/*.js',
 ]
 ```
 

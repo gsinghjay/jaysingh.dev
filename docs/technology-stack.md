@@ -35,14 +35,6 @@
 | `remark-parse` | 11.0.0 | Markdown parsing |
 | `remark-rehype` | 11.1.2 | Markdown to HTML transform |
 
-### Legacy Dependencies (Still in package.json)
-
-| Package | Version | Status |
-|---------|---------|--------|
-| `react` | 18.3.1 | Unused (legacy React code in src/) |
-| `react-dom` | 18.3.1 | Unused (legacy React code in src/) |
-| `lucide-react` | 0.344.0 | Unused (icons now static SVG) |
-
 ---
 
 ## Dev Dependencies
