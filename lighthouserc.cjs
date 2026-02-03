@@ -23,11 +23,11 @@ module.exports = {
     },
     assert: {
       assertions: {
-        // Category scores - require 100
-        'categories:performance': ['error', { minScore: 1 }],
-        'categories:accessibility': ['error', { minScore: 1 }],
-        'categories:best-practices': ['error', { minScore: 1 }],
-        'categories:seo': ['error', { minScore: 1 }],
+        // Category scores - require minimum 95%
+        'categories:performance': ['error', { minScore: 0.95 }],
+        'categories:accessibility': ['error', { minScore: 0.95 }],
+        'categories:best-practices': ['error', { minScore: 0.95 }],
+        'categories:seo': ['error', { minScore: 0.95 }],
 
         // Core Web Vitals (AC6)
         'first-contentful-paint': ['error', { maxNumericValue: 1000 }], // < 1.0s

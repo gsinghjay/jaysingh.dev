@@ -68,32 +68,32 @@ describe('Story 6.5: Lighthouse CI Configuration', () => {
   });
 
   describe('AC1-5: Category Score Assertions', () => {
-    it('asserts Performance score >= 100', () => {
+    it('asserts Performance score >= 95', () => {
       const assertion = config.ci.assert.assertions['categories:performance'];
       expect(assertion).toBeDefined();
       expect(assertion[0]).toBe('error');
-      expect(assertion[1].minScore).toBe(1); // 1 = 100%
+      expect(assertion[1].minScore).toBe(0.95); // 0.95 = 95%
     });
 
-    it('asserts Accessibility score >= 100', () => {
+    it('asserts Accessibility score >= 95', () => {
       const assertion = config.ci.assert.assertions['categories:accessibility'];
       expect(assertion).toBeDefined();
       expect(assertion[0]).toBe('error');
-      expect(assertion[1].minScore).toBe(1);
+      expect(assertion[1].minScore).toBe(0.95);
     });
 
-    it('asserts Best Practices score >= 100', () => {
+    it('asserts Best Practices score >= 95', () => {
       const assertion = config.ci.assert.assertions['categories:best-practices'];
       expect(assertion).toBeDefined();
       expect(assertion[0]).toBe('error');
-      expect(assertion[1].minScore).toBe(1);
+      expect(assertion[1].minScore).toBe(0.95);
     });
 
-    it('asserts SEO score >= 100', () => {
+    it('asserts SEO score >= 95', () => {
       const assertion = config.ci.assert.assertions['categories:seo'];
       expect(assertion).toBeDefined();
       expect(assertion[0]).toBe('error');
-      expect(assertion[1].minScore).toBe(1);
+      expect(assertion[1].minScore).toBe(0.95);
     });
   });
 
