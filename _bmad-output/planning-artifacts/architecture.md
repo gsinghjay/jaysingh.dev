@@ -321,24 +321,48 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: 'npm'
       - run: npm ci
       - run: npm run build:css
       - run: npm run build:mermaid
-      - run: npm run build
-      - uses: peaceiris/actions-gh-pages@v3
+      - run: npx eleventy
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
+          path: '_site'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 ```
+
+**Note:** Uses official GitHub Actions (recommended over `peaceiris/actions-gh-pages@v3`) for better integration with GitHub's deployment environments and automatic OIDC authentication.
 
 **Environment Configuration:**
 
