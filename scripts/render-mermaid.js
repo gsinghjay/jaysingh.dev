@@ -122,7 +122,8 @@ async function processProjects(manifest) {
 
     try {
       // Generate SVG using mmdc with transparent background and Neubrutalist theme
-      execSync(`npx mmdc -i "${tempInput}" -o "${outputSvg}" -b transparent -c mermaid-config.json`, {
+      // Use puppeteer config for CI compatibility (--no-sandbox)
+      execSync(`npx mmdc -i "${tempInput}" -o "${outputSvg}" -b transparent -c mermaid-config.json -p puppeteer-config.json`, {
         stdio: 'pipe'
       });
       console.log(`✅ Generated: ${outputSvg}`);
@@ -193,7 +194,8 @@ async function processInlineContent(manifest, contentDir, prefix) {
 
       try {
         // Generate SVG using mmdc with transparent background and Neubrutalist theme
-        execSync(`npx mmdc -i "${tempInput}" -o "${outputSvg}" -b transparent -c mermaid-config.json`, {
+        // Use puppeteer config for CI compatibility (--no-sandbox)
+        execSync(`npx mmdc -i "${tempInput}" -o "${outputSvg}" -b transparent -c mermaid-config.json -p puppeteer-config.json`, {
           stdio: 'pipe'
         });
         console.log(`✅ Generated: ${outputSvg}`);
