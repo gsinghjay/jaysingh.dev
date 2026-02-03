@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/gsinghjay/jaysingh.dev/compare/v1.1.0...v1.1.1) (2026-02-03)
+
+
+### Bug Fixes
+
+* **ci:** add puppeteer no-sandbox config for mermaid in GitHub Actions ([efa741a](https://github.com/gsinghjay/jaysingh.dev/commit/efa741a6257162df41d2726f178fac06a873bb86))
+
 # [1.1.0](https://github.com/gsinghjay/jaysingh.dev/compare/v1.0.1...v1.1.0) (2026-02-03)
 
 
