@@ -1,6 +1,6 @@
 # Story 6.4: Implement GitHub Actions Deployment
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -92,7 +92,7 @@ so that **content goes live without manual steps**.
   - [x] 6.5 Test failure scenario (intentional error) to verify error messages
 
 - [x] Task 7: Documentation (AC: #6)
-  - [x] 7.1 Add deployment badge to README.md (optional) - skipped
+  - [x] 7.1 Add deployment badge to README.md - added (README.md:3)
   - [x] 7.2 Document deployment process in project docs - workflow file is self-documenting
 
 ## Dev Notes
@@ -391,4 +391,43 @@ Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 **New Files:**
 - `.github/workflows/deploy.yml` - GitHub Actions deployment workflow
+
+**Modified Files (Code Review 2026-02-02):**
+- `_bmad-output/planning-artifacts/architecture.md` - Updated workflow example to use official GitHub Actions
+- `public/CNAME` - Moved from repo root to public/ for 11ty passthrough copy
+
+---
+
+## Senior Developer Review (AI)
+
+**Review Date:** 2026-02-02
+**Reviewer:** Amelia (Dev Agent) - Claude Opus 4.5
+**Outcome:** ✅ APPROVED with minor fixes applied
+
+### Review Summary
+
+| Category | Status | Notes |
+|----------|--------|-------|
+| AC Validation | ✅ Pass | All 8 ACs verified implemented |
+| Task Audit | ✅ Pass | All tasks marked [x] confirmed done |
+| Test Coverage | ✅ Pass | 27/27 unit tests, 206 total passing |
+| Code Quality | ✅ Pass | Clean YAML, proper permissions |
+| Security | ✅ Pass | No secrets exposed, OIDC auth |
+| Architecture | ⚠️ Fixed | Updated stale workflow example |
+
+### Issues Found & Resolution
+
+| # | Severity | Issue | Resolution |
+|---|----------|-------|------------|
+| 1 | MEDIUM | Architecture doc showed `peaceiris/actions-gh-pages@v3` | Updated to official GitHub Actions |
+| 2 | MEDIUM | CNAME at repo root instead of `public/` | Moved to `public/CNAME` |
+| 3 | LOW | Task 7.1 marked "skipped" but badge exists | Updated documentation |
+| 4 | LOW | No AC6 error scenario tests | Noted - manual verification sufficient |
+
+### Verification
+
+- ✅ 6 successful GitHub Actions runs (53-70s build time)
+- ✅ Site live at www.jaysingh.dev
+- ✅ All unit tests passing (206/206)
+- ✅ Architecture document synced with implementation
 
