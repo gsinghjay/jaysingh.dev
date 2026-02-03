@@ -1,3 +1,10 @@
+# [1.1.0-rc.1](https://github.com/gsinghjay/jaysingh.dev/compare/v1.0.1-rc.1...v1.1.0-rc.1) (2026-02-03)
+
+
+### Features
+
+* **perf:** add Lighthouse CI workflow and CLS prevention ([8c0dc66](https://github.com/gsinghjay/jaysingh.dev/commit/8c0dc663e0fa2b52dcadcc3a3e69d7f356058375))
+
 ## [1.0.1-rc.1](https://github.com/gsinghjay/jaysingh.dev/compare/v1.0.0...v1.0.1-rc.1) (2026-02-02)
 
 
