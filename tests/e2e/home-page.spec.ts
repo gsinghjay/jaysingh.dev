@@ -31,18 +31,22 @@ const CTA_BUTTONS = [
 ] as const;
 
 test.describe('Story 1.6: Hero Section (AC1, AC3)', () => {
-  test('[P0] hero section displays emoji avatar', async ({ page }) => {
+  test('[P0] hero section displays avatar image', async ({ page }) => {
     // Given: User navigates to home page
     await page.goto('/');
 
-    // Then: Hero section should have avatar with waving hand emoji
-    const avatar = page.locator('.bg-lime-400').filter({ hasText: '👋' });
+    // Then: Hero section should have avatar image with alt text
+    const avatar = page.getByRole('img', { name: /Jay Singh/ });
     await expect(avatar).toBeVisible();
 
     // And: Avatar should have correct dimensions (128x128px)
     const box = await avatar.boundingBox();
     expect(box?.width).toBeCloseTo(128, 0);
     expect(box?.height).toBeCloseTo(128, 0);
+
+    // And: Image should actually load successfully (not broken)
+    const naturalWidth = await avatar.evaluate((img: HTMLImageElement) => img.naturalWidth);
+    expect(naturalWidth).toBeGreaterThan(0);
   });
 
   test('[P0] hero section displays main heading', async ({ page }) => {
@@ -305,7 +309,7 @@ test.describe('Story 1.6: Responsive Design Mobile (AC4)', () => {
 
     // Then: Hero content should be visible (flex-col layout)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.getByText('👋')).toBeVisible();
+    await expect(page.getByRole('img', { name: /Jay Singh/ })).toBeVisible();
   });
 
   test('[P1] CTA buttons stack in single column on mobile', async ({ page }) => {
