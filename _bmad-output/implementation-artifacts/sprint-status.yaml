@@ -98,8 +98,8 @@ development_status:
   6-1-implement-sitemap-generation: done
   6-2-implement-robots-txt: done
   6-3-implement-meta-tags-and-open-graph: done
-  6-4-implement-github-actions-deployment: review
-  6-5-achieve-lighthouse-100-scores: backlog
+  6-4-implement-github-actions-deployment: done
+  6-5-achieve-lighthouse-100-scores: done
   epic-6-retrospective: optional
 
   # Epic 7: Sanity.io CMS Integration

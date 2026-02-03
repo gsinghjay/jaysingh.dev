@@ -1,6 +1,7 @@
 # jaysingh.dev
 
 [![Deploy to GitHub Pages](https://github.com/gsinghjay/jaysingh.dev/actions/workflows/deploy.yml/badge.svg)](https://github.com/gsinghjay/jaysingh.dev/actions/workflows/deploy.yml)
+[![Lighthouse CI](https://github.com/gsinghjay/jaysingh.dev/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/gsinghjay/jaysingh.dev/actions/workflows/lighthouse.yml)
 
 My personal portfolio and blog — rebuilt from scratch with [Eleventy (11ty)](https://www.11ty.dev/) and a bold Neubrutalist design system.
 
