@@ -99,7 +99,7 @@ development_status:
   6-2-implement-robots-txt: done
   6-3-implement-meta-tags-and-open-graph: done
   6-4-implement-github-actions-deployment: review
-  6-5-achieve-lighthouse-100-scores: in-progress
+  6-5-achieve-lighthouse-100-scores: review
   epic-6-retrospective: optional
 
   # Epic 7: Sanity.io CMS Integration
