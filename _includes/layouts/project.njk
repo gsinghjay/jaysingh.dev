@@ -80,6 +80,9 @@ layout: layouts/base.njk
                   alt="{{ diagramLabel | default('Architecture diagram for ' + title) }}"
                   class="max-w-full h-auto"
                   loading="lazy"
+                  width="800"
+                  height="400"
+                  style="aspect-ratio: 2/1; object-fit: contain;"
                 >
                 {% if diagramLabel %}
                   <p class="text-sm text-neutral-500 mt-4 text-center">{{ diagramLabel }}</p>
