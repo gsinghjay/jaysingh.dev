@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/gsinghjay/jaysingh.dev/compare/v1.1.1...v1.2.0) (2026-02-03)
+
+
+### Features
+
+* **home:** replace emoji avatar with optimized profile image ([26251b9](https://github.com/gsinghjay/jaysingh.dev/commit/26251b9ab5000c4895bc2fc5a01be1e47a20f392))
+
 ## [1.1.1](https://github.com/gsinghjay/jaysingh.dev/compare/v1.1.0...v1.1.1) (2026-02-03)
 
 
