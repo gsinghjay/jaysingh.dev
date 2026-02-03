@@ -3,21 +3,22 @@ module.exports = {
     collect: {
       // Use static server to serve built site
       staticDistDir: './_site',
-      // Test multiple pages
+      // Test multiple pages including detail pages with diagrams (AC10)
       url: [
         'http://localhost/',
         'http://localhost/blog/',
+        'http://localhost/blog/docker-observability/', // Detail page with Mermaid diagram
         'http://localhost/projects/',
+        'http://localhost/projects/observability-infrastructure/', // Detail page with diagram
         'http://localhost/resume/',
         'http://localhost/contact/',
       ],
       // Number of runs per URL for consistency
       numberOfRuns: 3,
-      // Lighthouse settings
+      // Lighthouse settings - use mobile (default, more restrictive) per AC1
       settings: {
-        // Mobile emulation (default)
-        preset: 'desktop',
-        // Also run mobile tests
+        // Mobile emulation is the default preset (tests AC1: Mobile Performance)
+        // Desktop is less restrictive, so passing mobile implies desktop passes
         onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
       },
     },

@@ -94,6 +94,8 @@ describe('Story 6.5 AC9: Image CLS Prevention', () => {
     expect(content).toMatch(/width="800"/);
     expect(content).toMatch(/height="400"/);
     expect(content).toMatch(/aspect-ratio/);
+    // Check that alt text includes content context (M1 fix)
+    expect(content).toMatch(/Diagram.*for.*contentId/);
   });
 
   it('project template includes CLS prevention attributes for diagrams', () => {
