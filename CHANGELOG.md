@@ -1,3 +1,18 @@
+# [1.1.0](https://github.com/gsinghjay/jaysingh.dev/compare/v1.0.1...v1.1.0) (2026-02-03)
+
+
+### Bug Fixes
+
+* **ci:** only run semantic-release on main branch ([62613c3](https://github.com/gsinghjay/jaysingh.dev/commit/62613c3bef80bc8fc1defda2aa64fa65f542e2c5))
+* **deploy:** move CNAME to public/ and sync architecture docs ([fca6c86](https://github.com/gsinghjay/jaysingh.dev/commit/fca6c86939d72dfdd4a5c2e854690e706ac5ca5b))
+* **perf:** address code review findings for Lighthouse CI configuration ([b024d6f](https://github.com/gsinghjay/jaysingh.dev/commit/b024d6fa12865ea3ae88fa94c8ec75c1bf3dae12))
+* **perf:** lower Lighthouse score threshold to 95% ([63c5cc5](https://github.com/gsinghjay/jaysingh.dev/commit/63c5cc5983355ef106def8fc06b46f8c2a91f194))
+
+
+### Features
+
+* **perf:** add Lighthouse CI workflow and CLS prevention ([8c0dc66](https://github.com/gsinghjay/jaysingh.dev/commit/8c0dc663e0fa2b52dcadcc3a3e69d7f356058375))
+
 # [1.1.0-rc.2](https://github.com/gsinghjay/jaysingh.dev/compare/v1.1.0-rc.1...v1.1.0-rc.2) (2026-02-03)
 
 
